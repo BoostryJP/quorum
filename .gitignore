@@ -54,3 +54,6 @@ profile.cov
 generated-release-notes.md
 
 build/PEEPS
+
+# Goenv
+.go-version
