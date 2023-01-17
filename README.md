@@ -1,7 +1,14 @@
 # GoQuorum for ibet Network
 
+<p>
+  <img alt="Version" src="https://img.shields.io/badge/version-2.1-blue.svg?cacheSeconds=2592000" />
+</p>
+
 This project is [GoQuorum](https://github.com/ConsenSys/quorum) fork for [ibet Network](https://github.com/BoostryJP/ibet-Network)
 
+<div align="center">
+  <img width="25%" src="https://user-images.githubusercontent.com/963333/212965270-bba794c6-be66-4850-9475-19895530f32c.png"/>
+</div>
 
 ## License
 
@@ -14,3 +21,4 @@ The go-ethereum binaries (i.e. all code inside of the `cmd` directory) is licens
 in our repository in the `COPYING` file.
 
 Any project planning to use the `crypto/secp256k1` sub-module must use the specific [secp256k1 standalone library](https://github.com/ConsenSys/goquorum-crypto-secp256k1) licensed under 3-clause BSD.
+
