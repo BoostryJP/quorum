@@ -6,10 +6,7 @@
 
 This project is [GoQuorum](https://github.com/ConsenSys/quorum) fork for [ibet Network](https://github.com/BoostryJP/ibet-Network)
 
-
-<div align="left">
-  <img width="33%" src="https://user-images.githubusercontent.com/963333/212965270-bba794c6-be66-4850-9475-19895530f32c.png"/>
-</div>
+<img width="33%" align="right" src="https://user-images.githubusercontent.com/963333/212965270-bba794c6-be66-4850-9475-19895530f32c.png"/>
 
 ## Version control policy
 
