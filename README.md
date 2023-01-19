@@ -11,6 +11,16 @@ This project is [GoQuorum](https://github.com/ConsenSys/quorum) fork for [ibet N
   <img width="33%" src="https://user-images.githubusercontent.com/963333/212965270-bba794c6-be66-4850-9475-19895530f32c.png"/>
 </div>
 
+## Version control policy
+
+This project is a fork of GoQuorum (and go-ethereum), and we decide which version of GoQuorum to adopt when developing each version and reflect those modules. 
+In addition, it has been modified to be optimal for the ibet Network.
+
+The version control policy of this project follows that of ibet-Network.
+
+## Reference GoQuorum version
+
+Currently, the ibet Network is built using a node client based on v22.7.5 of GoQuorum. 
 
 ## License
 
