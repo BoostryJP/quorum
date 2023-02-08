@@ -17,7 +17,7 @@ The version control policy of this project follows that of ibet-Network.
 
 ## Reference GoQuorum version
 
-Currently, the ibet Network is built using a node client based on v22.7.5 of GoQuorum. 
+Currently, the ibet Network is built using a node client based on v22.7.6 of GoQuorum. 
 
 ## License
 
