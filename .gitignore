@@ -29,6 +29,9 @@ build/_vendor/pkg
 # VS Code
 .vscode
 
+# goenv
+.go-version
+
 # dashboard
 /dashboard/assets/flow-typed
 /dashboard/assets/node_modules
