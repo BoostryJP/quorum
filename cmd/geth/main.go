@@ -43,6 +43,8 @@ import (
 	"github.com/ethereum/go-ethereum/permission"
 	"github.com/ethereum/go-ethereum/plugin"
 	"gopkg.in/urfave/cli.v1"
+
+	_ "net/http/pprof"
 )
 
 const (
