@@ -24,6 +24,7 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"net/http/pprof"
 	"sort"
 	"strings"
 	"sync"
@@ -89,6 +90,13 @@ func newHTTPServer(log log.Logger, timeouts rpc.HTTPTimeouts) *httpServer {
 	h := &httpServer{log: log, timeouts: timeouts, handlerNames: make(map[string]string)}
 
 	h.httpHandler.Store((*rpcHandler)(nil))
+
+	h.mux.HandleFunc("/debug/pprof/", pprof.Index)
+	h.mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+	h.mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
+	h.mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+	h.mux.HandleFunc("/debug/pprof/heap", pprof.Handler("heap").ServeHTTP)
+
 	h.wsHandler.Store((*rpcHandler)(nil))
 	return h
 }
