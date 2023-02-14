@@ -90,6 +90,13 @@ func newHTTPServer(log log.Logger, timeouts rpc.HTTPTimeouts) *httpServer {
 	h := &httpServer{log: log, timeouts: timeouts, handlerNames: make(map[string]string)}
 
 	h.httpHandler.Store((*rpcHandler)(nil))
+
+	h.mux.HandleFunc("/debug/pprof/", pprof.Index)
+	h.mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+	h.mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
+	h.mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+	h.mux.HandleFunc("/debug/pprof/heap", pprof.Handler("heap").ServeHTTP)
+
 	h.wsHandler.Store((*rpcHandler)(nil))
 	return h
 }
@@ -138,12 +145,6 @@ func (h *httpServer) start(tlsConfigSource security.TLSConfigurationSource) erro
 	}
 
 	// Initialize the server.
-	h.mux.HandleFunc("/debug/pprof/", pprof.Index)
-	h.mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
-	h.mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
-	h.mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
-	h.mux.HandleFunc("/debug/pprof/heap", pprof.Handler("heap").ServeHTTP)
-
 	h.server = &http.Server{Handler: h}
 	if h.timeouts != (rpc.HTTPTimeouts{}) {
 		CheckTimeouts(&h.timeouts)

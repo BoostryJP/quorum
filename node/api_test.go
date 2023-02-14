@@ -278,6 +278,7 @@ func TestStartRPC(t *testing.T) {
 			baseURL := stack.HTTPEndpoint()
 			reachable := checkReachable(baseURL)
 			handlersAvailable := checkBodyOK(baseURL + "/test")
+			pprofHandlersAvailable := checkStatusOK(baseURL + "/debug/pprof/")
 			rpcAvailable := checkRPC(baseURL)
 			wsAvailable := checkRPC(strings.Replace(baseURL, "http://", "ws://", 1))
 			if reachable != test.wantReachable {
@@ -285,6 +286,9 @@ func TestStartRPC(t *testing.T) {
 			}
 			if handlersAvailable != test.wantHandlers {
 				t.Errorf("RegisterHandler handlers %savailable, want them %savailable", not(handlersAvailable), not(test.wantHandlers))
+			}
+			if pprofHandlersAvailable != test.wantHandlers {
+				t.Errorf("RegisterHandler pprof handlers %savailable, want them %savailable", not(pprofHandlersAvailable), not(test.wantHandlers))
 			}
 			if rpcAvailable != test.wantRPC {
 				t.Errorf("HTTP RPC %savailable, want it %savailable", not(rpcAvailable), not(test.wantRPC))
@@ -307,6 +311,20 @@ func checkReachable(rawurl string) bool {
 		return false
 	}
 	conn.Close()
+	return true
+}
+
+// checkStatusOK checks whether the given HTTP URL responds with 200 OK.
+func checkStatusOK(url string) bool {
+	resp, err := http.Get(url)
+	if err != nil {
+		return false
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return false
+	}
 	return true
 }
 
