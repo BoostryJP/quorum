@@ -11,8 +11,6 @@ import (
 	"github.com/ethereum/go-ethereum/consensus/istanbul"
 	qbfttypes "github.com/ethereum/go-ethereum/consensus/istanbul/qbft/types"
 	"github.com/ethereum/go-ethereum/consensus/istanbul/validator"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
 )
 
 // Tests combinations of justifications that evaluate to true.
@@ -155,25 +153,4 @@ func createRoundChangeMessage(from common.Address, round int64, preparedRound in
 
 func createPrepareMessage(from common.Address, round int64, preparedBlock istanbul.Proposal) *qbfttypes.Prepare {
 	return qbfttypes.NewPrepareWithSigAndSource(big.NewInt(1), big.NewInt(round), preparedBlock.Hash(), nil, from)
-}
-
-func generateValidators(n int) []common.Address {
-	vals := make([]common.Address, 0)
-	for i := 0; i < n; i++ {
-		privateKey, _ := crypto.GenerateKey()
-		vals = append(vals, crypto.PubkeyToAddress(privateKey.PublicKey))
-	}
-	return vals
-}
-
-func makeBlock(number int64) *types.Block {
-	header := &types.Header{
-		Difficulty: big.NewInt(0),
-		Number:     big.NewInt(number),
-		GasLimit:   0,
-		GasUsed:    0,
-		Time:       0,
-	}
-	block := &types.Block{}
-	return block.WithSeal(header)
 }
