@@ -54,7 +54,8 @@ func (c *core) handleRequest(request *Request) error {
 			c.newRoundTimer = nil
 		}
 
-		delay := time.Duration(0)
+		delay := time.Duration(time.Millisecond * 100)  // TODO: delete test code
+		//delay := time.Duration()
 
 		block, ok := request.Proposal.(*types.Block)
 		if ok && len(block.Transactions()) == 0 { // if empty block
