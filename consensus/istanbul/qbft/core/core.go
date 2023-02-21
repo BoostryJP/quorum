@@ -186,6 +186,9 @@ func (c *core) startNewRound(round *big.Int) {
 	c.updateRoundState(newView, c.valSet, roundChange)
 
 	// Calculate new proposer
+	c.newRoundMutex.Lock()
+	defer c.newRoundMutex.Unlock()
+
 	c.valSet.CalcProposer(lastProposer, newView.Round.Uint64())
 	c.setState(StateAcceptRequest)
 
