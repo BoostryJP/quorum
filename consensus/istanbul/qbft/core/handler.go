@@ -186,7 +186,6 @@ func (c *core) handleEncodedMsg(code uint64, data []byte) error {
 	}
 
 	return c.handleDecodedMessage(m)
-
 }
 
 func (c *core) handleDecodedMessage(m qbfttypes.QBFTMessage) error {

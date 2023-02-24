@@ -130,7 +130,6 @@ func (p *PermissionCtrl) IsV2Permission() bool {
 
 func NewPermissionContractService(ethClnt bind.ContractBackend, permissionV2 bool, key *ecdsa.PrivateKey,
 	permConfig *ptype.PermissionConfig, isRaft, useDns bool, chainId *big.Int) ptype.InitService {
-
 	contractBackEnd := ptype.ContractBackend{
 		EthClnt:    ethClnt,
 		Key:        key,
@@ -237,7 +236,6 @@ func (p *PermissionCtrl) populateBackEnd() error {
 	default:
 		return errors.New("permission: invalid permissions model passed")
 	}
-
 }
 
 func (p *PermissionCtrl) updateBackEnd() {

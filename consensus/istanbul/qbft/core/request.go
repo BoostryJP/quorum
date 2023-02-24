@@ -46,26 +46,24 @@ func (c *core) handleRequest(request *Request) error {
 
 	c.current.pendingRequest = request
 	if c.state == StateAcceptRequest {
-
 		config := c.config.GetConfig(c.current.Sequence())
-		if config.EmptyBlockPeriod == 0 {  // emptyBlockPeriod is not set
+		if config.EmptyBlockPeriod == 0 { // emptyBlockPeriod is not set
 			// Start ROUND-CHANGE timer
 			c.newRoundChangeTimer()
 
 			// Send PRE-PREPARE message to other validators
 			c.sendPreprepareMsg(request)
-
-		} else {  // emptyBlockPeriod is set
+		} else { // emptyBlockPeriod is set
 			c.newRoundMutex.Lock()
 			defer c.newRoundMutex.Unlock()
-	
+
 			if c.newRoundTimer != nil {
 				c.newRoundTimer.Stop()
 				c.newRoundTimer = nil
 			}
-	
+
 			delay := time.Duration(0)
-	
+
 			block, ok := request.Proposal.(*types.Block)
 			if ok && len(block.Transactions()) == 0 { // if empty block
 				if config.EmptyBlockPeriod > config.BlockPeriod {
@@ -73,13 +71,13 @@ func (c *core) handleRequest(request *Request) error {
 					delay = time.Duration(config.EmptyBlockPeriod-config.BlockPeriod) * time.Second
 				}
 			}
-	
+
 			c.newRoundTimer = time.AfterFunc(delay, func() {
 				c.newRoundTimer = nil
-	
+
 				// Start ROUND-CHANGE timer
 				c.newRoundChangeTimer()
-	
+
 				// Send PRE-PREPARE message to other validators
 				c.sendPreprepareMsg(request)
 			})

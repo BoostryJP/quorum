@@ -588,7 +588,6 @@ func (e *Engine) validatorsList(genesis *types.Header, config istanbul.Config) (
 
 // AccumulateRewards credits the beneficiary of the given block with a reward.
 func (e *Engine) accumulateRewards(chain consensus.ChainHeaderReader, state *state.StateDB, header *types.Header) {
-
 	blockReward := chain.Config().GetBlockReward(header.Number)
 	if blockReward.Cmp(big.NewInt(0)) > 0 {
 		coinbase := header.Coinbase

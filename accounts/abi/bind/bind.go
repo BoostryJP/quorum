@@ -235,7 +235,7 @@ func Bind(types []string, abis []string, bytecodes []string, fsigs []map[string]
 // bindType is a set of type binders that convert Solidity types to some supported
 // programming language types.
 var bindType = map[Lang]func(kind abi.Type, structs map[string]*tmplStruct) string{
-	LangGo:   bindTypeGo,
+	LangGo: bindTypeGo,
 }
 
 // bindBasicTypeGo converts basic solidity types(except array, slice and tuple) to Go ones.
@@ -281,7 +281,7 @@ func bindTypeGo(kind abi.Type, structs map[string]*tmplStruct) string {
 // bindTopicType is a set of type binders that convert Solidity types to some
 // supported programming language topic types.
 var bindTopicType = map[Lang]func(kind abi.Type, structs map[string]*tmplStruct) string{
-	LangGo:   bindTopicTypeGo,
+	LangGo: bindTopicTypeGo,
 }
 
 // bindTopicTypeGo converts a Solidity topic type to a Go one. It is almost the same
@@ -304,7 +304,7 @@ func bindTopicTypeGo(kind abi.Type, structs map[string]*tmplStruct) string {
 // bindStructType is a set of type binders that convert Solidity tuple types to some supported
 // programming language struct definition.
 var bindStructType = map[Lang]func(kind abi.Type, structs map[string]*tmplStruct) string{
-	LangGo:   bindStructTypeGo,
+	LangGo: bindStructTypeGo,
 }
 
 // bindStructTypeGo converts a Solidity tuple type to a Go one and records the mapping
@@ -349,7 +349,7 @@ func bindStructTypeGo(kind abi.Type, structs map[string]*tmplStruct) string {
 // namedType is a set of functions that transform language specific types to
 // named versions that may be used inside method names.
 var namedType = map[Lang]func(string, abi.Type) string{
-	LangGo:   func(string, abi.Type) string { panic("this shouldn't be needed") },
+	LangGo: func(string, abi.Type) string { panic("this shouldn't be needed") },
 }
 
 // alias returns an alias of the given string based on the aliasing rules
@@ -364,7 +364,7 @@ func alias(aliases map[string]string, n string) string {
 // methodNormalizer is a name transformer that modifies Solidity method names to
 // conform to target language naming conventions.
 var methodNormalizer = map[Lang]func(string) string{
-	LangGo:   abi.ToCamelCase,
+	LangGo: abi.ToCamelCase,
 }
 
 // capitalise makes a camel-case string which starts with an upper case character.

@@ -123,7 +123,6 @@ func buildCacheProviderMPSTestChain(n int, config *params.ChainConfig, quorumCha
 				block.AddTx(tx)
 			}
 		}
-
 	})
 
 	hashes := make([]common.Hash, n+1)

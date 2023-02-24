@@ -177,7 +177,6 @@ func comparePSReceipts(t *testing.T, encPSReceipts map[PrivateStateIdentifier]*R
 				t.Errorf("PSReceipts[%s].ContractAddress mismatch, want %v, have %v", psi.String(), wantedPsiReceipt.ContractAddress, decPsiReceipt.ContractAddress)
 			}
 		}
-
 	}
 }
 
@@ -218,7 +217,6 @@ func encodeAsV3StoredReceiptRLP(want *Receipt) ([]byte, error) {
 }
 
 func TestReceiptForStorage_OnlySubsetOfFieldsPreservedDuringSerialisation(t *testing.T) {
-
 	fullReceipt := newFullReceipt(false, false, false)
 
 	buf := new(bytes.Buffer)

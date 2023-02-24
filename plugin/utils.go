@@ -34,7 +34,6 @@ func isCleanEntryPoint(s string) bool {
 		return false
 	}
 	return regexp.MustCompile(`^[\w-_.]+$`).MatchString(s)
-
 }
 
 func unzipFile(output string, input *zip.File) error {

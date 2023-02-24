@@ -163,7 +163,6 @@ func (t *tesseraPrivateTxManager) EncryptPayload(data []byte, from string, to []
 }
 
 func (t *tesseraPrivateTxManager) StoreRaw(data []byte, from string) (common.EncryptedPayloadHash, error) {
-
 	response := new(sendResponse)
 
 	if _, err := t.submitJSON("POST", "/storeraw", &storerawRequest{
