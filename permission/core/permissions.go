@@ -2,7 +2,6 @@ package core
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"math/big"
 	"os"
 	"path/filepath"
@@ -74,7 +73,7 @@ func (fbp *FileBasedPermissioning) ParsePermissionedNodes(DataDir string) []*eno
 		return nil
 	}
 	// Load the nodes from the config file
-	blob, err := ioutil.ReadFile(path)
+	blob, err := os.ReadFile(path)
 	if err != nil {
 		log.Error("parsePermissionedNodes: Failed to access nodes", "err", err)
 		return nil
@@ -112,7 +111,7 @@ func (fbp *FileBasedPermissioning) isNodeDisallowed(nodeName, dataDir string) bo
 		return false
 	}
 	// Load the nodes from the config file
-	blob, err := ioutil.ReadFile(path)
+	blob, err := os.ReadFile(path)
 	if err != nil {
 		log.Debug("isNodeDisallowed: Failed to access nodes", "err", err)
 		return true

@@ -415,7 +415,7 @@ func TestMultiplePSRRemovalFromPrivateState(t *testing.T) {
 	psr, _ = NewMultiplePrivateStateRepository(testdb, testCache, rawdb.GetPrivateStatesTrieRoot(testdb, block1.Root()), privateCacheProvider)
 
 	testState1, _ = psr.StatePSI(testPS1)
-	emptyState, _ = psr.StatePSI(types.EmptyPrivateStateIdentifier)
+	_, _ = psr.StatePSI(types.EmptyPrivateStateIdentifier)
 
 	removedAddress := common.BytesToAddress([]byte{1})
 	testState1.Suicide(removedAddress)

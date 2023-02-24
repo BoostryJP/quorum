@@ -20,7 +20,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"io/ioutil"
 	"math/rand"
 	"os"
 	"path/filepath"
@@ -644,7 +643,7 @@ func TestOffset(t *testing.T) {
 // The reason why it's not a regular fuzzer, within tests/fuzzers, is that it is dependent
 // on timing rather than 'clever' input -- there's no determinism.
 func TestAppendTruncateParallel(t *testing.T) {
-	dir, err := ioutil.TempDir("", "freezer")
+	dir, err := os.MkdirTemp("", "freezer")
 	if err != nil {
 		t.Fatal(err)
 	}

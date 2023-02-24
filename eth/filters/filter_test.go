@@ -18,7 +18,6 @@ package filters
 
 import (
 	"context"
-	"io/ioutil"
 	"math/big"
 	"os"
 	"testing"
@@ -43,7 +42,7 @@ func makeReceipt(addr common.Address) *types.Receipt {
 }
 
 func BenchmarkFilters(b *testing.B) {
-	dir, err := ioutil.TempDir("", "filtertest")
+	dir, err := os.MkdirTemp("", "filtertest")
 	if err != nil {
 		b.Fatal(err)
 	}
@@ -96,7 +95,7 @@ func BenchmarkFilters(b *testing.B) {
 }
 
 func TestFilters(t *testing.T) {
-	dir, err := ioutil.TempDir("", "filtertest")
+	dir, err := os.MkdirTemp("", "filtertest")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -260,7 +259,7 @@ func TestFilters(t *testing.T) {
 }
 
 func TestMPSFilters(t *testing.T) {
-	dir, err := ioutil.TempDir("", "filtermpstest")
+	dir, err := os.MkdirTemp("", "filtermpstest")
 	if err != nil {
 		t.Fatal(err)
 	}

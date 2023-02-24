@@ -322,10 +322,7 @@ func checkStatusOK(url string) bool {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
-		return false
-	}
-	return true
+	return resp.StatusCode == 200
 }
 
 // checkBodyOK checks whether the given HTTP URL responds with 200 OK and body "OK".

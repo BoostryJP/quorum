@@ -21,7 +21,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"math/big"
 	"os"
 	"strings"
@@ -140,7 +139,7 @@ func loadChain(chainfile string, genesis string) (*Chain, error) {
 }
 
 func loadGenesis(genesisFile string) (core.Genesis, error) {
-	chainConfig, err := ioutil.ReadFile(genesisFile)
+	chainConfig, err := os.ReadFile(genesisFile)
 	if err != nil {
 		return core.Genesis{}, err
 	}

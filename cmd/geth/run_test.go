@@ -19,7 +19,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"testing"
 	"time"
@@ -30,7 +29,7 @@ import (
 )
 
 func tmpdir(t *testing.T) string {
-	dir, err := ioutil.TempDir("", "geth-test")
+	dir, err := os.MkdirTemp("", "geth-test")
 	if err != nil {
 		t.Fatal(err)
 	}

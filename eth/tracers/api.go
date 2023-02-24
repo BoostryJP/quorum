@@ -22,7 +22,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"runtime"
 	"sync"
@@ -505,7 +504,7 @@ func (api *API) TraceBlock(ctx context.Context, blob []byte, config *TraceConfig
 // TraceBlockFromFile returns the structured logs created during the execution of
 // EVM and returns them as a JSON object.
 func (api *API) TraceBlockFromFile(ctx context.Context, file string, config *TraceConfig) ([]*txTraceResult, error) {
-	blob, err := ioutil.ReadFile(file)
+	blob, err := os.ReadFile(file)
 	if err != nil {
 		return nil, fmt.Errorf("could not read file: %v", err)
 	}
@@ -745,7 +744,7 @@ func (api *API) standardTraceBlockToFile(ctx context.Context, block *types.Block
 			if !canon {
 				prefix = fmt.Sprintf("%valt-", prefix)
 			}
-			dump, err = ioutil.TempFile(os.TempDir(), prefix)
+			dump, err = os.CreateTemp(os.TempDir(), prefix)
 			if err != nil {
 				return nil, err
 			}
@@ -1041,7 +1040,7 @@ func (api *API) clearMessageDataIfNonParty(msg types.Message, psm *mps.PrivateSt
 	if msg.IsPrivate() {
 		_, managedParties, _, _, _ := private.P.Receive(common.BytesToEncryptedPayloadHash(msg.Data()))
 
-		if api.chainContext(nil).PrivateStateManager().NotIncludeAny(psm, managedParties...) {
+		if api.chainContext(context.TODO()).PrivateStateManager().NotIncludeAny(psm, managedParties...) {
 			return msg.WithEmptyPrivateData(true)
 		}
 	}

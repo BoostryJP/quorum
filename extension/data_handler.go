@@ -2,7 +2,6 @@ package extension
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -65,7 +64,7 @@ func (handler *JsonFileDataHandler) Load() (map[types.PrivateStateIdentifier]map
 		return map[types.PrivateStateIdentifier]map[common.Address]*ExtensionContract{types.DefaultPrivateStateIdentifier: {}}, nil
 	}
 
-	blob, err := ioutil.ReadFile(handler.saveFile)
+	blob, err := os.ReadFile(handler.saveFile)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +98,7 @@ func (handler *JsonFileDataHandler) Save(extensionContracts map[types.PrivateSta
 	//no unmarshallable types, so can't error
 	output, _ := json.Marshal(&saveData)
 
-	if errSaving := ioutil.WriteFile(handler.saveFile, output, 0644); errSaving != nil {
+	if errSaving := os.WriteFile(handler.saveFile, output, 0644); errSaving != nil {
 		log.Error("Couldn't save outstanding extension contract details")
 		return errSaving
 	}

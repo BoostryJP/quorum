@@ -19,7 +19,6 @@ package utils
 
 import (
 	"flag"
-	"io/ioutil"
 	"os"
 	"path"
 	"reflect"
@@ -106,7 +105,7 @@ func TestSetImmutabilityThreshold(t *testing.T) {
 }
 
 func TestSetPlugins_whenTypical(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("", "q-")
+	tmpDir, err := os.MkdirTemp("", "q-")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -114,7 +113,7 @@ func TestSetPlugins_whenTypical(t *testing.T) {
 		_ = os.RemoveAll(tmpDir)
 	}()
 	arbitraryJSONFile := path.Join(tmpDir, "arbitary.json")
-	if err := ioutil.WriteFile(arbitraryJSONFile, []byte("{}"), 0644); err != nil {
+	if err := os.WriteFile(arbitraryJSONFile, []byte("{}"), 0644); err != nil {
 		t.Fatal(err)
 	}
 	arbitraryNodeConfig := &node.Config{}

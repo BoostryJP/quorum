@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -95,7 +94,7 @@ func TestCentralClient_PluginSignature(t *testing.T) {
 }
 
 func TestCentralClient_PluginDistribution(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("", "q-")
+	tmpDir, err := os.MkdirTemp("", "q-")
 	if err != nil {
 		t.Fatal(err)
 	}

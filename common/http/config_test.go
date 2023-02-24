@@ -1,7 +1,6 @@
 package http
 
 import (
-	"io/ioutil"
 	"net"
 	"os"
 	"path/filepath"
@@ -118,7 +117,7 @@ func TestDefaultTimeoutsUsedWhenNoConfigFileSpecified(t *testing.T) {
 
 func TestLoadSocketConfigWithTimeouts(t *testing.T) {
 	configFile := filepath.Join(os.TempDir(), "socketConfigFileWithTimeouts.toml")
-	if err := ioutil.WriteFile(configFile, []byte(socketConfigFileWithTimeouts), 0600); err != nil {
+	if err := os.WriteFile(configFile, []byte(socketConfigFileWithTimeouts), 0600); err != nil {
 		t.Fatalf("Failed to create config file for unit test, error: %v", err)
 	}
 	defer os.Remove(configFile)
@@ -137,7 +136,7 @@ func TestLoadSocketConfigWithTimeouts(t *testing.T) {
 
 func TestLoadSocketConfigWithDefaultTimeouts(t *testing.T) {
 	configFile := filepath.Join(os.TempDir(), "socketConfigFileNoTimeouts.toml")
-	if err := ioutil.WriteFile(configFile, []byte(socketConfigFileNoTimeouts), 0600); err != nil {
+	if err := os.WriteFile(configFile, []byte(socketConfigFileNoTimeouts), 0600); err != nil {
 		t.Fatalf("Failed to create config file for unit test, error: %v", err)
 	}
 	defer os.Remove(configFile)
@@ -155,7 +154,7 @@ func TestLoadSocketConfigWithDefaultTimeouts(t *testing.T) {
 
 func TestLoadHttpConfigWithTimeouts(t *testing.T) {
 	configFile := filepath.Join(os.TempDir(), "httpConfigFileWithTimeouts.toml")
-	if err := ioutil.WriteFile(configFile, []byte(httpConfigFileWithTimeouts), 0600); err != nil {
+	if err := os.WriteFile(configFile, []byte(httpConfigFileWithTimeouts), 0600); err != nil {
 		t.Fatalf("Failed to create config file for unit test, error: %v", err)
 	}
 	defer os.Remove(configFile)
@@ -177,7 +176,7 @@ func TestLoadHttpConfigWithTimeouts(t *testing.T) {
 
 func TestLoadHttpConfigWithInvalidTls(t *testing.T) {
 	configFile := filepath.Join(os.TempDir(), "httpConfigFileWithInvalidTlsMode.toml")
-	if err := ioutil.WriteFile(configFile, []byte(httpConfigFileWithInvalidTlsMode), 0600); err != nil {
+	if err := os.WriteFile(configFile, []byte(httpConfigFileWithInvalidTlsMode), 0600); err != nil {
 		t.Fatalf("Failed to create config file for unit test, error: %v", err)
 	}
 	defer os.Remove(configFile)
@@ -193,7 +192,7 @@ func TestLoadHttpConfigWithInvalidTls(t *testing.T) {
 
 func TestLoadHttpTlsConfigWithTimeouts(t *testing.T) {
 	configFile := filepath.Join(os.TempDir(), "httpTlsConfigFileWithTimeouts.toml")
-	if err := ioutil.WriteFile(configFile, []byte(httpTlsConfigFileWithTimeouts), 0600); err != nil {
+	if err := os.WriteFile(configFile, []byte(httpTlsConfigFileWithTimeouts), 0600); err != nil {
 		t.Fatalf("Failed to create config file for unit test, error: %v", err)
 	}
 	defer os.Remove(configFile)
@@ -219,7 +218,7 @@ func TestLoadHttpTlsConfigWithTimeouts(t *testing.T) {
 
 func TestLoadHttpConfigWithDefaultTimeouts(t *testing.T) {
 	configFile := filepath.Join(os.TempDir(), "httpTlsConfigFileNoTimeouts.toml")
-	if err := ioutil.WriteFile(configFile, []byte(httpTlsConfigFileNoTimeouts), 0600); err != nil {
+	if err := os.WriteFile(configFile, []byte(httpTlsConfigFileNoTimeouts), 0600); err != nil {
 		t.Fatalf("Failed to create config file for unit test, error: %v", err)
 	}
 	defer os.Remove(configFile)
@@ -238,7 +237,7 @@ func TestLoadHttpConfigWithDefaultTimeouts(t *testing.T) {
 
 func TestHTTPTlsWithBlankRootCert(t *testing.T) {
 	configFile := filepath.Join(os.TempDir(), "httpTlsConfigFileNoRootCert.toml")
-	if err := ioutil.WriteFile(configFile, []byte(httpTlsConfigFileNoRootCert), 0600); err != nil {
+	if err := os.WriteFile(configFile, []byte(httpTlsConfigFileNoRootCert), 0600); err != nil {
 		t.Fatalf("Failed to create config file for unit test, error: %v", err)
 	}
 	defer os.Remove(configFile)
@@ -252,7 +251,7 @@ func TestHTTPTlsWithBlankRootCert(t *testing.T) {
 
 func TestHTTPTlsMissingClientCerts(t *testing.T) {
 	configFile := filepath.Join(os.TempDir(), "invalidHttpTlsConfigFileNoClientCert.toml")
-	if err := ioutil.WriteFile(configFile, []byte(invalidHttpTlsConfigFileNoClientCert), 0600); err != nil {
+	if err := os.WriteFile(configFile, []byte(invalidHttpTlsConfigFileNoClientCert), 0600); err != nil {
 		t.Fatalf("Failed to create config file for unit test, error: %v", err)
 	}
 	defer os.Remove(configFile)
@@ -266,7 +265,7 @@ func TestHTTPTlsMissingClientCerts(t *testing.T) {
 
 func TestHTTPTlsMissingOnlyClientKey(t *testing.T) {
 	configFile := filepath.Join(os.TempDir(), "invalidHttpTlsConfigFileOnlyClientCert.toml")
-	if err := ioutil.WriteFile(configFile, []byte(invalidHttpTlsConfigFileOnlyClientCert), 0600); err != nil {
+	if err := os.WriteFile(configFile, []byte(invalidHttpTlsConfigFileOnlyClientCert), 0600); err != nil {
 		t.Fatalf("Failed to create config file for unit test, error: %v", err)
 	}
 	defer os.Remove(configFile)
@@ -282,7 +281,7 @@ func TestHTTPTlsMissingOnlyClientKey(t *testing.T) {
 
 func TestHTTPTlsMissingOnlyClientCert(t *testing.T) {
 	configFile := filepath.Join(os.TempDir(), "invalidHttpTlsConfigFileOnlyClientKey.toml")
-	if err := ioutil.WriteFile(configFile, []byte(invalidHttpTlsConfigFileOnlyClientKey), 0600); err != nil {
+	if err := os.WriteFile(configFile, []byte(invalidHttpTlsConfigFileOnlyClientKey), 0600); err != nil {
 		t.Fatalf("Failed to create config file for unit test, error: %v", err)
 	}
 	defer os.Remove(configFile)
@@ -298,7 +297,7 @@ func TestHTTPTlsMissingOnlyClientCert(t *testing.T) {
 
 func TestTlsWithHTTPUrlOnly(t *testing.T) {
 	configFile := filepath.Join(os.TempDir(), "httpTlsConfigFileWithHTTPOnly.toml")
-	if err := ioutil.WriteFile(configFile, []byte(httpTlsConfigFileWithHTTPOnly), 0600); err != nil {
+	if err := os.WriteFile(configFile, []byte(httpTlsConfigFileWithHTTPOnly), 0600); err != nil {
 		t.Fatalf("Failed to create config file for unit test, error: %v", err)
 	}
 	defer os.Remove(configFile)
@@ -314,7 +313,7 @@ func TestTlsWithHTTPUrlOnly(t *testing.T) {
 
 func TestSocketWithHTTPNotAllowed(t *testing.T) {
 	configFile := filepath.Join(os.TempDir(), "invalidConfigWithSocketAndHttp.toml")
-	if err := ioutil.WriteFile(configFile, []byte(invalidConfigWithSocketAndHttp), 0600); err != nil {
+	if err := os.WriteFile(configFile, []byte(invalidConfigWithSocketAndHttp), 0600); err != nil {
 		t.Fatalf("Failed to create config file for unit test, error: %v", err)
 	}
 	defer os.Remove(configFile)
@@ -330,7 +329,7 @@ func TestSocketWithHTTPNotAllowed(t *testing.T) {
 
 func TestEitherSocketOrHTTPMustBeSpecified(t *testing.T) {
 	configFile := filepath.Join(os.TempDir(), "invalidConfigWithNoSocketOrHttp.toml")
-	if err := ioutil.WriteFile(configFile, []byte(invalidConfigWithNoSocketOrHttp), 0600); err != nil {
+	if err := os.WriteFile(configFile, []byte(invalidConfigWithNoSocketOrHttp), 0600); err != nil {
 		t.Fatalf("Failed to create config file for unit test, error: %v", err)
 	}
 	defer os.Remove(configFile)

@@ -19,7 +19,6 @@ package node
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -42,7 +41,7 @@ import (
 // ones or automatically generated temporary ones.
 func TestDatadirCreation(t *testing.T) {
 	// Create a temporary data dir and check that it can be used by a node
-	dir, err := ioutil.TempDir("", "")
+	dir, err := os.MkdirTemp("", "")
 	if err != nil {
 		t.Fatalf("failed to create manual data dir: %v", err)
 	}
@@ -68,14 +67,14 @@ func TestDatadirCreation(t *testing.T) {
 		t.Fatalf("freshly created datadir not accessible: %v", err)
 	}
 	// Verify that an impossible datadir fails creation
-	file, err := ioutil.TempFile("", "")
+	file, err := os.CreateTemp("", "")
 	if err != nil {
 		t.Fatalf("failed to create temporary file: %v", err)
 	}
 	defer os.Remove(file.Name())
 
 	dir = filepath.Join(file.Name(), "invalid/path")
-	node, err = New(&Config{DataDir: dir})
+	_, err = New(&Config{DataDir: dir})
 	if err == nil {
 		t.Fatalf("protocol stack created with an invalid datadir")
 		if err := node.Close(); err != nil {
@@ -119,7 +118,7 @@ func TestIPCPathResolution(t *testing.T) {
 // ephemeral.
 func TestNodeKeyPersistency(t *testing.T) {
 	// Create a temporary folder and make sure no key is present
-	dir, err := ioutil.TempDir("", "node-test")
+	dir, err := os.MkdirTemp("", "node-test")
 	if err != nil {
 		t.Fatalf("failed to create temporary data directory: %v", err)
 	}
@@ -147,7 +146,7 @@ func TestNodeKeyPersistency(t *testing.T) {
 	if _, err = crypto.LoadECDSA(keyfile); err != nil {
 		t.Fatalf("failed to load freshly persisted node key: %v", err)
 	}
-	blob1, err := ioutil.ReadFile(keyfile)
+	blob1, err := os.ReadFile(keyfile)
 	if err != nil {
 		t.Fatalf("failed to read freshly persisted node key: %v", err)
 	}
@@ -155,7 +154,7 @@ func TestNodeKeyPersistency(t *testing.T) {
 	// Configure a new node and ensure the previously persisted key is loaded
 	config = &Config{Name: "unit-test", DataDir: dir}
 	config.NodeKey()
-	blob2, err := ioutil.ReadFile(filepath.Join(keyfile))
+	blob2, err := os.ReadFile(filepath.Join(keyfile))
 	if err != nil {
 		t.Fatalf("failed to read previously persisted node key: %v", err)
 	}
@@ -194,7 +193,7 @@ func TestConfig_ResolvePluginBaseDir_whenBaseDirDoesNotExist(t *testing.T) {
 }
 
 func TestConfig_ResolvePluginBaseDir_whenBaseDirExists(t *testing.T) {
-	arbitraryBaseDir, err := ioutil.TempDir("", "q-")
+	arbitraryBaseDir, err := os.MkdirTemp("", "q-")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -213,14 +212,14 @@ func TestConfig_ResolvePluginBaseDir_whenBaseDirExists(t *testing.T) {
 
 // Quorum
 func TestConfig_IsPermissionEnabled_whenTypical(t *testing.T) {
-	tmpdir, err := ioutil.TempDir("", "q-")
+	tmpdir, err := os.MkdirTemp("", "q-")
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer func() {
 		_ = os.RemoveAll(tmpdir)
 	}()
-	if err := ioutil.WriteFile(path.Join(tmpdir, params.PERMISSION_MODEL_CONFIG), []byte("foo"), 0644); err != nil {
+	if err := os.WriteFile(path.Join(tmpdir, params.PERMISSION_MODEL_CONFIG), []byte("foo"), 0644); err != nil {
 		t.Fatal(err)
 	}
 	testObject := &Config{

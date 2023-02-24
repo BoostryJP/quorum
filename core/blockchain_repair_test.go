@@ -21,7 +21,6 @@
 package core
 
 import (
-	"io/ioutil"
 	"math/big"
 	"os"
 	"testing"
@@ -1756,7 +1755,7 @@ func testRepair(t *testing.T, tt *rewindTest, snapshots bool) {
 	// fmt.Println(tt.dump(true))
 
 	// Create a temporary persistent database
-	datadir, err := ioutil.TempDir("", "")
+	datadir, err := os.MkdirTemp("", "")
 	if err != nil {
 		t.Fatalf("Failed to create temporary datadir: %v", err)
 	}

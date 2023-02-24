@@ -2,7 +2,6 @@ package plugin
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"os"
 	"regexp"
 	"testing"
@@ -27,7 +26,7 @@ func TestReadMultiFormatConfig_whenConfigEmbeddedAsArray(t *testing.T) {
 }
 
 func TestReadMultiFormatConfig_whenConfigEmbeddedAsFile(t *testing.T) {
-	tmpFile, err := ioutil.TempFile("", "q-")
+	tmpFile, err := os.CreateTemp("", "q-")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -72,7 +71,7 @@ func TestReadMultiFormatConfig_whenFromEnvVariable(t *testing.T) {
 }
 
 func TestReadMultiFormatConfig_whenFromEnvFile(t *testing.T) {
-	tmpFile, err := ioutil.TempFile("", "q-")
+	tmpFile, err := os.CreateTemp("", "q-")
 	if err != nil {
 		t.Fatal(err)
 	}

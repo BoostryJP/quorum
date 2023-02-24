@@ -2,7 +2,6 @@ package ethapi
 
 import (
 	"context"
-	"io/ioutil"
 	"math/big"
 	"os"
 	"path/filepath"
@@ -155,7 +154,7 @@ func setup() {
 		big.NewInt(0),
 		arbitrarySimpleStorageContractEncryptedPayloadHash.Bytes())
 
-	workdir, err = ioutil.TempDir("", "")
+	workdir, err = os.MkdirTemp("", "")
 	if err != nil {
 		panic(err)
 	}

@@ -2,7 +2,6 @@ package core
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -24,7 +23,7 @@ func TestIsNodePermissioned(t *testing.T) {
 		datadir     string
 		direction   string
 	}
-	d, _ := ioutil.TempDir("", "qdata")
+	d, _ := os.MkdirTemp("", "qdata")
 	defer os.RemoveAll(d)
 	writeNodeToFile(d, params.PERMISSIONED_CONFIG, node1)
 	writeNodeToFile(d, params.PERMISSIONED_CONFIG, node3)
@@ -70,7 +69,7 @@ func Test_isNodeBlackListed(t *testing.T) {
 		dataDir  string
 	}
 
-	d, _ := ioutil.TempDir("", "qdata")
+	d, _ := os.MkdirTemp("", "qdata")
 	defer os.RemoveAll(d)
 	writeNodeToFile(d, params.DISALLOWED_CONFIG, node1)
 	n1, _ := enode.ParseV4(node1)
@@ -117,7 +116,7 @@ func writeNodeToFile(dataDir, fileName, url string) {
 	var nodeList []string
 	var blob []byte
 	if fileExists {
-		blob, err := ioutil.ReadFile(path)
+		blob, err := os.ReadFile(path)
 		if err == nil {
 			if err := json.Unmarshal(blob, &nodeList); err != nil {
 				return
@@ -126,5 +125,5 @@ func writeNodeToFile(dataDir, fileName, url string) {
 	}
 	nodeList = append(nodeList, url)
 	blob, _ = json.Marshal(nodeList)
-	_ = ioutil.WriteFile(path, blob, 0644)
+	_ = os.WriteFile(path, blob, 0644)
 }

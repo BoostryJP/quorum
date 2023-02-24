@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"math/big"
 	"os"
@@ -743,7 +742,7 @@ func typicalPermissionCtrl(t *testing.T, v2Flag bool) *PermissionCtrl {
 }
 
 func tmpKeyStore(encrypted bool) (string, *keystore.KeyStore, error) {
-	d, err := ioutil.TempDir("", "Eth-keystore-test")
+	d, err := os.MkdirTemp("", "Eth-keystore-test")
 	if err != nil {
 		return "", nil, err
 	}
@@ -763,7 +762,7 @@ func TestPermissionCtrl_whenUpdateFile(t *testing.T) {
 	err := testObject.populateInitPermissions(orgCacheSize, roleCacheSize, nodeCacheSize, accountCacheSize)
 	assert.NoError(t, err)
 
-	d, _ := ioutil.TempDir("", "qdata")
+	d, _ := os.MkdirTemp("", "qdata")
 	defer os.RemoveAll(d)
 
 	testObject.dataDir = d
@@ -779,7 +778,7 @@ func TestPermissionCtrl_whenUpdateFile(t *testing.T) {
 	ptype.UpdateFile(permFile.Name(), arbitraryNode1, ptype.NodeDelete, false)
 	ptype.UpdateFile(permFile.Name(), arbitraryNode1, ptype.NodeDelete, false)
 
-	blob, _ := ioutil.ReadFile(permFile.Name())
+	blob, _ := os.ReadFile(permFile.Name())
 	var nodeList []string
 	if err := json.Unmarshal(blob, &nodeList); err != nil {
 		t.Fatal("Failed to load nodes list from file", "fileName", permFile, "err", err)
@@ -789,7 +788,7 @@ func TestPermissionCtrl_whenUpdateFile(t *testing.T) {
 	ptype.UpdatePermissionedNodes(testObject.node, d, arbitraryNode1, ptype.NodeAdd, true)
 	ptype.UpdatePermissionedNodes(testObject.node, d, arbitraryNode1, ptype.NodeDelete, true)
 
-	blob, _ = ioutil.ReadFile(permFile.Name())
+	blob, _ = os.ReadFile(permFile.Name())
 	if err := json.Unmarshal(blob, &nodeList); err != nil {
 		t.Fatal("Failed to load nodes list from file", "fileName", permFile, "err", err)
 		return
@@ -798,7 +797,7 @@ func TestPermissionCtrl_whenUpdateFile(t *testing.T) {
 
 	ptype.UpdateDisallowedNodes(d, arbitraryNode2, ptype.NodeAdd)
 	ptype.UpdateDisallowedNodes(d, arbitraryNode2, ptype.NodeDelete)
-	blob, _ = ioutil.ReadFile(d + "/" + "disallowed-nodes.json")
+	blob, _ = os.ReadFile(d + "/" + "disallowed-nodes.json")
 	if err := json.Unmarshal(blob, &nodeList); err != nil {
 		t.Fatal("Failed to load nodes list from file", "fileName", permFile, "err", err)
 		return
@@ -807,7 +806,7 @@ func TestPermissionCtrl_whenUpdateFile(t *testing.T) {
 }
 
 func TestParsePermissionConfig(t *testing.T) {
-	d, _ := ioutil.TempDir("", "qdata")
+	d, _ := os.MkdirTemp("", "qdata")
 	defer os.RemoveAll(d)
 
 	_, err := ptype.ParsePermissionConfig(d)
@@ -834,7 +833,7 @@ func TestParsePermissionConfig(t *testing.T) {
 	tmpPermCofig.SubOrgDepth = new(big.Int)
 
 	blob, _ := json.Marshal(tmpPermCofig)
-	if err := ioutil.WriteFile(fileName, blob, 0644); err != nil {
+	if err := os.WriteFile(fileName, blob, 0644); err != nil {
 		t.Fatal("Error writing new Node info to file", "fileName", fileName, "err", err)
 	}
 	_, err = ptype.ParsePermissionConfig(d)
@@ -843,20 +842,20 @@ func TestParsePermissionConfig(t *testing.T) {
 	_ = os.Remove(fileName)
 	tmpPermCofig.PermissionsModel = "ABCD"
 	blob, _ = json.Marshal(tmpPermCofig)
-	if err := ioutil.WriteFile(fileName, blob, 0644); err != nil {
+	if err := os.WriteFile(fileName, blob, 0644); err != nil {
 		t.Fatal("Error writing new Node info to file", "fileName", fileName, "err", err)
 	}
 
 	_, err = ptype.ParsePermissionConfig(d)
 	assert.True(t, err != nil, "invalid permission model error")
-	if err := ioutil.WriteFile(fileName, blob, 0644); err != nil {
+	if err := os.WriteFile(fileName, blob, 0644); err != nil {
 		t.Fatal("Error writing new Node info to file", "fileName", fileName, "err", err)
 	}
 
 	_ = os.Remove(fileName)
 	tmpPermCofig.PermissionsModel = "v1"
 	blob, _ = json.Marshal(tmpPermCofig)
-	if err := ioutil.WriteFile(fileName, blob, 0644); err != nil {
+	if err := os.WriteFile(fileName, blob, 0644); err != nil {
 		t.Fatal("Error writing new Node info to file", "fileName", fileName, "err", err)
 	}
 
@@ -866,7 +865,7 @@ func TestParsePermissionConfig(t *testing.T) {
 	_ = os.Remove(fileName)
 	tmpPermCofig.Accounts = append(tmpPermCofig.Accounts, common.StringToAddress("0xed9d02e382b34818e88b88a309c7fe71e65f419d"))
 	blob, _ = json.Marshal(tmpPermCofig)
-	if err := ioutil.WriteFile(fileName, blob, 0644); err != nil {
+	if err := os.WriteFile(fileName, blob, 0644); err != nil {
 		t.Fatal("Error writing new Node info to file", "fileName", fileName, "err", err)
 	}
 
@@ -877,7 +876,7 @@ func TestParsePermissionConfig(t *testing.T) {
 	tmpPermCofig.SubOrgBreadth.Set(big.NewInt(4))
 	tmpPermCofig.SubOrgDepth.Set(big.NewInt(4))
 	blob, _ = json.Marshal(tmpPermCofig)
-	if err := ioutil.WriteFile(fileName, blob, 0644); err != nil {
+	if err := os.WriteFile(fileName, blob, 0644); err != nil {
 		t.Fatal("Error writing new Node info to file", "fileName", fileName, "err", err)
 	}
 
@@ -887,7 +886,7 @@ func TestParsePermissionConfig(t *testing.T) {
 	_ = os.Remove(fileName)
 	tmpPermCofig.InterfAddress = common.StringToAddress("0xed9d02e382b34818e88b88a309c7fe71e65f419d")
 	blob, _ = json.Marshal(tmpPermCofig)
-	if err := ioutil.WriteFile(fileName, blob, 0644); err != nil {
+	if err := os.WriteFile(fileName, blob, 0644); err != nil {
 		t.Fatal("Error writing new Node info to file", "fileName", fileName, "err", err)
 	}
 	permConfig, _ := ptype.ParsePermissionConfig(d)

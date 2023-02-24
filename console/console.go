@@ -20,7 +20,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -142,7 +141,7 @@ func (c *Console) init(preload []string) error {
 
 	// Configure the input prompter for history and tab completion.
 	if c.prompter != nil {
-		if content, err := ioutil.ReadFile(c.histPath); err != nil {
+		if content, err := os.ReadFile(c.histPath); err != nil {
 			c.prompter.SetHistory(nil)
 		} else {
 			c.history = strings.Split(string(content), "\n")
@@ -523,7 +522,7 @@ func (c *Console) Execute(path string) error {
 
 // Stop cleans up the console and terminates the runtime environment.
 func (c *Console) Stop(graceful bool) error {
-	if err := ioutil.WriteFile(c.histPath, []byte(strings.Join(c.history, "\n")), 0600); err != nil {
+	if err := os.WriteFile(c.histPath, []byte(strings.Join(c.history, "\n")), 0600); err != nil {
 		return err
 	}
 	if err := os.Chmod(c.histPath, 0600); err != nil { // Force 0600, even if it was different previously

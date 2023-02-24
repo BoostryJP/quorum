@@ -1,7 +1,6 @@
 package plugin
 
 import (
-	"io/ioutil"
 	"os"
 	"path"
 	"testing"
@@ -10,14 +9,14 @@ import (
 )
 
 func TestNewVerifier_whenResolvingDefaultPublicKeyLocation(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("", "q-")
+	tmpDir, err := os.MkdirTemp("", "q-")
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer func() {
 		_ = os.RemoveAll(tmpDir)
 	}()
-	if err := ioutil.WriteFile(path.Join(tmpDir, DefaultPublicKeyFile), []byte("foo"), 0644); err != nil {
+	if err := os.WriteFile(path.Join(tmpDir, DefaultPublicKeyFile), []byte("foo"), 0644); err != nil {
 		t.Fatal(err)
 	}
 	arbitraryPM := &PluginManager{

@@ -17,7 +17,7 @@
 package main
 
 import (
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -124,11 +124,11 @@ func TestAccountImport(t *testing.T) {
 func importAccountWithExpect(t *testing.T, key string, expected string) {
 	dir := tmpdir(t)
 	keyfile := filepath.Join(dir, "key.prv")
-	if err := ioutil.WriteFile(keyfile, []byte(key), 0600); err != nil {
+	if err := os.WriteFile(keyfile, []byte(key), 0600); err != nil {
 		t.Error(err)
 	}
 	passwordFile := filepath.Join(dir, "password.txt")
-	if err := ioutil.WriteFile(passwordFile, []byte("foobar"), 0600); err != nil {
+	if err := os.WriteFile(passwordFile, []byte("foobar"), 0600); err != nil {
 		t.Error(err)
 	}
 	geth := runGeth(t, "account", "import", keyfile, "-password", passwordFile)
@@ -173,7 +173,7 @@ Password: {{.InputLine "foo"}}
 Address: {d4584b5f6229b7be90727b0fc8c6b91bb427821f}
 `)
 
-	files, err := ioutil.ReadDir(filepath.Join(geth.Datadir, "keystore"))
+	files, err := os.ReadDir(filepath.Join(geth.Datadir, "keystore"))
 	if len(files) != 1 {
 		t.Errorf("expected one key file in keystore directory, found %d files (error: %v)", len(files), err)
 	}

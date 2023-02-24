@@ -22,21 +22,19 @@ import (
 )
 
 type PermissionCtrl struct {
-	node               *node.Node
-	ethClnt            bind.ContractBackend
-	eth                *eth.Ethereum
-	key                *ecdsa.PrivateKey
-	chainID            *big.Int
-	dataDir            string
-	permConfig         *ptype.PermissionConfig
-	contract           ptype.InitService
-	backend            ptype.Backend
-	useDns             bool
-	isRaft             bool
-	startWaitGroup     *sync.WaitGroup // waitgroup to make sure all dependencies are ready before we start the service
-	errorChan          chan error      // channel to capture error when starting aysnc
-	networkInitialized bool
-	controlService     ptype.ControlService
+	node           *node.Node
+	ethClnt        bind.ContractBackend
+	eth            *eth.Ethereum
+	key            *ecdsa.PrivateKey
+	chainID        *big.Int
+	dataDir        string
+	permConfig     *ptype.PermissionConfig
+	contract       ptype.InitService
+	backend        ptype.Backend
+	useDns         bool
+	isRaft         bool
+	startWaitGroup *sync.WaitGroup // waitgroup to make sure all dependencies are ready before we start the service
+	errorChan      chan error      // channel to capture error when starting aysnc
 }
 
 var permissionService *PermissionCtrl

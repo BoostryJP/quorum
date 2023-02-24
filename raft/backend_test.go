@@ -1,7 +1,6 @@
 package raft
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 	"time"
@@ -25,7 +24,7 @@ func Test_New_RegistersEthServicePendingLogsFeed(t *testing.T) {
 		t.Fatalf("failed to create eth service, err = %v", err)
 	}
 
-	tmpWorkingDir, err := ioutil.TempDir("", "")
+	tmpWorkingDir, err := os.MkdirTemp("", "")
 	if err != nil {
 		t.Fatal(err)
 	}

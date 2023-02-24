@@ -310,10 +310,6 @@ func (c *core) currentLogger(state bool, msg qbfttypes.QBFTMessage) log.Logger {
 	return c.logger.New(logCtx...)
 }
 
-func (c *core) withState(logger log.Logger) log.Logger {
-	return logger.New("state", c.state)
-}
-
 func withMsg(logger log.Logger, msg qbfttypes.QBFTMessage) log.Logger {
 	return logger.New(
 		"msg.code", msg.Code(),

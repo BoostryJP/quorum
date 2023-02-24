@@ -3,7 +3,6 @@ package plugin
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -134,13 +133,13 @@ func ReadMultiFormatConfig(config interface{}) ([]byte, error) {
 		}
 		switch s := u.Scheme; s {
 		case "file":
-			return ioutil.ReadFile(filepath.Join(u.Host, u.Path))
+			return os.ReadFile(filepath.Join(u.Host, u.Path))
 		case "env": // config string in an env variable
 			varName := u.Host
 			isFile := u.Query().Get("type") == "file"
 			if v, ok := os.LookupEnv(varName); ok {
 				if isFile {
-					return ioutil.ReadFile(v)
+					return os.ReadFile(v)
 				} else {
 					return []byte(v), nil
 				}

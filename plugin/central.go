@@ -5,7 +5,6 @@ import (
 	"crypto/tls"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"net/url"
@@ -118,7 +117,7 @@ func (cc *CentralClient) get(target string) (io.ReadCloser, error) {
 		defer func() {
 			_ = res.Body.Close()
 		}()
-		data, _ := ioutil.ReadAll(res.Body)
+		data, _ := io.ReadAll(res.Body)
 		return nil, fmt.Errorf("HTTP GET error: code=%d, status=%s, body=%s", res.StatusCode, res.Status, string(data))
 	}
 	return res.Body, nil

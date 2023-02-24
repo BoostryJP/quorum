@@ -129,8 +129,8 @@ func testConsensusFields(t *testing.T, decReceipt ReceiptForStorage, encReceipt 
 }
 
 func compareLogsConsensusFields(t *testing.T, encLogs []*Log, decLogs []*Log) {
-	if len(encLogs) != len(encLogs) {
-		t.Fatalf("Logs[] length mismatch, want %v, have %v", len(encLogs), len(encLogs))
+	if len(encLogs) != len(decLogs) {
+		t.Fatalf("Logs[] length mismatch, want %v, have %v", len(encLogs), len(decLogs))
 	}
 
 	for i := 0; i < len(encLogs); i++ {
