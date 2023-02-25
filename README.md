@@ -18,6 +18,23 @@ The version control policy of this project follows that of ibet-Network.
 ## Reference GoQuorum version
 
 Currently, the ibet Network is built using a node client based on v22.7.6 of GoQuorum. 
+However, various patches have been applied. For example:
+- Default block generation interval is set to 1 second.
+- Fully supports Go 1.19.
+- Applying newer 3rd party packages from a security point of view.
+
+## Building the source
+Building quorum requires both a Go (version 1.19) and a C compiler. 
+You can install them using your favourite package manager. 
+Once the dependencies are installed, run
+```
+make geth
+```
+
+or, to build the full suite of utilities:
+```
+make all
+```
 
 ## License
 
