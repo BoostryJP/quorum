@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -90,7 +90,6 @@ func NewQLightTxManager() (PrivateTransactionManager, error) {
 }
 
 func NewPrivateTxManager(cfg http2.Config) (PrivateTransactionManager, error) {
-
 	if cfg.ConnectionType == http2.NoConnection {
 		log.Info("Running with private transaction manager disabled - quorum private transactions will not be supported")
 		return &notinuse.PrivateTransactionManager{}, nil
@@ -125,7 +124,7 @@ func selectPrivateTxManager(client *engine.Client) (PrivateTransactionManager, e
 		return nil, err
 	}
 	defer res.Body.Close()
-	version, err := ioutil.ReadAll(res.Body)
+	version, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}

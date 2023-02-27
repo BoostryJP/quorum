@@ -21,7 +21,6 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -101,12 +100,12 @@ func readTLSClientConfig(endpoint string, ctx *cli.Context) (*tls.Config, bool, 
 		certFile, caFile = ctx.String(utils.RPCClientTLSCert.Name), ctx.String(utils.RPCClientTLSCaCert.Name)
 		var err error
 		if certFile != "" {
-			if certPem, err = ioutil.ReadFile(certFile); err != nil {
+			if certPem, err = os.ReadFile(certFile); err != nil {
 				return nil, true, err
 			}
 		}
 		if caFile != "" {
-			if caPem, err = ioutil.ReadFile(caFile); err != nil {
+			if caPem, err = os.ReadFile(caFile); err != nil {
 				return nil, true, err
 			}
 		}

@@ -3,7 +3,7 @@ package tessera
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -199,7 +199,7 @@ func MockSendSignedTxAPIHandlerFunc(response http.ResponseWriter, request *http.
 
 func MockSendSignedTxOctetStreamAPIHandlerFunc(response http.ResponseWriter, request *http.Request) {
 	actualRequest := new(sendSignedTxRequest)
-	reqHash, err := ioutil.ReadAll(request.Body)
+	reqHash, err := io.ReadAll(request.Body)
 	if err != nil {
 		go func(o *capturedRequest) { sendSignedTxOctetStreamRequestCaptor <- o }(&capturedRequest{err: err})
 		return
@@ -269,7 +269,6 @@ func TestSend_groups(t *testing.T) {
 	assert.Equal(groups[2].PrivacyGroupId, "P1")
 	assert.Equal(groups[2].Type, "PANTHEON")
 	assert.Exactly(groups[2].Members, []string{"P1", "P2"})
-
 }
 
 func TestSend_whenTypical(t *testing.T) {
@@ -443,7 +442,6 @@ func TestSendRaw_whenTesseraVersionDoesNotSupportPrivacyEnhancements(t *testing.
 		t.Fatalf("%s", err)
 	}
 	assert.Equal(engine.PrivacyFlagStandardPrivate, actualExtra.PrivacyFlag, "cached privacy flag")
-
 }
 
 func TestReceive_whenTypical(t *testing.T) {

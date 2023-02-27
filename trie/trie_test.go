@@ -22,7 +22,6 @@ import (
 	"errors"
 	"fmt"
 	"hash"
-	"io/ioutil"
 	"math/big"
 	"math/rand"
 	"os"
@@ -351,7 +350,6 @@ func TestRandomCases(t *testing.T) {
 		{op: 1, key: common.Hex2Bytes("fd"), value: common.Hex2Bytes("")},                                                                                               // step 25
 	}
 	runRandTest(rt)
-
 }
 
 // randTest performs random trie operations.
@@ -1056,7 +1054,7 @@ func benchmarkDerefRootFixedSize(b *testing.B, addresses [][20]byte, accounts []
 }
 
 func tempDB() (string, *Database) {
-	dir, err := ioutil.TempDir("", "trie-bench")
+	dir, err := os.MkdirTemp("", "trie-bench")
 	if err != nil {
 		panic(fmt.Sprintf("can't create temporary directory: %v", err))
 	}

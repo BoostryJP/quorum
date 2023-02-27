@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"math/big"
 	"os"
 	"path/filepath"
@@ -160,7 +159,7 @@ func UpdateFile(fileName, enodeId string, operation NodeOperation, createFile bo
 	index := 0
 	// if createFile is false means the file is already existing. read the file
 	if !createFile {
-		blob, err := ioutil.ReadFile(fileName)
+		blob, err := os.ReadFile(fileName)
 		if err != nil && !createFile {
 			return err
 		}
@@ -193,13 +192,12 @@ func UpdateFile(fileName, enodeId string, operation NodeOperation, createFile bo
 	mux.Lock()
 	defer mux.Unlock()
 
-	err := ioutil.WriteFile(fileName, blob, 0644)
+	err := os.WriteFile(fileName, blob, 0644)
 	return err
 }
 
-//this function populates the disallowed Node information into the disallowed-nodes.json file
+// this function populates the disallowed Node information into the disallowed-nodes.json file
 func UpdateDisallowedNodes(dataDir, url string, operation NodeOperation) error {
-
 	fileExists := true
 	path := filepath.Join(dataDir, params.DISALLOWED_CONFIG)
 	// Check if the file is existing. If the file is not existing create the file
@@ -292,7 +290,7 @@ func ParsePermissionConfig(dir string) (PermissionConfig, error) {
 	}()
 
 	var permConfig PermissionConfig
-	blob, err := ioutil.ReadFile(fullPath)
+	blob, err := os.ReadFile(fullPath)
 	if err != nil {
 		log.Error("error reading file", "err", err, "file", fullPath)
 	}

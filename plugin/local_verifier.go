@@ -2,7 +2,6 @@ package plugin
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 )
@@ -42,11 +41,11 @@ func (v *LocalVerifier) VerifySignature(definition *PluginDefinition, checksum s
 	if _, err := os.Stat(pluginSigPath); os.IsNotExist(err) {
 		return err
 	}
-	pubkey, err := ioutil.ReadFile(v.PublicKeyPath)
+	pubkey, err := os.ReadFile(v.PublicKeyPath)
 	if err != nil {
 		return err
 	}
-	sig, err := ioutil.ReadFile(pluginSigPath)
+	sig, err := os.ReadFile(pluginSigPath)
 	if err != nil {
 		return err
 	}

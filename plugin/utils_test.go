@@ -2,7 +2,6 @@ package plugin
 
 import (
 	"archive/zip"
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -47,14 +46,14 @@ func TestIsCleanEntryPoint(t *testing.T) {
 }
 
 func TestResolveFilePath_whenTypical(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("", "q-")
+	tmpDir, err := os.MkdirTemp("", "q-")
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer func() {
 		_ = os.RemoveAll(tmpDir)
 	}()
-	f, err := ioutil.TempFile(tmpDir, "f-")
+	f, err := os.CreateTemp(tmpDir, "f-")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -71,14 +70,12 @@ func TestResolveFilePath_whenInvalidFileURI(t *testing.T) {
 }
 
 func TestVerify_whenTypicalWithBintraySigner(t *testing.T) {
-
 	err := verify(validSignatureSignedByBintray, bintrayPublicKey, arbitrarySHA256checksum)
 
 	assert.NoError(t, err)
 }
 
 func TestVerify_whenTypicalWithStandardSigner(t *testing.T) {
-
 	err := verify(validSignature, signerPubKey, arbitraryChecksum)
 
 	assert.NoError(t, err)
@@ -91,7 +88,7 @@ func TestVerify_whenInvalid(t *testing.T) {
 }
 
 func TestUnpackPlugin_whenTypical(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("", "q-")
+	tmpDir, err := os.MkdirTemp("", "q-")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -116,7 +113,7 @@ func TestUnpackPlugin_whenTypical(t *testing.T) {
 }
 
 func createArbitraryZip(tmpDir string) (string, error) {
-	tmpFile, err := ioutil.TempFile(tmpDir, "f-")
+	tmpFile, err := os.CreateTemp(tmpDir, "f-")
 	if err != nil {
 		return "", err
 	}

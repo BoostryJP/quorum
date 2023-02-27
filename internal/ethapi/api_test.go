@@ -2,7 +2,6 @@ package ethapi
 
 import (
 	"context"
-	"io/ioutil"
 	"math/big"
 	"os"
 	"path/filepath"
@@ -155,7 +154,7 @@ func setup() {
 		big.NewInt(0),
 		arbitrarySimpleStorageContractEncryptedPayloadHash.Bytes())
 
-	workdir, err = ioutil.TempDir("", "")
+	workdir, err = os.MkdirTemp("", "")
 	if err != nil {
 		panic(err)
 	}
@@ -314,7 +313,7 @@ func TestSimulateExecution_whenStateValidationMessageCall(t *testing.T) {
 	assert.True(len(affectedCACreationTxHashes) == len(expectedCACreationTxHashes))
 }
 
-//mix and match flags
+// mix and match flags
 func TestSimulateExecution_PrivacyFlagPartyProtectionCallingStandardPrivateContract_Error(t *testing.T) {
 	assert := assert.New(t)
 	privateTxArgs.PrivacyFlag = engine.PrivacyFlagPartyProtection
@@ -533,7 +532,6 @@ func TestHandlePrivateTransaction_whenRawStandardPrivateMessageCall(t *testing.T
 	_, err := handlePrivateTransaction(arbitraryCtx, &StubBackend{}, rawStandardPrivateSimpleStorageContractMessageCallTx, privateTxArgs, arbitraryFrom, RawTransaction)
 
 	assert.NoError(err, "raw standard private msg call succeeded")
-
 }
 
 func TestHandlePrivateTransaction_whenMandatoryRecipients(t *testing.T) {
@@ -564,7 +562,6 @@ func TestHandlePrivateTransaction_whenMandatoryRecipients(t *testing.T) {
 	assert.NoError(err)
 	assert.Equal(engine.PrivacyFlagMandatoryRecipients, capturedMetadata.PrivacyFlag)
 	assert.Equal(arbitraryMandatoryFor, capturedMetadata.MandatoryRecipients)
-
 }
 
 func TestHandlePrivateTransaction_whenRawPrivateWithMandatoryRecipients(t *testing.T) {
@@ -598,7 +595,6 @@ func TestHandlePrivateTransaction_whenRawPrivateWithMandatoryRecipients(t *testi
 	assert.NoError(err)
 	assert.Equal(engine.PrivacyFlagMandatoryRecipients, capturedMetadata.PrivacyFlag)
 	assert.Equal(arbitraryMandatoryFor, capturedMetadata.MandatoryRecipients)
-
 }
 
 func TestHandlePrivateTransaction_whenMandatoryRecipientsDataInvalid(t *testing.T) {
@@ -609,7 +605,6 @@ func TestHandlePrivateTransaction_whenMandatoryRecipientsDataInvalid(t *testing.
 	_, _, _, err := checkAndHandlePrivateTransaction(arbitraryCtx, &StubBackend{}, simpleStorageContractCreationTx, privateTxArgs, arbitraryFrom, NormalTransaction)
 
 	assert.Error(err, "missing mandatory recipients data. if no mandatory recipients required consider using PrivacyFlag=1(PartyProtection)")
-
 }
 
 func TestHandlePrivateTransaction_whenNoMandatoryRecipientsData(t *testing.T) {
@@ -624,7 +619,6 @@ func TestHandlePrivateTransaction_whenNoMandatoryRecipientsData(t *testing.T) {
 	_, _, _, err := checkAndHandlePrivateTransaction(arbitraryCtx, &StubBackend{}, simpleStorageContractCreationTx, privateTxArgs, arbitraryFrom, NormalTransaction)
 
 	assert.Error(err, "privacy metadata invalid. mandatory recipients are only applicable for PrivacyFlag=2(MandatoryRecipients)")
-
 }
 
 func TestGetContractPrivacyMetadata(t *testing.T) {

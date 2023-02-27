@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 
@@ -40,7 +40,7 @@ func (c *Client) SendPayload(pl []byte, b64From string, b64To []string, acHashes
 		return common.EncryptedPayloadHash{}, fmt.Errorf("Non-200 status code: %+v", res)
 	}
 
-	hashBytes, err := ioutil.ReadAll(base64.NewDecoder(base64.StdEncoding, res.Body))
+	hashBytes, err := io.ReadAll(base64.NewDecoder(base64.StdEncoding, res.Body))
 	if err != nil {
 		return common.EncryptedPayloadHash{}, fmt.Errorf("unable to decode response body for (method:%s,path:%s). Cause: %v", method, url, err)
 	}
@@ -68,7 +68,7 @@ func (c *Client) ReceivePayload(key common.EncryptedPayloadHash) ([]byte, common
 		return nil, nil, common.Hash{}, fmt.Errorf("Non-200 status code: %+v", res)
 	}
 
-	payload, err := ioutil.ReadAll(res.Body)
+	payload, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, nil, common.Hash{}, fmt.Errorf("unable to read response body for (method:%s,path:%s). Cause: %v", method, url, err)
 	}

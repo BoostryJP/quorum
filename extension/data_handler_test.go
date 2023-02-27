@@ -2,7 +2,6 @@ package extension
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -26,7 +25,7 @@ func TestWriteContentsToFileWritesOkay(t *testing.T) {
 		"somekey":                           extensionContracts,
 	}
 
-	datadir, err := ioutil.TempDir("", t.Name())
+	datadir, err := os.MkdirTemp("", t.Name())
 	defer os.RemoveAll(datadir)
 	assert.Nil(t, err, "could not create temp directory for test")
 
@@ -60,7 +59,7 @@ func TestLoadOldContents(t *testing.T) {
 		"somekey":                           extensionContracts,
 	}
 
-	datadir, err := ioutil.TempDir("", t.Name())
+	datadir, err := os.MkdirTemp("", t.Name())
 	defer os.RemoveAll(datadir)
 	assert.Nil(t, err, "could not create temp directory for test")
 

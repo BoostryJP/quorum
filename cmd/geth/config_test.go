@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"math/big"
 	"os"
 	"strings"
@@ -199,7 +198,7 @@ func TestFlagsConfig(t *testing.T) {
 		utils.QuorumPTMTlsClientKeyFlag,
 		utils.QuorumPTMTlsInsecureSkipVerify,
 	}
-	nodeKeyFile, err := ioutil.TempFile("/tmp", "nodekey")
+	nodeKeyFile, err := os.CreateTemp("/tmp", "nodekey")
 	require.NoError(t, err)
 	defer os.Remove(nodeKeyFile.Name())
 
@@ -252,7 +251,7 @@ func TestFlagsConfig(t *testing.T) {
 		case cli.UintFlag:
 			set.Uint(f.Name, f.Value+10, f.Usage)
 		default:
-			t.Log(fmt.Sprintf("unknown %t", f))
+			t.Logf("unknown %t", f)
 			t.Fail()
 		}
 	}
@@ -265,7 +264,7 @@ func TestFlagsConfig(t *testing.T) {
 
 	ctx := cli.NewContext(app, set, nil)
 
-	out, err := ioutil.TempFile("/tmp", "gethCfg")
+	out, err := os.CreateTemp("/tmp", "gethCfg")
 	require.NoError(t, err)
 	defer out.Close()
 	defer os.Remove(out.Name())
@@ -282,7 +281,7 @@ func TestFlagsConfig(t *testing.T) {
 	defer os.Remove(out2.Name())
 
 	t.Log(out2.Name())
-	val, err := ioutil.ReadFile(out2.Name())
+	val, err := os.ReadFile(out2.Name())
 	require.NoError(t, err)
 	t.Log(string(val))
 
@@ -424,11 +423,11 @@ func bootNodes(t *testing.T) BootNodesType {
 }
 
 func removeComment(name string) (*os.File, error) {
-	file, err := ioutil.ReadFile(name)
+	file, err := os.ReadFile(name)
 	if err != nil {
 		return nil, fmt.Errorf("read file: %w", err)
 	}
-	out, err := ioutil.TempFile("/tmp", "gethCfg")
+	out, err := os.CreateTemp("/tmp", "gethCfg")
 	if err != nil {
 		return nil, fmt.Errorf("create temp file: %w", err)
 	}
@@ -452,7 +451,7 @@ func removeComment(name string) (*os.File, error) {
 }
 
 func TestLoadAndDumpGethConfig(t *testing.T) {
-	out, err := ioutil.TempFile("/tmp", "gethCfg")
+	out, err := os.CreateTemp("/tmp", "gethCfg")
 	require.NoError(t, err)
 	defer out.Close()
 	_, err = out.WriteString(`[Eth]
@@ -571,7 +570,7 @@ InfluxDBTags = "host=localhost"
 
 	testConfig(t, cfg)
 
-	out, err = ioutil.TempFile("/tmp", "gethCfg")
+	out, err = os.CreateTemp("/tmp", "gethCfg")
 	require.NoError(t, err)
 
 	err = tomlSettings.NewEncoder(out).Encode(cfg)

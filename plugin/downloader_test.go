@@ -2,7 +2,6 @@ package plugin
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 	"runtime"
@@ -12,7 +11,7 @@ import (
 )
 
 func TestDownloader_Download_whenPluginIsAvailableLocally(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("", "p-")
+	tmpDir, err := os.MkdirTemp("", "p-")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -20,7 +19,7 @@ func TestDownloader_Download_whenPluginIsAvailableLocally(t *testing.T) {
 		_ = os.RemoveAll(tmpDir)
 	}()
 	arbitraryPluginDistPath := path.Join(tmpDir, fmt.Sprintf("arbitrary-plugin-1.0.0-%s-%s.zip", runtime.GOOS, runtime.GOARCH))
-	if err := ioutil.WriteFile(arbitraryPluginDistPath, []byte{}, 0644); err != nil {
+	if err := os.WriteFile(arbitraryPluginDistPath, []byte{}, 0644); err != nil {
 		t.Fatal(err)
 	}
 	arbitraryPm, _ := NewPluginManager("arbitraryName", &Settings{

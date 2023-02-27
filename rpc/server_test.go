@@ -23,16 +23,17 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 
+	"google.golang.org/protobuf/types/known/timestamppb"
+
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/golang/protobuf/ptypes"
 	"github.com/jpmorganchase/quorum-security-plugin-sdk-go/proto"
 	"github.com/stretchr/testify/assert"
 )
@@ -64,7 +65,7 @@ func TestServerRegisterName(t *testing.T) {
 }
 
 func TestServer(t *testing.T) {
-	files, err := ioutil.ReadDir("testdata")
+	files, err := os.ReadDir("testdata")
 	if err != nil {
 		t.Fatal("where'd my testdata go?")
 	}
@@ -82,7 +83,7 @@ func TestServer(t *testing.T) {
 
 func runTestScript(t *testing.T, file string) {
 	server := newTestServer()
-	content, err := ioutil.ReadFile(file)
+	content, err := os.ReadFile(file)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -275,10 +276,7 @@ type stubAuthenticationManager struct {
 }
 
 func (s *stubAuthenticationManager) Authenticate(_ context.Context, _ string) (*proto.PreAuthenticatedAuthenticationToken, error) {
-	expiredAt, err := ptypes.TimestampProto(time.Now().Add(1 * time.Hour))
-	if err != nil {
-		return nil, err
-	}
+	expiredAt := timestamppb.New(time.Now().Add(1 * time.Hour))
 	return &proto.PreAuthenticatedAuthenticationToken{
 		ExpiredAt: expiredAt,
 	}, nil

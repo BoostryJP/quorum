@@ -25,7 +25,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"math/big"
 	"os"
 	"os/signal"
@@ -396,7 +395,7 @@ func initializeSecrets(c *cli.Context) error {
 		return fmt.Errorf("master key %v already exists, will not overwrite", location)
 	}
 	// Write the file and print the usual warning message
-	if err = ioutil.WriteFile(location, cipherSeed, 0400); err != nil {
+	if err = os.WriteFile(location, cipherSeed, 0400); err != nil {
 		return err
 	}
 	fmt.Printf("A master seed has been generated into %s\n", location)
@@ -618,7 +617,7 @@ func signer(c *cli.Context) error {
 
 		// Do we have a rule-file?
 		if ruleFile := c.GlobalString(ruleFlag.Name); ruleFile != "" {
-			ruleJS, err := ioutil.ReadFile(ruleFile)
+			ruleJS, err := os.ReadFile(ruleFile)
 			if err != nil {
 				log.Warn("Could not load rules, disabling", "file", ruleFile, "err", err)
 			} else {
@@ -830,7 +829,7 @@ func readMasterKey(ctx *cli.Context, ui core.UIClientAPI) ([]byte, error) {
 	if err := checkFile(file); err != nil {
 		return nil, err
 	}
-	cipherKey, err := ioutil.ReadFile(file)
+	cipherKey, err := os.ReadFile(file)
 	if err != nil {
 		return nil, err
 	}
@@ -897,7 +896,6 @@ func confirm(text string) bool {
 }
 
 func testExternalUI(api *core.SignerAPI) {
-
 	ctx := context.WithValue(context.Background(), "remote", "clef binary")
 	ctx = context.WithValue(ctx, "scheme", "in-proc")
 	ctx = context.WithValue(ctx, "local", "main")
@@ -997,7 +995,6 @@ func testExternalUI(api *core.SignerAPI) {
 		expectDeny("signdata - text", err)
 	}
 	{ // Sign transaction
-
 		api.UI.ShowInfo("Please reject next transaction")
 		time.Sleep(delay)
 		data := hexutil.Bytes([]byte{})
@@ -1040,7 +1037,6 @@ func testExternalUI(api *core.SignerAPI) {
 	}
 	result := fmt.Sprintf("Tests completed. %d errors:\n%s\n", len(errs), strings.Join(errs, "\n"))
 	api.UI.ShowInfo(result)
-
 }
 
 type encryptedSeedStorage struct {
@@ -1077,7 +1073,6 @@ func decryptSeed(keyjson []byte, auth string) ([]byte, error) {
 
 // GenDoc outputs examples of all structures used in json-rpc communication
 func GenDoc(ctx *cli.Context) {
-
 	var (
 		a    = common.HexToAddress("0xdeadbeef000000000000000000000000deadbeef")
 		b    = common.HexToAddress("0x1111111122222222222233333333334444444444")
@@ -1187,7 +1182,6 @@ func GenDoc(ctx *cli.Context) {
 		var tx types.Transaction
 		tx.UnmarshalBinary(rlpdata)
 		add("OnApproved - SignTransactionResult", desc, &ethapi.SignTransactionResult{Raw: rlpdata, Tx: &tx})
-
 	}
 	{ // User input
 		add("UserInputRequest", "Sent when clef needs the user to provide data. If 'password' is true, the input field should be treated accordingly (echo-free)",

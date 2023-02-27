@@ -3,7 +3,6 @@ package http
 import (
 	"crypto/x509"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -30,7 +29,7 @@ func loadRootCaCerts(rootCAPath string) (*x509.CertPool, error) {
 		}
 
 		if info.Mode()&os.ModeDir != 0 {
-			fileList, err := ioutil.ReadDir(thisFileOrDirEntry)
+			fileList, err := os.ReadDir(thisFileOrDirEntry)
 			if err != nil {
 				return nil, fmt.Errorf("unable to read contents of RootCA directory '%v', due to: %s", thisFileOrDirEntry, err)
 			}
@@ -50,7 +49,7 @@ func loadRootCaCerts(rootCAPath string) (*x509.CertPool, error) {
 
 func loadRootCAFromFile(file string, roots *x509.CertPool) error {
 	log.Debug("loading RootCA certificate for connection to private transaction manager", "file", file)
-	data, err := ioutil.ReadFile(file)
+	data, err := os.ReadFile(file)
 	if err != nil {
 		return fmt.Errorf("unable to read contents of RootCA certificate file '%v', due to: %s", file, err)
 	}

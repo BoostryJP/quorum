@@ -20,7 +20,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -45,7 +45,6 @@ var commonParams []*twoOperandParams
 var twoOpMethods map[string]executionFunc
 
 func init() {
-
 	// Params is a list of common edgecases that should be used for some common tests
 	params := []string{
 		"0000000000000000000000000000000000000000000000000000000000000000", // 0
@@ -91,7 +90,6 @@ func init() {
 }
 
 func testTwoOperandOp(t *testing.T, tests []TwoOperandTestcase, opFn executionFunc, name string) {
-
 	var (
 		env            = NewEVM(BlockContext{}, TxContext{}, nil, nil, params.TestChainConfig, Config{})
 		stack          = newstack()
@@ -259,7 +257,7 @@ func TestWriteExpectedValues(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		_ = ioutil.WriteFile(fmt.Sprintf("testdata/testcases_%v.json", name), data, 0644)
+		_ = os.WriteFile(fmt.Sprintf("testdata/testcases_%v.json", name), data, 0644)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -269,7 +267,7 @@ func TestWriteExpectedValues(t *testing.T) {
 // TestJsonTestcases runs through all the testcases defined as json-files
 func TestJsonTestcases(t *testing.T) {
 	for name := range twoOpMethods {
-		data, err := ioutil.ReadFile(fmt.Sprintf("testdata/testcases_%v.json", name))
+		data, err := os.ReadFile(fmt.Sprintf("testdata/testcases_%v.json", name))
 		if err != nil {
 			t.Fatal("Failed to read file", err)
 		}
@@ -629,7 +627,6 @@ func TestCreate2Addreses(t *testing.T) {
 			expected: "0xE33C0C7F7df4809055C3ebA6c09CFe4BaF1BD9e0",
 		},
 	} {
-
 		origin := common.BytesToAddress(common.FromHex(tt.origin))
 		salt := common.BytesToHash(common.FromHex(tt.salt))
 		code := common.FromHex(tt.code)

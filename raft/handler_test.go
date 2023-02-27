@@ -4,7 +4,6 @@ import (
 	"crypto/ecdsa"
 	"encoding/binary"
 	"fmt"
-	"io/ioutil"
 	"net"
 	"os"
 	"testing"
@@ -30,7 +29,7 @@ import (
 func TestProtocolManager_whenAppliedIndexOutOfSync(t *testing.T) {
 	logger := log.New()
 	logger.SetHandler(log.StreamHandler(os.Stdout, log.TerminalFormat(false)))
-	tmpWorkingDir, err := ioutil.TempDir("", "")
+	tmpWorkingDir, err := os.MkdirTemp("", "")
 	if err != nil {
 		t.Fatal(err)
 	}

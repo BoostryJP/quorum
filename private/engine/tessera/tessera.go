@@ -5,7 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -66,28 +66,7 @@ func (t *tesseraPrivateTxManager) submitJSON(method, path string, request interf
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusCreated {
-		body, _ := ioutil.ReadAll(res.Body)
-		return res.StatusCode, fmt.Errorf("%d status: %s", res.StatusCode, string(body))
-	}
-	if err := json.NewDecoder(res.Body).Decode(response); err != nil {
-		return res.StatusCode, fmt.Errorf("unable to decode response body for (method:%s,path:%s). Cause: %v", method, path, err)
-	}
-	return res.StatusCode, nil
-}
-
-func (t *tesseraPrivateTxManager) submitJSONOld(method, path string, request interface{}, response interface{}) (int, error) {
-	apiVersion := ""
-	req, err := newOptionalJSONRequest(method, t.client.FullPath(path), request, apiVersion)
-	if err != nil {
-		return -1, fmt.Errorf("unable to build json request for (method:%s,path:%s). Cause: %v", method, path, err)
-	}
-	res, err := t.client.HttpClient.Do(req)
-	if err != nil {
-		return -1, fmt.Errorf("unable to submit request (method:%s,path:%s). Cause: %v", method, path, err)
-	}
-	defer res.Body.Close()
-	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusCreated {
-		body, _ := ioutil.ReadAll(res.Body)
+		body, _ := io.ReadAll(res.Body)
 		return res.StatusCode, fmt.Errorf("%d status: %s", res.StatusCode, string(body))
 	}
 	if err := json.NewDecoder(res.Body).Decode(response); err != nil {
@@ -163,7 +142,6 @@ func (t *tesseraPrivateTxManager) EncryptPayload(data []byte, from string, to []
 }
 
 func (t *tesseraPrivateTxManager) StoreRaw(data []byte, from string) (common.EncryptedPayloadHash, error) {
-
 	response := new(sendResponse)
 
 	if _, err := t.submitJSON("POST", "/storeraw", &storerawRequest{
@@ -211,7 +189,7 @@ func (c *tesseraPrivateTxManager) sendSignedPayloadOctetStream(signedPayload []b
 	if res.StatusCode != 200 {
 		return "", nil, nil, fmt.Errorf("Non-200 status code: %+v", res)
 	}
-	data, err := ioutil.ReadAll(res.Body)
+	data, err := io.ReadAll(res.Body)
 	if err != nil {
 		return "", nil, nil, err
 	}
@@ -422,7 +400,7 @@ func (t *tesseraPrivateTxManager) IsSender(txHash common.EncryptedPayloadHash) (
 		return false, fmt.Errorf("non-200 status code: %+v", res)
 	}
 
-	out, err := ioutil.ReadAll(res.Body)
+	out, err := io.ReadAll(res.Body)
 	if err != nil {
 		return false, err
 	}
@@ -452,7 +430,7 @@ func (t *tesseraPrivateTxManager) GetParticipants(txHash common.EncryptedPayload
 		return nil, fmt.Errorf("Non-200 status code: %+v", res)
 	}
 
-	out, err := ioutil.ReadAll(res.Body)
+	out, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -484,7 +462,7 @@ func (t *tesseraPrivateTxManager) GetMandatory(txHash common.EncryptedPayloadHas
 		return nil, fmt.Errorf("Non-200 status code: %+v", res)
 	}
 
-	out, err := ioutil.ReadAll(res.Body)
+	out, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}

@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -177,7 +176,7 @@ func TestImportPluginAccount_ErrIfInvalidRawkey(t *testing.T) {
 }
 
 func TestImportPluginAccount_ErrIfCLIFlagsNotSet(t *testing.T) {
-	tmpfile, err := ioutil.TempFile("", "rawkey")
+	tmpfile, err := os.CreateTemp("", "rawkey")
 	require.NoError(t, err)
 	t.Log("creating tmp file", "path", tmpfile.Name())
 	defer os.Remove(tmpfile.Name())
@@ -215,7 +214,7 @@ func TestImportPluginAccount_ErrIfCLIFlagsNotSet(t *testing.T) {
 }
 
 func TestImportPluginAccount_ErrIfInvalidNewAccountConfig(t *testing.T) {
-	tmpfile, err := ioutil.TempFile("", "rawkey")
+	tmpfile, err := os.CreateTemp("", "rawkey")
 	require.NoError(t, err)
 	t.Log("creating tmp file", "path", tmpfile.Name())
 	defer os.Remove(tmpfile.Name())
@@ -261,7 +260,7 @@ func TestImportPluginAccount_ErrIfInvalidNewAccountConfig(t *testing.T) {
 }
 
 func TestImportPluginAccount_ErrIfUnsupportedPluginInConfig(t *testing.T) {
-	tmpfile, err := ioutil.TempFile("", "rawkey")
+	tmpfile, err := os.CreateTemp("", "rawkey")
 	require.NoError(t, err)
 	t.Log("creating tmp file", "path", tmpfile.Name())
 	defer os.Remove(tmpfile.Name())

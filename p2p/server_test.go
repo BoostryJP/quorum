@@ -21,7 +21,6 @@ import (
 	"crypto/sha256"
 	"errors"
 	"io"
-	"io/ioutil"
 	"math/rand"
 	"net"
 	"os"
@@ -490,12 +489,12 @@ func TestServerSetupConn_whenNotInRaftCluster(t *testing.T) {
 }
 
 func TestServerSetupConn_whenNotPermissioned(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("", "")
+	tmpDir, err := os.MkdirTemp("", "")
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer func() { _ = os.RemoveAll(tmpDir) }()
-	if err := ioutil.WriteFile(path.Join(tmpDir, params.PERMISSIONED_CONFIG), []byte("[]"), 0644); err != nil {
+	if err := os.WriteFile(path.Join(tmpDir, params.PERMISSIONED_CONFIG), []byte("[]"), 0644); err != nil {
 		t.Fatal(err)
 	}
 	var (

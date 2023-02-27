@@ -17,7 +17,6 @@
 package keystore
 
 import (
-	"io/ioutil"
 	"math/rand"
 	"os"
 	"runtime"
@@ -389,7 +388,6 @@ func TestImportExport(t *testing.T) {
 	if _, err = ks2.Import(json, "new", "new"); err == nil {
 		t.Errorf("importing a key twice succeeded")
 	}
-
 }
 
 // TestImportRace tests the keystore on races.
@@ -416,7 +414,6 @@ func TestImportRace(t *testing.T) {
 			if _, err := ks2.Import(json, "new", "new"); err != nil {
 				atomic.AddUint32(&atom, 1)
 			}
-
 		}()
 	}
 	wg.Wait()
@@ -462,7 +459,7 @@ func checkEvents(t *testing.T, want []walletEvent, have []walletEvent) {
 }
 
 func tmpKeyStore(t *testing.T, encrypted bool) (string, *KeyStore) {
-	d, err := ioutil.TempDir("", "eth-keystore-test")
+	d, err := os.MkdirTemp("", "eth-keystore-test")
 	if err != nil {
 		t.Fatal(err)
 	}

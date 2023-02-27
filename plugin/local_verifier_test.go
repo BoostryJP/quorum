@@ -1,7 +1,6 @@
 package plugin
 
 import (
-	"io/ioutil"
 	"os"
 	"path"
 	"testing"
@@ -10,7 +9,7 @@ import (
 )
 
 func TestLocalVerifier_VerifySignature(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("", "q-")
+	tmpDir, err := os.MkdirTemp("", "q-")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -23,11 +22,11 @@ func TestLocalVerifier_VerifySignature(t *testing.T) {
 		Config:  nil,
 	}
 	pubKeyFile := path.Join(tmpDir, "pubkey")
-	if err := ioutil.WriteFile(pubKeyFile, signerPubKey, 0644); err != nil {
+	if err := os.WriteFile(pubKeyFile, signerPubKey, 0644); err != nil {
 		t.Fatal(err)
 	}
 	sigFile := path.Join(tmpDir, arbitraryPluginDefinition.SignatureFileName())
-	if err := ioutil.WriteFile(sigFile, validSignature, 0644); err != nil {
+	if err := os.WriteFile(sigFile, validSignature, 0644); err != nil {
 		t.Fatal(err)
 	}
 

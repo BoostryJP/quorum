@@ -20,7 +20,6 @@ import (
 	"crypto/rand"
 	"crypto/tls"
 	"flag"
-	"io/ioutil"
 	"math/big"
 	"os"
 	"path/filepath"
@@ -219,12 +218,12 @@ func setupIstanbul(t *testing.T) string {
 
 	// Initialize the data directory with the custom genesis block
 	json := filepath.Join(datadir, "genesis.json")
-	if err := ioutil.WriteFile(json, []byte(genesis), 0600); err != nil {
+	if err := os.WriteFile(json, []byte(genesis), 0600); err != nil {
 		t.Fatalf("failed to write genesis file: %v", err)
 	}
 
 	nodeKeyFile := filepath.Join(gethPath, "nodekey")
-	if err := ioutil.WriteFile(nodeKeyFile, []byte(nodeKey), 0600); err != nil {
+	if err := os.WriteFile(nodeKeyFile, []byte(nodeKey), 0600); err != nil {
 		t.Fatalf("failed to write nodekey file: %v", err)
 	}
 
