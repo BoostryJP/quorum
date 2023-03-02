@@ -68,19 +68,30 @@ func (c *core) handleRequest(request *Request) error {
 			if ok && len(block.Transactions()) == 0 { // if empty block
 				if config.EmptyBlockPeriod > config.BlockPeriod {
 					log.Info("EmptyBlockPeriod detected adding delay to request", "EmptyBlockPeriod", config.EmptyBlockPeriod, "BlockTime", block.Time())
+					// Because the seal has an additional delay on the block period you need to subtract it from the delay
 					delay = time.Duration(config.EmptyBlockPeriod-config.BlockPeriod) * time.Second
+					header := block.Header()
+					// Because the block period has already been added to the time we subtract it here
+					header.Time = header.Time + config.EmptyBlockPeriod - config.BlockPeriod
+					request.Proposal = block.WithSeal(header)
 				}
 			}
+			if delay > 0 {
+				c.newRoundTimer = time.AfterFunc(delay, func() {
+					c.newRoundTimer = nil
+					// Start ROUND-CHANGE timer
+					c.newRoundChangeTimer()
 
-			c.newRoundTimer = time.AfterFunc(delay, func() {
-				c.newRoundTimer = nil
-
+					// Send PRE-PREPARE message to other validators
+					c.sendPreprepareMsg(request)
+				})
+			} else {
 				// Start ROUND-CHANGE timer
 				c.newRoundChangeTimer()
 
 				// Send PRE-PREPARE message to other validators
 				c.sendPreprepareMsg(request)
-			})
+			}
 		}
 	}
 
