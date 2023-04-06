@@ -23,7 +23,7 @@ require (
 	github.com/coreos/etcd v3.3.20+incompatible
 	github.com/davecgh/go-spew v1.1.1
 	github.com/deckarep/golang-set v0.0.0-20180603214616-504e848d77ea
-	github.com/docker/docker v20.10.12+incompatible
+	github.com/docker/docker v20.10.24+incompatible
 	github.com/dop251/goja v0.0.0-20200721192441-a695b0cdd498
 	github.com/eapache/channels v1.1.0
 	github.com/edsrzf/mmap-go v1.0.0
