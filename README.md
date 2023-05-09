@@ -1,7 +1,7 @@
 # GoQuorum for ibet Network
 
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-2.1-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-2.2-blue.svg?cacheSeconds=2592000" />
 </p>
 
 This project is [GoQuorum](https://github.com/ConsenSys/quorum) fork for [ibet Network](https://github.com/BoostryJP/ibet-Network)
@@ -17,7 +17,7 @@ The version control policy of this project follows that of ibet-Network.
 
 ## Reference GoQuorum version
 
-Currently, the ibet Network is built using a node client based on v22.7.6 of GoQuorum. 
+Currently, the ibet Network is built using a node client based on v23.4.0 of GoQuorum. 
 However, it has been variously patched to be optimized for ibet Network. For example:
 - The default block generation interval is set to 1 second.
 - Fully supports Go 1.19 and applies new 3rd party packages from a security perspective.
