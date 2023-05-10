@@ -118,15 +118,8 @@ var (
 	}
 
 	// Distros for which packages are created.
-	// Note: vivid is unsupported because there is no golang-1.6 package for it.
-	// Note: the following Ubuntu releases have been officially deprecated on Launchpad:
-	//   wily, yakkety, zesty, artful, cosmic, disco, eoan, groovy, hirsuite
 	debDistroGoBoots = map[string]string{
-		"trusty": "golang-1.11", // EOL: 04/2024
-		"xenial": "golang-go",   // EOL: 04/2026
-		"bionic": "golang-go",   // EOL: 04/2028
-		"focal":  "golang-go",   // EOL: 04/2030
-		"impish": "golang-go",   // EOL: 07/2022
+		"focal":  "golang-go",   // EOL: 04/2025
 		// "jammy": "golang-go",   // EOL: 04/2027
 	}
 
@@ -138,7 +131,7 @@ var (
 	// This is the version of go that will be downloaded by
 	//
 	//     go run ci.go install -dlgo
-	dlgoVersion = "1.19.5"
+	dlgoVersion = "1.19.9"
 )
 
 var GOBIN, _ = filepath.Abs(filepath.Join("build", "bin"))
