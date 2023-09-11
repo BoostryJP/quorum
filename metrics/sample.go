@@ -531,7 +531,12 @@ func (s *UniformSample) Update(v int64) {
 	if len(s.values) < s.reservoirSize {
 		s.values = append(s.values, v)
 	} else {
-		r := rand.Int63n(s.count)
+		var r int64
+		if s.rand != nil {
+			r = s.rand.Int63n(s.count)
+		} else {
+			r = rand.Int63n(s.count)
+		}
 		if r < int64(len(s.values)) {
 			s.values[int(r)] = v
 		}
