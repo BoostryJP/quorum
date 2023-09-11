@@ -1,6 +1,6 @@
 module github.com/ethereum/go-ethereum
 
-go 1.19
+go 1.21
 
 // Quorum - Replace Go modules that use modifications done by us
 replace github.com/coreos/etcd => github.com/Consensys/etcd v3.3.13-quorum197+incompatible
@@ -52,7 +52,7 @@ require (
 	github.com/jpmorganchase/quorum-hello-world-plugin-sdk-go v0.0.0-20200210211148-57f99f69eeb3
 	github.com/jpmorganchase/quorum-security-plugin-sdk-go v0.0.0-20200714173835-22a319bb78ce
 	github.com/julienschmidt/httprouter v1.3.0
-	github.com/karalabe/usb v0.0.2
+	github.com/karalabe/usb v0.0.3-0.20230711191512-61db3e06439c
 	github.com/mattn/go-colorable v0.1.4
 	github.com/mattn/go-isatty v0.0.14
 	github.com/naoina/toml v0.1.2-0.20170918210437-9fafd6967416

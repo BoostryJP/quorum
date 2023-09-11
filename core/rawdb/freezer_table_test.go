@@ -25,14 +25,9 @@ import (
 	"path/filepath"
 	"sync"
 	"testing"
-	"time"
 
 	"github.com/ethereum/go-ethereum/metrics"
 )
-
-func init() {
-	rand.Seed(time.Now().Unix())
-}
 
 // Gets a chunk of data, filled with 'b'
 func getChunk(size int, b int) []byte {

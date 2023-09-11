@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
 
+//go:build nacl || js || !cgo
 // +build nacl js !cgo
 
 package crypto
@@ -60,7 +61,6 @@ func SigToPub(hash, sig []byte) (*ecdsa.PublicKey, error) {
 	return pub.ToECDSA(), nil
 }
 
-
 // Sign calculates an ECDSA signature.
 //
 // This function is susceptible to chosen plaintext attacks that can leak
@@ -75,7 +75,7 @@ func Sign(hash []byte, prv *ecdsa.PrivateKey) ([]byte, error) {
 	}
 	if prv.Curve != btcec.S256() {
 		return nil, fmt.Errorf("private key curve is not secp256k1")
-	}	// ecdsa.PrivateKey -> btcec.PrivateKey
+	} // ecdsa.PrivateKey -> btcec.PrivateKey
 	var priv btcec.PrivateKey
 	if overflow := priv.Key.SetByteSlice(prv.D.Bytes()); overflow || priv.Key.IsZero() {
 		return nil, fmt.Errorf("invalid private key")
