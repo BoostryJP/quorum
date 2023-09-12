@@ -78,8 +78,10 @@ func newQLightServerHandler(config *handlerConfig) (*handler, error) {
 // runEthPeer registers an eth peer into the joint eth/snap peerset, adds it to
 // various subsistems and starts handling messages.
 func (h *handler) runQLightServerPeer(peer *qlightproto.Peer, handler qlightproto.Handler) error {
-	h.peerWG.Add(1)
-	defer h.peerWG.Done()
+	if !h.incHandlers() {
+		return p2p.DiscQuitting
+	}
+	defer h.decHandlers()
 
 	// Execute the Ethereum handshake
 	var (
@@ -184,20 +186,24 @@ func (h *handler) StartQLightServer(maxPeers int) {
 	h.wg.Add(1)
 	go h.newBlockBroadcastLoop()
 
+	// start peer handler tracker
+	h.wg.Add(1)
+	go h.protoTracker()
+
 	h.authProvider.Initialize()
 }
 
 func (h *handler) StopQLightServer() {
 	h.txsSub.Unsubscribe()
 	close(h.quitSync)
-	h.wg.Wait()
 
 	// Disconnect existing sessions.
 	// This also closes the gate for any new registrations on the peer set.
 	// sessions which are already established but not added to h.peers yet
 	// will exit when they try to register.
 	h.peers.close()
-	h.peerWG.Wait()
+	h.wg.Wait()
+
 	log.Info("QLight server protocol stopped")
 }
 
