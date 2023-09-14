@@ -1,6 +1,6 @@
 module github.com/ethereum/go-ethereum
 
-go 1.19
+go 1.21
 
 // Quorum - Replace Go modules that use modifications done by us
 replace github.com/coreos/etcd => github.com/Consensys/etcd v3.3.13-quorum197+incompatible
@@ -23,7 +23,7 @@ require (
 	github.com/coreos/etcd v3.3.20+incompatible
 	github.com/davecgh/go-spew v1.1.1
 	github.com/deckarep/golang-set v0.0.0-20180603214616-504e848d77ea
-	github.com/docker/docker v20.10.12+incompatible
+	github.com/docker/docker v20.10.24+incompatible
 	github.com/dop251/goja v0.0.0-20200721192441-a695b0cdd498
 	github.com/eapache/channels v1.1.0
 	github.com/edsrzf/mmap-go v1.0.0
@@ -36,7 +36,7 @@ require (
 	github.com/golang/protobuf v1.5.2
 	github.com/golang/snappy v0.0.4
 	github.com/google/gofuzz v1.1.1-0.20200604201612-c04b05f3adfa
-	github.com/google/uuid v1.1.5
+	github.com/google/uuid v1.3.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/graph-gophers/graphql-go v1.3.0
 	github.com/hashicorp/go-hclog v1.1.0
@@ -52,7 +52,7 @@ require (
 	github.com/jpmorganchase/quorum-hello-world-plugin-sdk-go v0.0.0-20200210211148-57f99f69eeb3
 	github.com/jpmorganchase/quorum-security-plugin-sdk-go v0.0.0-20200714173835-22a319bb78ce
 	github.com/julienschmidt/httprouter v1.3.0
-	github.com/karalabe/usb v0.0.2
+	github.com/karalabe/usb v0.0.3-0.20230711191512-61db3e06439c
 	github.com/mattn/go-colorable v0.1.4
 	github.com/mattn/go-isatty v0.0.14
 	github.com/naoina/toml v0.1.2-0.20170918210437-9fafd6967416
@@ -73,8 +73,8 @@ require (
 	golang.org/x/sys v0.5.0
 	golang.org/x/text v0.7.0
 	golang.org/x/time v0.0.0-20201208040808-7e3f01d25324
-	google.golang.org/grpc v1.46.0
-	google.golang.org/protobuf v1.28.0
+	google.golang.org/grpc v1.53.0
+	google.golang.org/protobuf v1.28.1
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c
 	gopkg.in/karalabe/cookiejar.v2 v2.0.0-20150724131613-8dcd6a7f4951
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce
@@ -92,7 +92,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.1.1 // indirect
 	github.com/aws/smithy-go v1.1.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/cespare/xxhash/v2 v2.1.1 // indirect
+	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/coreos/go-systemd v0.0.0-20191104093116-d3cd4ed1dbcf // indirect
 	github.com/coreos/pkg v0.0.0-20180928190104-399ea9e2e55f // indirect
@@ -125,8 +125,8 @@ require (
 	github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	golang.org/x/net v0.7.0 // indirect
-	google.golang.org/genproto v0.0.0-20220426171045-31bebdecfb46 // indirect
+	google.golang.org/genproto v0.0.0-20230110181048-76db0878b65f // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
+	gopkg.in/yaml.v3 v3.0.0 // indirect
 	gotest.tools/v3 v3.1.0 // indirect
 )

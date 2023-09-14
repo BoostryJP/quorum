@@ -24,17 +24,16 @@ Usage: go run build/ci.go <command> <command flags/arguments>
 
 Available commands are:
 
-   install    [ -arch architecture ] [ -cc compiler ] [ packages... ]                          -- builds packages and executables
-   test       [ -coverage ] [ packages... ]                                                    -- runs the tests
-   lint                                                                                        -- runs certain pre-selected linters
-   archive    [ -arch architecture ] [ -type zip|tar ] [ -signer key-envvar ] [ -signify key-envvar ] [ -upload dest ] -- archives build artifacts
-   importkeys                                                                                  -- imports signing keys from env
-   debsrc     [ -signer key-id ] [ -upload dest ]                                              -- creates a debian source package
-   nsis                                                                                        -- creates a Windows NSIS installer
-   purge      [ -store blobstore ] [ -days threshold ]                                         -- purges old archives from the blobstore
+	install    [ -arch architecture ] [ -cc compiler ] [ packages... ]                          -- builds packages and executables
+	test       [ -coverage ] [ packages... ]                                                    -- runs the tests
+	lint                                                                                        -- runs certain pre-selected linters
+	archive    [ -arch architecture ] [ -type zip|tar ] [ -signer key-envvar ] [ -signify key-envvar ] [ -upload dest ] -- archives build artifacts
+	importkeys                                                                                  -- imports signing keys from env
+	debsrc     [ -signer key-id ] [ -upload dest ]                                              -- creates a debian source package
+	nsis                                                                                        -- creates a Windows NSIS installer
+	purge      [ -store blobstore ] [ -days threshold ]                                         -- purges old archives from the blobstore
 
 For all commands, -n prevents execution of external programs (dry run mode).
-
 */
 package main
 
@@ -118,15 +117,8 @@ var (
 	}
 
 	// Distros for which packages are created.
-	// Note: vivid is unsupported because there is no golang-1.6 package for it.
-	// Note: the following Ubuntu releases have been officially deprecated on Launchpad:
-	//   wily, yakkety, zesty, artful, cosmic, disco, eoan, groovy, hirsuite
 	debDistroGoBoots = map[string]string{
-		"trusty": "golang-1.11", // EOL: 04/2024
-		"xenial": "golang-go",   // EOL: 04/2026
-		"bionic": "golang-go",   // EOL: 04/2028
-		"focal":  "golang-go",   // EOL: 04/2030
-		"impish": "golang-go",   // EOL: 07/2022
+		"focal": "golang-go", // EOL: 04/2025
 		// "jammy": "golang-go",   // EOL: 04/2027
 	}
 
@@ -138,7 +130,7 @@ var (
 	// This is the version of go that will be downloaded by
 	//
 	//     go run ci.go install -dlgo
-	dlgoVersion = "1.19.5"
+	dlgoVersion = "1.21.0"
 )
 
 var GOBIN, _ = filepath.Abs(filepath.Join("build", "bin"))
@@ -332,7 +324,7 @@ func doLint(cmdline []string) {
 
 // downloadLinter downloads and unpacks golangci-lint.
 func downloadLinter(cachedir string) string {
-	const version = "1.51.1"
+	const version = "1.52.2"
 
 	csdb := build.MustLoadChecksums("build/checksums.txt")
 	arch := runtime.GOARCH
