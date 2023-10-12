@@ -211,6 +211,7 @@ func (cs *chainSyncer) loop() {
 	for {
 		if op := cs.nextSyncOp(); op != nil {
 			if !cs.handler.raftMode {
+				log.Info("nextSyncOp != nil")
 				cs.startSync(op)
 			}
 		} else {
@@ -254,6 +255,7 @@ func (cs *chainSyncer) nextSyncOp() *chainSyncOp {
 	} else if minPeers > cs.handler.maxPeers {
 		minPeers = cs.handler.maxPeers
 	}
+	log.Info(fmt.Sprintf("cs.forced=%t, cs.handler.peers.len()=%d, minPeers=%d", cs.forced, cs.handler.peers.len(), minPeers))
 	if cs.handler.peers.len() < minPeers {
 		log.Info(fmt.Sprintf("cs.handler.peers.len()=%d, minPeers=%d", cs.handler.peers.len(), minPeers))
 		return nil
