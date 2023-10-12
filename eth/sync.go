@@ -17,6 +17,7 @@
 package eth
 
 import (
+	"fmt"
 	"math/big"
 	"math/rand"
 	"sync/atomic"
@@ -212,6 +213,8 @@ func (cs *chainSyncer) loop() {
 			if !cs.handler.raftMode {
 				cs.startSync(op)
 			}
+		} else {
+			log.Info("nextSyncOp = nil")
 		}
 		select {
 		case <-cs.peerEventCh:
@@ -240,6 +243,7 @@ func (cs *chainSyncer) loop() {
 // nextSyncOp determines whether sync is required at this time.
 func (cs *chainSyncer) nextSyncOp() *chainSyncOp {
 	if cs.doneCh != nil {
+		log.Info("cs.doneCh != nil")
 		return nil // Sync already running.
 	}
 
@@ -251,11 +255,13 @@ func (cs *chainSyncer) nextSyncOp() *chainSyncOp {
 		minPeers = cs.handler.maxPeers
 	}
 	if cs.handler.peers.len() < minPeers {
+		log.Info(fmt.Sprintf("cs.handler.peers.len()=%d, minPeers=%d", cs.handler.peers.len(), minPeers))
 		return nil
 	}
 	// We have enough peers, check TD
 	peer := cs.handler.peers.peerWithHighestTD()
 	if peer == nil {
+		log.Info("peer")
 		return nil
 	}
 	mode, ourTD := cs.modeAndLocalHead()
@@ -268,6 +274,7 @@ func (cs *chainSyncer) nextSyncOp() *chainSyncOp {
 		// Quorum
 		// added for permissions changes to indicate node sync up has started
 		// if peer's TD is smaller than ours, no sync will happen
+		log.Info("peer's TD is smaller than ours")
 		core.SetSyncStatus()
 		return nil // We're in sync.
 	}
