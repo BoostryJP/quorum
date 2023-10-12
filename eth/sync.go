@@ -255,9 +255,9 @@ func (cs *chainSyncer) nextSyncOp() *chainSyncOp {
 	} else if minPeers > cs.handler.maxPeers {
 		minPeers = cs.handler.maxPeers
 	}
-	log.Info(fmt.Sprintf("cs.forced=%t, cs.handler.peers.len()=%d, minPeers=%d", cs.forced, cs.handler.peers.len(), minPeers))
+	log.Info(fmt.Sprintf("cs.forced=%t cs.handler.peers.len()=%d minPeers=%d", cs.forced, cs.handler.peers.len(), minPeers))
 	if cs.handler.peers.len() < minPeers {
-		log.Info(fmt.Sprintf("cs.handler.peers.len()=%d, minPeers=%d", cs.handler.peers.len(), minPeers))
+		log.Info(fmt.Sprintf("cs.handler.peers.len()=%d minPeers=%d", cs.handler.peers.len(), minPeers))
 		return nil
 	}
 	// We have enough peers, check TD
@@ -276,7 +276,7 @@ func (cs *chainSyncer) nextSyncOp() *chainSyncOp {
 		// Quorum
 		// added for permissions changes to indicate node sync up has started
 		// if peer's TD is smaller than ours, no sync will happen
-		log.Info("peer's TD is smaller than ours")
+		log.Info(fmt.Sprintf("peer's TD is smaller than ours: ourTD=%s peerTD=%s", ourTD.String(), op.td.String()))
 		core.SetSyncStatus()
 		return nil // We're in sync.
 	}
