@@ -19,7 +19,7 @@ require (
 	github.com/btcsuite/btcd/btcec/v2 v2.1.2
 	github.com/cespare/cp v0.1.0
 	github.com/cloudflare/cloudflare-go v0.14.0
-	github.com/consensys/gnark-crypto v0.12.0
+	github.com/consensys/gnark-crypto v0.12.1
 	github.com/coreos/etcd v3.3.20+incompatible
 	github.com/davecgh/go-spew v1.1.1
 	github.com/deckarep/golang-set v0.0.0-20180603214616-504e848d77ea
