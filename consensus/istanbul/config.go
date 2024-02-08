@@ -24,6 +24,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
+	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/params"
 	"github.com/naoina/toml"
 )
@@ -34,6 +35,8 @@ const (
 	RoundRobin ProposerPolicyId = iota
 	Sticky
 )
+
+const MaxValidatorSetInRegistry = 128 // Max number of ValidatorSet in the registry
 
 // ProposerPolicy represents the Validator Proposer Policy
 type ProposerPolicy struct {
@@ -111,7 +114,13 @@ func (p *ProposerPolicy) RegisterValidatorSet(valSet ValidatorSet) {
 		p.registry = []ValidatorSet{valSet}
 	} else {
 		p.registry = append(p.registry, valSet)
+		// Non-validators never call ClearRegistry
+		// Limit the registry length to MaxValidatorSetInRegistry to prevent unexpected leaks
+		if len(p.registry) > MaxValidatorSetInRegistry {
+			p.registry = p.registry[1:]
+		}
 	}
+	log.Debug("Validator Policy Registry", "length", p.GetRegistrySize())
 }
 
 // ClearRegistry removes any ValidatorSet from the ProposerPolicy registry
@@ -120,6 +129,10 @@ func (p *ProposerPolicy) ClearRegistry() {
 	defer p.registryMU.Unlock()
 
 	p.registry = nil
+}
+
+func (p *ProposerPolicy) GetRegistrySize() int {
+	return len(p.registry)
 }
 
 type Config struct {
