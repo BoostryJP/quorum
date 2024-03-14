@@ -222,10 +222,6 @@ func getIsQuorum(file io.Reader) bool {
 
 // updateTransitions will update genesis block with the new transitions data
 func updateTransitions(ctx *cli.Context) error {
-	// Open and initialise both full and light databases
-	stack, _ := makeConfigNode(ctx)
-	defer stack.Close()
-
 	// Make sure we have a valid genesis JSON
 	genesisPath := ctx.Args().First()
 	if len(genesisPath) == 0 {
@@ -253,6 +249,10 @@ func updateTransitions(ctx *cli.Context) error {
 	} else {
 		return fmt.Errorf("update transitions only apply to quorum configuration")
 	}
+
+	// Open and initialise both full and light databases
+	stack, _ := makeConfigNode(ctx)
+	defer stack.Close()
 
 	// Update transitions and recommit to db
 	for _, name := range []string{"chaindata", "lightchaindata"} {
