@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestQuorumDefautConfig(t *testing.T) {
+func TestMinerDefautConfig(t *testing.T) {
 	type int_data struct {
 		actual   uint64
 		expected uint64
