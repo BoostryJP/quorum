@@ -117,6 +117,7 @@ const (
 	commitInterruptNone int32 = iota
 	commitInterruptNewHead
 	commitInterruptResubmit
+	commitInterruptTimeout
 )
 
 // newWorkReq represents a request for new sealing work submitting with relative interrupt notifier.
@@ -189,6 +190,13 @@ type worker struct {
 	// non-stop and no real transaction will be included.
 	noempty uint32
 
+	// newpayloadTimeout is the maximum timeout allowance for creating payload.
+	// The default value is 2 seconds but node operator can set it to arbitrary
+	// large value. A large timeout allowance may cause Geth to fail creating
+	// a non-empty payload within the specified time and eventually miss the slot
+	// in case there are some computation expensive transactions in txpool.
+	newpayloadTimeout time.Duration
+
 	// External functions
 	isLocalBlock func(block *types.Block) bool // Function used to determine whether the specified block is mined by local miner.
 
@@ -235,6 +243,16 @@ func newWorker(config *Config, chainConfig *params.ChainConfig, engine consensus
 			log.Warn("Sanitizing miner recommit interval", "provided", recommit, "updated", minRecommitInterval)
 			recommit = minRecommitInterval
 		}
+		// Sanitize the timeout config for creating payload.
+		newpayloadTimeout := worker.config.NewPayloadTimeout
+		if newpayloadTimeout == 0 {
+			log.Warn("Sanitizing new payload timeout to default", "provided", newpayloadTimeout, "updated", DefaultConfig.NewPayloadTimeout)
+			newpayloadTimeout = DefaultConfig.NewPayloadTimeout
+		}
+		if newpayloadTimeout < time.Millisecond*100 {
+			log.Warn("Low payload timeout may cause high amount of non-full blocks", "provided", newpayloadTimeout, "default", DefaultConfig.NewPayloadTimeout)
+		}
+		worker.newpayloadTimeout = newpayloadTimeout
 
 		go worker.mainLoop()
 		go worker.newWorkLoop(recommit)
@@ -882,18 +900,23 @@ func (w *worker) commitTransactions(txs *types.TransactionsByPriceAndNonce, coin
 
 	var coalescedLogs []*types.Log
 
-	loopStartTime := time.Now() // Quorum
 	for {
 		// In the following three cases, we will interrupt the execution of the transaction.
 		// (1) new head block event arrival, the interrupt signal is 1
 		// (2) worker start or restart, the interrupt signal is 1
 		// (3) worker recreate the mining block with any newly arrived transactions, the interrupt signal is 2.
-		// For the first two cases, the semi-finished work will be discarded.
-		// For the third case, the semi-finished work will be submitted to the consensus engine.
+		// (4) new payload timeout, the interrupt signal is 3.
+		// signal-1 -> the semi-finished work will be discarded.
+		// signal-2, 3 -> the semi-finished work will be submitted to the consensus engine.
 		if interrupt != nil && atomic.LoadInt32(interrupt) != commitInterruptNone {
-			log.Info("Aborting transaction processing due to 'commitInterruptNewHead',", "elapsed time", time.Since(loopStartTime)) // Quorum
-			// Notify resubmit loop to increase resubmitting interval due to too frequent commits.
-			if atomic.LoadInt32(interrupt) == commitInterruptResubmit {
+			switch {
+			// Payload timeout
+			case atomic.LoadInt32(interrupt) == commitInterruptTimeout:
+				return false
+
+			// Notify resubmit loop to increase resubmitting interval if the
+			// interruption is due to frequent commits.
+			case atomic.LoadInt32(interrupt) == commitInterruptResubmit:
 				ratio := float64(w.current.header.GasLimit-w.current.gasPool.Gas()) / float64(w.current.header.GasLimit)
 				if ratio < 0.1 {
 					ratio = 0.1
@@ -902,24 +925,35 @@ func (w *worker) commitTransactions(txs *types.TransactionsByPriceAndNonce, coin
 					ratio: ratio,
 					inc:   true,
 				}
+				return false
+
+			// If the block building is interrupted by newhead event, discard it
+			// totally. Committing the interrupted block introduces unnecessary
+			// delay, and possibly causes miner to mine on the previous head,
+			// which could result in higher uncle rate.
+			case atomic.LoadInt32(interrupt) == commitInterruptNewHead:
+				return true
 			}
-			return atomic.LoadInt32(interrupt) == commitInterruptNewHead
 		}
-		// If we don't have enough gas for any further transactions then we're done
+
+		// If we don't have enough gas for any further transactions then we're done.
 		if w.current.gasPool.Gas() < params.TxGas {
 			log.Trace("Not enough gas for further transactions", "have", w.current.gasPool, "want", params.TxGas)
 			break
 		}
-		// Retrieve the next transaction and abort if all done
+
+		// Retrieve the next transaction and abort if all done.
 		tx := txs.Peek()
 		if tx == nil {
 			break
 		}
+
 		// Error may be ignored here. The error has already been checked
 		// during transaction acceptance is the transaction pool.
 		//
 		// We use the eip155 signer regardless of the current hf.
 		from, _ := types.Sender(w.current.signer, tx)
+
 		// Check whether the tx is replay protected. If we're not in the EIP155 hf
 		// phase, start ignoring the sender until we do.
 		if tx.Protected() && !w.chainConfig.IsEIP155(w.current.header.Number) && !tx.IsPrivate() {
@@ -928,6 +962,7 @@ func (w *worker) commitTransactions(txs *types.TransactionsByPriceAndNonce, coin
 			txs.Pop()
 			continue
 		}
+
 		// Start executing the transaction
 		logs, err := w.commitTransaction(tx, coinbase)
 		switch {
@@ -1000,10 +1035,10 @@ func (w *worker) commitNewWork(interrupt *int32, noempty bool, timestamp int64) 
 		timestamp = int64(parent.Time() + 1)
 	}
 	minGasLimit := w.chainConfig.GetMinerMinGasLimit(parent.Number(), params.DefaultMinGasLimit)
-	num := parent.Number()
+	// Construct the sealing block header.
 	header := &types.Header{
 		ParentHash: parent.Hash(),
-		Number:     num.Add(num, common.Big1),
+		Number:     new(big.Int).Add(parent.Number(), common.Big1),
 		GasLimit:   core.CalcGasLimit(parent, minGasLimit, w.config.GasFloor, w.config.GasCeil),
 		Extra:      w.extra,
 		Time:       uint64(timestamp),
@@ -1096,6 +1131,12 @@ func (w *worker) commitNewWork(interrupt *int32, noempty bool, timestamp int64) 
 			localTxs[account] = txs
 		}
 	}
+
+	timer := time.AfterFunc(w.newpayloadTimeout, func() {
+		atomic.StoreInt32(interrupt, commitInterruptTimeout)
+	})
+	defer timer.Stop()
+
 	if len(localTxs) > 0 {
 		txs := types.NewTransactionsByPriceAndNonce(w.current.signer, localTxs)
 		if w.commitTransactions(txs, w.coinbase, interrupt) {
