@@ -912,6 +912,7 @@ func (w *worker) commitTransactions(txs *types.TransactionsByPriceAndNonce, coin
 			switch {
 			// Payload timeout
 			case atomic.LoadInt32(interrupt) == commitInterruptTimeout:
+				log.Info("Aborting transaction processing", "interrupt", interrupt)
 				return false
 
 			// Notify resubmit loop to increase resubmitting interval if the
@@ -925,6 +926,7 @@ func (w *worker) commitTransactions(txs *types.TransactionsByPriceAndNonce, coin
 					ratio: ratio,
 					inc:   true,
 				}
+				log.Info("Aborting transaction processing", "interrupt", interrupt, "ratio", ratio)
 				return false
 
 			// If the block building is interrupted by newhead event, discard it
@@ -932,6 +934,7 @@ func (w *worker) commitTransactions(txs *types.TransactionsByPriceAndNonce, coin
 			// delay, and possibly causes miner to mine on the previous head,
 			// which could result in higher uncle rate.
 			case atomic.LoadInt32(interrupt) == commitInterruptNewHead:
+				log.Info("Aborting transaction processing", "interrupt", interrupt)
 				return true
 			}
 		}
