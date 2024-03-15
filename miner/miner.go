@@ -64,7 +64,7 @@ var DefaultConfig = Config{
 	GasFloor:          params.DefaultMinGasLimit,
 	GasCeil:           params.GenesisGasLimit,
 	GasPrice:          big.NewInt(params.GWei),
-	Recommit:          3 * time.Second,        // for ibet
+	Recommit:          3 * time.Second,
 	NewPayloadTimeout: 800 * time.Millisecond, // for ibet
 }
 
