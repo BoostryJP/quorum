@@ -906,14 +906,14 @@ func (w *worker) commitTransactions(txs *types.TransactionsByPriceAndNonce, coin
 		// (2) worker start or restart, the interrupt signal is 1
 		// (3) worker recreate the mining block with any newly arrived transactions, the interrupt signal is 2.
 		// (4) new payload timeout, the interrupt signal is 3.
-		// signal-1, 3 -> the semi-finished work will be discarded.
-		// signal-2 -> the semi-finished work will be submitted to the consensus engine.
+		// signal-1 -> the semi-finished work will be discarded.
+		// signal-2, 3 -> the semi-finished work will be submitted to the consensus engine.
 		if interrupt != nil && atomic.LoadInt32(interrupt) != commitInterruptNone {
 			switch {
 			// Payload timeout
 			case atomic.LoadInt32(interrupt) == commitInterruptTimeout:
 				log.Info("Aborting transaction processing", "signal", commitInterruptTimeout)
-				return true
+				return false
 
 			// Notify resubmit loop to increase resubmitting interval if the
 			// interruption is due to frequent commits.
