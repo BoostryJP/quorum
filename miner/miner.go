@@ -65,7 +65,7 @@ var DefaultConfig = Config{
 	GasCeil:           params.GenesisGasLimit,
 	GasPrice:          big.NewInt(params.GWei),
 	Recommit:          3 * time.Second,
-	NewPayloadTimeout: 800 * time.Millisecond, // for ibet
+	NewPayloadTimeout: 600 * time.Millisecond, // for ibet
 }
 
 // Miner creates blocks and searches for proof-of-work values.
