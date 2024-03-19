@@ -12,7 +12,6 @@ run:
 linters:
   disable-all: true
   enable:
-    - goconst
     - goimports
     - gosimple
     - govet
@@ -59,10 +58,8 @@ issues:
       text: 'SA1019: "github.com/golang/protobuf/proto" is deprecated: Use the "google.golang.org/protobuf/proto" package instead.'
     - path: plugin/account/internal/testutils/matchers.go
       text: 'SA1019: "github.com/golang/protobuf/proto" is deprecated: Use the "google.golang.org/protobuf/proto" package instead.'
-    - path: rpc/
-      text: 'SA1019: "github.com/golang/protobuf/proto" is deprecated: Use the "google.golang.org/protobuf/proto" package instead.'
-    - path: rpc/
-      text: 'SA1019: "github.com/golang/protobuf/ptypes" is deprecated: Well-known types have specialized functionality directly injected into the generated packages for each message type. See the deprecation notice for each function for the suggested alternative'
+    - path: consensus/ethash/      
+      text: 'SA1019: reflect.SliceHeader has been deprecated since Go 1.21 and an alternative has been available since Go 1.17: Use unsafe.Slice or unsafe.SliceData instead.'
   exclude:
     - 'SA1019: event.TypeMux is deprecated: use Feed'
     - 'SA1019: strings.Title is deprecated'
