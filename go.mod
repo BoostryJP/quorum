@@ -1,6 +1,6 @@
 module github.com/ethereum/go-ethereum
 
-go 1.21
+go 1.22
 
 // Quorum - Replace Go modules that use modifications done by us
 replace github.com/coreos/etcd => github.com/Consensys/etcd v3.3.13-quorum197+incompatible
