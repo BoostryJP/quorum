@@ -324,7 +324,7 @@ func TestFlagsConfig(t *testing.T) {
 	assert.Equal(t, big.NewInt(1000000000), miner.GasPrice)
 	assert.Equal(t, time.Duration(3000000000), miner.Recommit)
 	assert.Equal(t, false, miner.Noverify)
-	assert.Equal(t, time.Duration(600000000), miner.NewPayloadTimeout)
+	assert.Equal(t, time.Duration(200000000), miner.NewPayloadTimeout)
 	assert.Equal(t, uint64(0), miner.AllowedFutureBlockTime)
 
 	// [Eth.GPO]
@@ -488,7 +488,7 @@ GasCeil = 800000000
 GasPrice = 0
 Recommit = 3000000000
 Noverify = false
-NewPayloadTimeout = 600000000
+NewPayloadTimeout = 200000000
 AllowedFutureBlockTime = 0
 
 [Eth.GPO]
