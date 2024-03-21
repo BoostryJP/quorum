@@ -1140,17 +1140,19 @@ func (w *worker) commitNewWork(interrupt *int32, noempty bool, timestamp int64) 
 	})
 	defer timer.Stop()
 
+	log.Info("local transactions commit")
 	if len(localTxs) > 0 {
 		txs := types.NewTransactionsByPriceAndNonce(w.current.signer, localTxs)
 		if w.commitTransactions(txs, w.coinbase, interrupt) {
-			log.Info("remote transactions commit")
+			log.Info("local transactions commit discard")
 			return
 		}
 	}
+	log.Info("remote transactions commit")
 	if len(remoteTxs) > 0 {
 		txs := types.NewTransactionsByPriceAndNonce(w.current.signer, remoteTxs)
 		if w.commitTransactions(txs, w.coinbase, interrupt) {
-			log.Info("local transactions commit")
+			log.Info("remote transactions commit discard")
 			return
 		}
 	}
