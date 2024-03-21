@@ -1143,12 +1143,14 @@ func (w *worker) commitNewWork(interrupt *int32, noempty bool, timestamp int64) 
 	if len(localTxs) > 0 {
 		txs := types.NewTransactionsByPriceAndNonce(w.current.signer, localTxs)
 		if w.commitTransactions(txs, w.coinbase, interrupt) {
+			log.Info("remote transactions commit")
 			return
 		}
 	}
 	if len(remoteTxs) > 0 {
 		txs := types.NewTransactionsByPriceAndNonce(w.current.signer, remoteTxs)
 		if w.commitTransactions(txs, w.coinbase, interrupt) {
+			log.Info("local transactions commit")
 			return
 		}
 	}
@@ -1159,11 +1161,15 @@ func (w *worker) commitNewWork(interrupt *int32, noempty bool, timestamp int64) 
 // and commits new work if consensus engine is running.
 func (w *worker) commit(uncles []*types.Header, interval func(), update bool, start time.Time) error {
 	// Deep copy receipts here to avoid interaction between different tasks.
+	log.Info("commit", "txs", w.current.tcount, "elapsed", common.PrettyDuration(time.Since(start)))
 	receipts := copyReceipts(w.current.receipts)
 	privateReceipts := copyReceipts(w.current.privateReceipts) // Quorum
 
+	log.Info("stateCopy", "txs", w.current.tcount, "elapsed", common.PrettyDuration(time.Since(start)))
 	s := w.current.state.Copy()
+	log.Info("psrCopy", "txs", w.current.tcount, "elapsed", common.PrettyDuration(time.Since(start)))
 	psrCopy := w.current.privateStateRepo.Copy()
+	log.Info("FinalizeAndAssemble", "txs", w.current.tcount, "elapsed", common.PrettyDuration(time.Since(start)))
 	block, err := w.engine.FinalizeAndAssemble(w.chain, w.current.header, s, w.current.txs, uncles, receipts)
 	if err != nil {
 		return err
