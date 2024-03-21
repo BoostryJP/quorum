@@ -1167,11 +1167,11 @@ func (w *worker) commit(uncles []*types.Header, interval func(), update bool, st
 	receipts := copyReceipts(w.current.receipts)
 	privateReceipts := copyReceipts(w.current.privateReceipts) // Quorum
 
-	log.Info("stateCopy", "txs", w.current.tcount, "elapsed", common.PrettyDuration(time.Since(start)))
+	log.Info("★stateCopy", "txs", w.current.tcount, "elapsed", common.PrettyDuration(time.Since(start)))
 	s := w.current.state.Copy()
 	log.Info("psrCopy", "txs", w.current.tcount, "elapsed", common.PrettyDuration(time.Since(start)))
 	psrCopy := w.current.privateStateRepo.Copy()
-	log.Info("FinalizeAndAssemble", "txs", w.current.tcount, "elapsed", common.PrettyDuration(time.Since(start)))
+	log.Info("★FinalizeAndAssemble", "txs", w.current.tcount, "elapsed", common.PrettyDuration(time.Since(start)))
 	block, err := w.engine.FinalizeAndAssemble(w.chain, w.current.header, s, w.current.txs, uncles, receipts)
 	if err != nil {
 		return err
