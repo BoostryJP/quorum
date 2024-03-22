@@ -16,7 +16,7 @@ func TestMinerDefautConfig(t *testing.T) {
 		"DefaultConfig.GasFloor":          {DefaultConfig.GasFloor, 700000000},
 		"DefaultConfig.GasCeil":           {DefaultConfig.GasCeil, 800000000},
 		"DefaultConfig.Recommit":          {uint64(DefaultConfig.Recommit), uint64(3 * time.Second)},
-		"DefaultConfig.NewPayloadTimeout": {uint64(DefaultConfig.NewPayloadTimeout), uint64(800 * time.Millisecond)},
+		"DefaultConfig.NewPayloadTimeout": {uint64(DefaultConfig.NewPayloadTimeout), uint64(200 * time.Millisecond)},
 	}
 	for k, v := range testData {
 		assert.Equal(t, v.expected, v.actual, k+" value mismatch")
