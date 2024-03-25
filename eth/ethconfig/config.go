@@ -81,16 +81,11 @@ var Defaults = Config{
 	TrieDirtyCache:          256,
 	TrieTimeout:             60 * time.Minute,
 	SnapshotCache:           102,
-	Miner: miner.Config{
-		GasFloor: params.DefaultMinGasLimit,
-		GasCeil:  params.GenesisGasLimit,
-		GasPrice: big.NewInt(params.GWei),
-		Recommit: 3 * time.Second,
-	},
-	TxPool:      core.DefaultTxPoolConfig,
-	RPCGasCap:   25000000,
-	GPO:         FullNodeGPO,
-	RPCTxFeeCap: 1, // 1 ether
+	Miner:                   miner.DefaultConfig,
+	TxPool:                  core.DefaultTxPoolConfig,
+	RPCGasCap:               25000000,
+	GPO:                     FullNodeGPO,
+	RPCTxFeeCap:             1, // 1 ether
 
 	// Quorum
 	Istanbul: *istanbul.DefaultConfig, // Quorum

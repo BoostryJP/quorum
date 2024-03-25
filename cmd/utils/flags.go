@@ -487,6 +487,12 @@ var (
 		Name:  "miner.noverify",
 		Usage: "Disable remote sealing verification",
 	}
+	MinerNewPayloadTimeout = &cli.DurationFlag{
+		Name:  "miner.newpayload-timeout",
+		Usage: "Specify the maximum time allowance for creating a new payload",
+		Value: ethconfig.Defaults.Miner.NewPayloadTimeout,
+	}
+
 	// Account settings
 	UnlockedAccountFlag = cli.StringFlag{
 		Name:  "unlock",
@@ -1791,6 +1797,9 @@ func setMiner(ctx *cli.Context, cfg *miner.Config) {
 	}
 	if ctx.GlobalIsSet(MinerNoVerfiyFlag.Name) {
 		cfg.Noverify = ctx.GlobalBool(MinerNoVerfiyFlag.Name)
+	}
+	if ctx.GlobalIsSet(MinerNewPayloadTimeout.Name) {
+		cfg.NewPayloadTimeout = ctx.Duration(MinerNewPayloadTimeout.Name)
 	}
 	if ctx.GlobalIsSet(AllowedFutureBlockTimeFlag.Name) {
 		cfg.AllowedFutureBlockTime = ctx.GlobalUint64(AllowedFutureBlockTimeFlag.Name) //Quorum
