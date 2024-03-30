@@ -1,12 +1,14 @@
+<p align="center">
+  <img width="33%" src="https://user-images.githubusercontent.com/963333/212965270-bba794c6-be66-4850-9475-19895530f32c.png"/>
+</p>
+
 # GoQuorum for ibet Network
 
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-2.3-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-2.4-blue.svg?cacheSeconds=2592000" />
 </p>
 
 This project is [GoQuorum](https://github.com/ConsenSys/quorum) fork for [ibet Network](https://github.com/BoostryJP/ibet-Network)
-
-<img width="33%" align="right" src="https://user-images.githubusercontent.com/963333/212965270-bba794c6-be66-4850-9475-19895530f32c.png"/>
 
 ## Version control policy
 
