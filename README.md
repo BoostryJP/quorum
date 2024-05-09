@@ -19,7 +19,7 @@ The version control policy of this project follows that of ibet-Network.
 
 ## Reference GoQuorum version
 
-Currently, the ibet Network is built using a node client based on v23.4.0 of GoQuorum. 
+Currently, the ibet Network is built using a node client based on v24.4.0 of GoQuorum. 
 However, it has been variously patched to be optimized for ibet Network. For example:
 - The default block generation interval is set to 1 second.
 - Fully supports Go 1.22 and applies new 3rd party packages from a security perspective.
