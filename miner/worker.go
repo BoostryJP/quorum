@@ -1034,12 +1034,6 @@ func (w *worker) commitNewWork(interrupt *int32, noempty bool, timestamp int64) 
 	tstart := time.Now()
 	parent := w.chain.CurrentBlock()
 
-	timer := time.AfterFunc(w.newpayloadTimeout, func() {
-		atomic.StoreInt32(interrupt, commitInterruptTimeout)
-	})
-	defer timer.Stop()
-	log.Info("Start payload timer")
-
 	if parent.Time() >= uint64(timestamp) {
 		timestamp = int64(parent.Time() + 1)
 	}
@@ -1140,6 +1134,13 @@ func (w *worker) commitNewWork(interrupt *int32, noempty bool, timestamp int64) 
 			localTxs[account] = txs
 		}
 	}
+
+	// Commit transactions
+	timer := time.AfterFunc(w.newpayloadTimeout, func() {
+		atomic.StoreInt32(interrupt, commitInterruptTimeout)
+	})
+	defer timer.Stop()
+	log.Info("Start payload timer")
 
 	if len(localTxs) > 0 {
 		txs := types.NewTransactionsByPriceAndNonce(w.current.signer, localTxs)
