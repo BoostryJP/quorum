@@ -64,14 +64,6 @@ func TestFlagsConfig(t *testing.T) {
 		utils.UltraLightOnlyAnnounceFlag,
 		utils.LightNoPruneFlag,
 		utils.LightNoSyncServeFlag,
-		utils.EthashCacheDirFlag,
-		utils.EthashCachesInMemoryFlag,
-		utils.EthashCachesOnDiskFlag,
-		utils.EthashCachesLockMmapFlag,
-		utils.EthashDatasetDirFlag,
-		utils.EthashDatasetsInMemoryFlag,
-		utils.EthashDatasetsOnDiskFlag,
-		utils.EthashDatasetsLockMmapFlag,
 		utils.TxPoolLocalsFlag,
 		utils.TxPoolNoLocalsFlag,
 		utils.TxPoolJournalFlag,
@@ -93,15 +85,12 @@ func TestFlagsConfig(t *testing.T) {
 		utils.CacheNoPrefetchFlag,
 		utils.CachePreimagesFlag,
 		utils.MiningEnabledFlag,
-		utils.MinerThreadsFlag,
-		utils.MinerNotifyFlag,
 		utils.MinerGasTargetFlag,
 		utils.MinerGasLimitFlag,
 		utils.MinerGasPriceFlag,
 		utils.MinerEtherbaseFlag,
 		utils.MinerExtraDataFlag,
 		utils.MinerRecommitIntervalFlag,
-		utils.MinerNoVerfiyFlag,
 		utils.UnlockedAccountFlag,
 		utils.PasswordFileFlag,
 		utils.ExternalSignerFlag,
@@ -323,7 +312,6 @@ func TestFlagsConfig(t *testing.T) {
 	assert.Equal(t, uint64(800000000), miner.GasCeil)
 	assert.Equal(t, big.NewInt(1000000000), miner.GasPrice)
 	assert.Equal(t, time.Duration(3000000000), miner.Recommit)
-	assert.Equal(t, false, miner.Noverify)
 	assert.Equal(t, time.Duration(200000000), miner.NewPayloadTimeout)
 	assert.Equal(t, uint64(0), miner.AllowedFutureBlockTime)
 
@@ -487,7 +475,6 @@ GasFloor = 700000000
 GasCeil = 800000000
 GasPrice = 0
 Recommit = 3000000000
-Noverify = false
 NewPayloadTimeout = 200000000
 AllowedFutureBlockTime = 0
 
@@ -619,7 +606,6 @@ func testConfig(t *testing.T, cfg *gethConfig) {
 	assert.Equal(t, uint64(800000000), miner.GasCeil)
 	assert.Equal(t, big.NewInt(0), miner.GasPrice)
 	assert.Equal(t, time.Duration(3000000000), miner.Recommit)
-	assert.Equal(t, false, miner.Noverify)
 	assert.Equal(t, uint64(0), miner.AllowedFutureBlockTime)
 
 	// [Eth.GPO]

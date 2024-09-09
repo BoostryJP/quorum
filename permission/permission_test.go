@@ -17,7 +17,6 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/consensus/ethash"
 	"github.com/ethereum/go-ethereum/core"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/eth"
@@ -127,9 +126,6 @@ func setup() {
 	ethConf := &eth.Config{
 		Genesis: &core.Genesis{Config: params.AllEthashProtocolChanges, GasLimit: 10000000000, Alloc: genesisAlloc},
 		Miner:   miner.Config{Etherbase: guardianAddress},
-		Ethash: ethash.Config{
-			PowMode: ethash.ModeTest,
-		},
 	}
 
 	_, err = eth.New(stack, ethConf)

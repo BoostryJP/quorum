@@ -19,10 +19,6 @@ package ethconfig
 
 import (
 	"math/big"
-	"os"
-	"os/user"
-	"path/filepath"
-	"runtime"
 	"strings"
 	"time"
 
@@ -61,15 +57,6 @@ var Defaults = Config{
 	// Quorum - make full sync the default sync mode in quorum (as opposed to upstream geth)
 	SyncMode: downloader.FullSync,
 	// End Quorum
-	Ethash: ethash.Config{
-		CacheDir:         "ethash",
-		CachesInMem:      2,
-		CachesOnDisk:     3,
-		CachesLockMmap:   false,
-		DatasetsInMem:    1,
-		DatasetsOnDisk:   2,
-		DatasetsLockMmap: false,
-	},
 	NetworkId:               1337,
 	TxLookupLimit:           2350000,
 	LightPeers:              100,
@@ -89,27 +76,6 @@ var Defaults = Config{
 
 	// Quorum
 	Istanbul: *istanbul.DefaultConfig, // Quorum
-}
-
-func init() {
-	home := os.Getenv("HOME")
-	if home == "" {
-		if user, err := user.Current(); err == nil {
-			home = user.HomeDir
-		}
-	}
-	if runtime.GOOS == "darwin" {
-		Defaults.Ethash.DatasetDir = filepath.Join(home, "Library", "Ethash")
-	} else if runtime.GOOS == "windows" {
-		localappdata := os.Getenv("LOCALAPPDATA")
-		if localappdata != "" {
-			Defaults.Ethash.DatasetDir = filepath.Join(localappdata, "Ethash")
-		} else {
-			Defaults.Ethash.DatasetDir = filepath.Join(home, "AppData", "Local", "Ethash")
-		}
-	} else {
-		Defaults.Ethash.DatasetDir = filepath.Join(home, ".ethash")
-	}
 }
 
 //go:generate gencodec -type Config -formats toml -out gen_config.go
@@ -168,9 +134,6 @@ type Config struct {
 	// Mining options
 	Miner miner.Config
 
-	// Ethash options
-	Ethash ethash.Config
-
 	// Transaction pool options
 	TxPool core.TxPoolConfig
 
@@ -224,7 +187,7 @@ type Config struct {
 }
 
 // CreateConsensusEngine creates a consensus engine for the given chain configuration.
-func CreateConsensusEngine(stack *node.Node, chainConfig *params.ChainConfig, config *Config, notify []string, noverify bool, db ethdb.Database) consensus.Engine {
+func CreateConsensusEngine(stack *node.Node, chainConfig *params.ChainConfig, config *Config, db ethdb.Database) consensus.Engine {
 	// If proof-of-authority is requested, set it up
 	if chainConfig.Clique != nil {
 		chainConfig.Clique.AllowedFutureBlockTime = config.Miner.AllowedFutureBlockTime //Quorum
@@ -307,7 +270,7 @@ func CreateConsensusEngine(stack *node.Node, chainConfig *params.ChainConfig, co
 	// the Ethereum service still needs a consensus engine,
 	// use the consensus with the lightest overhead
 	engine := ethash.NewFullFaker()
-	engine.SetThreads(-1) // Disable CPU Mining
+
 	return engine
 }
 
