@@ -156,7 +156,7 @@ type Config struct {
 }
 
 var DefaultConfig = &Config{
-	RequestTimeout:         10000,
+	RequestTimeout:         3000,
 	BlockPeriod:            1,
 	EmptyBlockPeriod:       0,
 	ProposerPolicy:         NewRoundRobinProposerPolicy(),
