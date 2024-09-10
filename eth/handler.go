@@ -244,7 +244,7 @@ func newHandler(config *handlerConfig) (*handler, error) {
 
 	// Construct the fetcher (short sync)
 	validator := func(header *types.Header) error {
-		return h.chain.Engine().VerifyHeader(h.chain, header, true)
+		return h.chain.Engine().VerifyHeader(h.chain, header)
 	}
 	heighter := func() uint64 {
 		return h.chain.CurrentBlock().NumberU64()

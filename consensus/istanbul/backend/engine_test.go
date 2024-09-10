@@ -261,7 +261,7 @@ func TestVerifyHeader(t *testing.T) {
 	// istanbulcommon.ErrEmptyCommittedSeals case
 	block := makeBlockWithoutSeal(chain, engine, chain.Genesis())
 	block = updateQBFTBlock(block, engine.Address())
-	err := engine.VerifyHeader(chain, block.Header(), false)
+	err := engine.VerifyHeader(chain, block.Header())
 	if err != istanbulcommon.ErrEmptyCommittedSeals {
 		t.Errorf("error mismatch: have %v, want %v", err, istanbulcommon.ErrEmptyCommittedSeals)
 	}
@@ -269,13 +269,13 @@ func TestVerifyHeader(t *testing.T) {
 	// short extra data
 	header := block.Header()
 	header.Extra = []byte{}
-	err = engine.VerifyHeader(chain, header, false)
+	err = engine.VerifyHeader(chain, header)
 	if err != istanbulcommon.ErrInvalidExtraDataFormat {
 		t.Errorf("error mismatch: have %v, want %v", err, istanbulcommon.ErrInvalidExtraDataFormat)
 	}
 	// incorrect extra format
 	header.Extra = []byte("0000000000000000000000000000000012300000000000000000000000000000000000000000000000000000000000000000")
-	err = engine.VerifyHeader(chain, header, false)
+	err = engine.VerifyHeader(chain, header)
 	if err != istanbulcommon.ErrInvalidExtraDataFormat {
 		t.Errorf("error mismatch: have %v, want %v", err, istanbulcommon.ErrInvalidExtraDataFormat)
 	}
@@ -284,7 +284,7 @@ func TestVerifyHeader(t *testing.T) {
 	block = makeBlockWithoutSeal(chain, engine, chain.Genesis())
 	header = block.Header()
 	header.MixDigest = common.StringToHash("123456789")
-	err = engine.VerifyHeader(chain, header, false)
+	err = engine.VerifyHeader(chain, header)
 	if err != istanbulcommon.ErrInvalidMixDigest {
 		t.Errorf("error mismatch: have %v, want %v", err, istanbulcommon.ErrInvalidMixDigest)
 	}
@@ -293,7 +293,7 @@ func TestVerifyHeader(t *testing.T) {
 	block = makeBlockWithoutSeal(chain, engine, chain.Genesis())
 	header = block.Header()
 	header.UncleHash = common.StringToHash("123456789")
-	err = engine.VerifyHeader(chain, header, false)
+	err = engine.VerifyHeader(chain, header)
 	if err != istanbulcommon.ErrInvalidUncleHash {
 		t.Errorf("error mismatch: have %v, want %v", err, istanbulcommon.ErrInvalidUncleHash)
 	}
@@ -302,7 +302,7 @@ func TestVerifyHeader(t *testing.T) {
 	block = makeBlockWithoutSeal(chain, engine, chain.Genesis())
 	header = block.Header()
 	header.Difficulty = big.NewInt(2)
-	err = engine.VerifyHeader(chain, header, false)
+	err = engine.VerifyHeader(chain, header)
 	if err != istanbulcommon.ErrInvalidDifficulty {
 		t.Errorf("error mismatch: have %v, want %v", err, istanbulcommon.ErrInvalidDifficulty)
 	}
@@ -311,7 +311,7 @@ func TestVerifyHeader(t *testing.T) {
 	block = makeBlockWithoutSeal(chain, engine, chain.Genesis())
 	header = block.Header()
 	header.Time = chain.Genesis().Time() + (engine.config.GetConfig(block.Number()).BlockPeriod - 1)
-	err = engine.VerifyHeader(chain, header, false)
+	err = engine.VerifyHeader(chain, header)
 	if err != istanbulcommon.ErrInvalidTimestamp {
 		t.Errorf("error mismatch: have %v, want %v", err, istanbulcommon.ErrInvalidTimestamp)
 	}
@@ -320,7 +320,7 @@ func TestVerifyHeader(t *testing.T) {
 	block = makeBlockWithoutSeal(chain, engine, chain.Genesis())
 	header = block.Header()
 	header.Time = uint64(time.Now().Unix() + 10)
-	err = engine.VerifyHeader(chain, header, false)
+	err = engine.VerifyHeader(chain, header)
 	if err != consensus.ErrFutureBlock {
 		t.Errorf("error mismatch: have %v, want %v", err, consensus.ErrFutureBlock)
 	}
@@ -331,7 +331,7 @@ func TestVerifyHeader(t *testing.T) {
 	header.Time = new(big.Int).Add(big.NewInt(time.Now().Unix()), new(big.Int).SetUint64(10)).Uint64()
 	priorValue := engine.config.AllowedFutureBlockTime
 	engine.config.AllowedFutureBlockTime = 10
-	err = engine.VerifyHeader(chain, header, false)
+	err = engine.VerifyHeader(chain, header)
 	engine.config.AllowedFutureBlockTime = priorValue //restore changed value
 	if err == consensus.ErrFutureBlock {
 		t.Errorf("error mismatch: have %v, want nil", err)
@@ -374,7 +374,7 @@ func TestVerifyHeaders(t *testing.T) {
 	// now = func() time.Time {
 	// 	return time.Unix(int64(headers[size-1].Time), 0)
 	// }
-	_, results := engine.VerifyHeaders(chain, headers, nil)
+	_, results := engine.VerifyHeaders(chain, headers)
 	const timeoutDura = 2 * time.Second
 	timeout := time.NewTimer(timeoutDura)
 	index := 0
@@ -396,7 +396,7 @@ OUT1:
 			break OUT1
 		}
 	}
-	_, results = engine.VerifyHeaders(chain, headers, nil)
+	_, results = engine.VerifyHeaders(chain, headers)
 	timeout = time.NewTimer(timeoutDura)
 OUT2:
 	for {
@@ -414,7 +414,7 @@ OUT2:
 	}
 	// error header cases
 	headers[2].Number = big.NewInt(100)
-	_, results = engine.VerifyHeaders(chain, headers, nil)
+	_, results = engine.VerifyHeaders(chain, headers)
 	timeout = time.NewTimer(timeoutDura)
 	index = 0
 	errors := 0

@@ -155,7 +155,7 @@ func (e *Engine) verifyHeader(chain consensus.ChainHeaderReader, header *types.H
 	return e.verifyCascadingFields(chain, header, validators, parents)
 }
 
-func (e *Engine) VerifyHeaders(chain consensus.ChainHeaderReader, headers []*types.Header, seals []bool, validators istanbul.ValidatorSet) (chan<- struct{}, <-chan error) {
+func (e *Engine) VerifyHeaders(chain consensus.ChainHeaderReader, headers []*types.Header, validators istanbul.ValidatorSet) (chan<- struct{}, <-chan error) {
 	abort := make(chan struct{})
 	results := make(chan error, len(headers))
 	go func() {

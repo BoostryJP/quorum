@@ -72,9 +72,8 @@ type LightChain struct {
 	wg      sync.WaitGroup
 
 	// Atomic boolean switches:
-	running          int32 // whether LightChain is running or stopped
-	procInterrupt    int32 // interrupts chain insert
-	disableCheckFreq int32 // disables header verification
+	running       int32 // whether LightChain is running or stopped
+	procInterrupt int32 // interrupts chain insert
 
 	// Quorum
 	isMultitenant bool
@@ -395,12 +394,9 @@ func (lc *LightChain) postChainEvents(events []interface{}) {
 //
 // In the case of a light chain, InsertHeaderChain also creates and posts light
 // chain events when necessary.
-func (lc *LightChain) InsertHeaderChain(chain []*types.Header, checkFreq int) (int, error) {
-	if atomic.LoadInt32(&lc.disableCheckFreq) == 1 {
-		checkFreq = 0
-	}
+func (lc *LightChain) InsertHeaderChain(chain []*types.Header) (int, error) {
 	start := time.Now()
-	if i, err := lc.hc.ValidateHeaderChain(chain, checkFreq); err != nil {
+	if i, err := lc.hc.ValidateHeaderChain(chain); err != nil {
 		return i, err
 	}
 
@@ -586,16 +582,6 @@ func (lc *LightChain) SubscribeLogsEvent(ch chan<- []*types.Log) event.Subscript
 // LightChain does not send core.RemovedLogsEvent, so return an empty subscription.
 func (lc *LightChain) SubscribeRemovedLogsEvent(ch chan<- core.RemovedLogsEvent) event.Subscription {
 	return lc.scope.Track(new(event.Feed).Subscribe(ch))
-}
-
-// DisableCheckFreq disables header validation. This is used for ultralight mode.
-func (lc *LightChain) DisableCheckFreq() {
-	atomic.StoreInt32(&lc.disableCheckFreq, 1)
-}
-
-// EnableCheckFreq enables header validation.
-func (lc *LightChain) EnableCheckFreq() {
-	atomic.StoreInt32(&lc.disableCheckFreq, 0)
 }
 
 func (lc *LightChain) SupportsMultitenancy(context.Context) (*proto.PreAuthenticatedAuthenticationToken, bool) {

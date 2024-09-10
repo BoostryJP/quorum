@@ -61,7 +61,7 @@ func (sb *Backend) Signers(header *types.Header) ([]common.Address, error) {
 // VerifyHeader checks whether a header conforms to the consensus rules of a
 // given engine. Verifying the seal may be done optionally here, or explicitly
 // via the VerifySeal method.
-func (sb *Backend) VerifyHeader(chain consensus.ChainHeaderReader, header *types.Header, seal bool) error {
+func (sb *Backend) VerifyHeader(chain consensus.ChainHeaderReader, header *types.Header) error {
 	return sb.verifyHeader(chain, header, nil)
 }
 
@@ -79,7 +79,7 @@ func (sb *Backend) verifyHeader(chain consensus.ChainHeaderReader, header *types
 // concurrently. The method returns a quit channel to abort the operations and
 // a results channel to retrieve the async verifications (the order is that of
 // the input slice).
-func (sb *Backend) VerifyHeaders(chain consensus.ChainHeaderReader, headers []*types.Header, seals []bool) (chan<- struct{}, <-chan error) {
+func (sb *Backend) VerifyHeaders(chain consensus.ChainHeaderReader, headers []*types.Header) (chan<- struct{}, <-chan error) {
 	abort := make(chan struct{})
 	results := make(chan error, len(headers))
 	go func() {
