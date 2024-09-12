@@ -86,6 +86,7 @@ type blockExecutionEnv struct {
 }
 
 func (env *blockExecutionEnv) commitTransaction(tx *types.Transaction, coinbase common.Address) error {
+	log.Info("track: commitTransaction in catalyst")
 	vmconfig := *env.chain.GetVMConfig()
 	receipt, privateReceipt, err := core.ApplyTransaction(env.chain.Config(), env.chain, &coinbase, env.gasPool, env.state, env.privateState, env.header, tx, &env.header.GasUsed, vmconfig, env.forceNonParty, env.privateStateRepo, env.isInnerPrivateTxn)
 	if err != nil {

@@ -18,6 +18,7 @@ package core
 
 import (
 	"fmt"
+	"github.com/ethereum/go-ethereum/log"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -114,6 +115,7 @@ func (b *BlockGen) AddTxWithChain(bc *BlockChain, tx *types.Transaction) {
 	}
 	// End Quorum
 
+	log.Info("track: AddTxWithChain")
 	receipt, _, err := ApplyTransaction(b.config, bc, &b.header.Coinbase, b.gasPool, b.statedb, privateDb, b.header, tx, &b.header.GasUsed, vm.Config{}, false, nil, false)
 	if err != nil {
 		panic(err)

@@ -839,6 +839,7 @@ func (w *worker) updateSnapshot() {
 }
 
 func (w *worker) commitTransaction(tx *types.Transaction, coinbase common.Address) ([]*types.Log, error) {
+	log.Info("track: commitTransaction")
 	workerEnv := w.current
 	publicStateDB := workerEnv.state
 	snap := publicStateDB.Snapshot()

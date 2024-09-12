@@ -240,6 +240,7 @@ func ApplyTransactionOnMPS(config *params.ChainConfig, bc ChainContext, author *
 	publicStateDBFactory func() *state.StateDB, privateStateDBFactory func(psi types.PrivateStateIdentifier) (*state.StateDB, error),
 	header *types.Header, tx *types.Transaction, usedGas *uint64, cfg vm.Config, privateStateRepo mps.PrivateStateRepository,
 	applyOnPartiesOnly bool, isInnerPrivateTxn bool) (*types.Receipt, error) {
+	log.Info("track: ApplyTransactionOnMPS")
 	mpsReceipt := &types.Receipt{
 		QuorumReceiptExtraData: types.QuorumReceiptExtraData{
 			PSReceipts: make(map[types.PrivateStateIdentifier]*types.Receipt),
@@ -442,6 +443,7 @@ func ApplyTransaction(config *params.ChainConfig, bc ChainContext, author *commo
 // It's a call back which essentially duplicates the logic in Process(),
 // in this case to process the actual private transaction.
 func ApplyInnerTransaction(bc ChainContext, author *common.Address, gp *GasPool, stateDB *state.StateDB, privateStateDB *state.StateDB, header *types.Header, outerTx *types.Transaction, usedGas *uint64, evmConf vm.Config, forceNonParty bool, privateStateRepo mps.PrivateStateRepository, vmenv *vm.EVM, innerTx *types.Transaction, txIndex int) error {
+	log.Info("track: ApplyInnerTransaction")
 	// this should never happen, but added as sanity check
 	if !innerTx.IsPrivate() {
 		return errors.New("attempt to process non-private transaction from within ApplyInnerTransaction()")
