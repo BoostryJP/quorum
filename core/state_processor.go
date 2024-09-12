@@ -67,6 +67,7 @@ func NewStateProcessor(config *params.ChainConfig, bc *BlockChain, engine consen
 // 2. On multiple private states (MPS) design
 // 3. Contract extension callback (p.bc.CheckAndSetPrivateState)
 func (p *StateProcessor) Process(block *types.Block, statedb *state.StateDB, privateStateRepo mps.PrivateStateRepository, cfg vm.Config) (types.Receipts, types.Receipts, []*types.Log, uint64, error) {
+	log.Info("track: Process")
 	var (
 		receipts types.Receipts
 		usedGas  = new(uint64)
@@ -401,6 +402,7 @@ func applyTransaction(msg types.Message, config *params.ChainConfig, bc ChainCon
 // for the transaction, gas used and an error if the transaction failed,
 // indicating the block was invalid.
 func ApplyTransaction(config *params.ChainConfig, bc ChainContext, author *common.Address, gp *GasPool, statedb, privateStateDB *state.StateDB, header *types.Header, tx *types.Transaction, usedGas *uint64, cfg vm.Config, forceNonParty bool, privateStateRepo mps.PrivateStateRepository, isInnerPrivateTxn bool) (*types.Receipt, *types.Receipt, error) {
+	log.Info("ApplyTransaction in state processor")
 	// Quorum - decide the privateStateDB to use
 	privateStateDbToUse := PrivateStateDBForTxn(config.IsQuorum, tx, statedb, privateStateDB)
 	// End Quorum
