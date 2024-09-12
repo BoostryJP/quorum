@@ -165,6 +165,7 @@ func (eth *Ethereum) stateAtBlock(block *types.Block, reexec uint64, base *state
 
 // stateAtTransaction returns the execution environment of a certain transaction.
 func (eth *Ethereum) stateAtTransaction(ctx context.Context, block *types.Block, txIndex int, reexec uint64) (core.Message, vm.BlockContext, *state.StateDB, *state.StateDB, mps.PrivateStateRepository, error) {
+	log.Info("stateAtTransaction")
 	// Short circuit if it's genesis block.
 	if block.NumberU64() == 0 {
 		return nil, vm.BlockContext{}, nil, nil, nil, errors.New("no transaction in genesis")

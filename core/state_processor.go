@@ -303,6 +303,7 @@ func ApplyTransactionOnMPS(config *params.ChainConfig, bc ChainContext, author *
 
 func applyTransaction(msg types.Message, config *params.ChainConfig, bc ChainContext, author *common.Address, gp *GasPool, statedb, privateStateDB *state.StateDB, header *types.Header, tx *types.Transaction, usedGas *uint64, evm *vm.EVM, cfg vm.Config, forceNonParty bool, privateStateRepo mps.PrivateStateRepository) (*types.Receipt, *types.Receipt, error) {
 	// Create a new context to be used in the EVM environment.
+	log.Info("track: applyTransaction in state processor")
 
 	// Quorum
 	txIndex := statedb.TxIndex()
