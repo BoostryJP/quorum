@@ -1131,16 +1131,20 @@ func (w *worker) commitNewWork(interrupt *int32, noempty bool, timestamp int64) 
 		atomic.StoreInt32(interrupt, commitInterruptTimeout)
 	})
 	defer timer.Stop()
+	log.Info("track: local transactions commit")
 
 	if len(localTxs) > 0 {
 		txs := types.NewTransactionsByPriceAndNonce(w.current.signer, localTxs)
 		if w.commitTransactions(txs, w.coinbase, interrupt) {
+			log.Info("track: local transactions commit discard")
 			return
 		}
 	}
+	log.Info("track: remote transactions commit")
 	if len(remoteTxs) > 0 {
 		txs := types.NewTransactionsByPriceAndNonce(w.current.signer, remoteTxs)
 		if w.commitTransactions(txs, w.coinbase, interrupt) {
+			log.Info("track: remote transactions commit discard")
 			return
 		}
 	}
@@ -1151,15 +1155,20 @@ func (w *worker) commitNewWork(interrupt *int32, noempty bool, timestamp int64) 
 // and commits new work if consensus engine is running.
 func (w *worker) commit(uncles []*types.Header, interval func(), update bool, start time.Time) error {
 	// Deep copy receipts here to avoid interaction between different tasks.
+	log.Info("track: commit", "txs", w.current.tcount, "elapsed", common.PrettyDuration(time.Since(start)))
 	receipts := copyReceipts(w.current.receipts)
 	privateReceipts := copyReceipts(w.current.privateReceipts) // Quorum
 
+	log.Info("track: stateCopy", "txs", w.current.tcount, "elapsed", common.PrettyDuration(time.Since(start)))
 	s := w.current.state.Copy()
+	log.Info("track: privateStateRepo", "txs", w.current.tcount, "elapsed", common.PrettyDuration(time.Since(start)))
 	psrCopy := w.current.privateStateRepo.Copy()
+	log.Info("track: FinalizeAndAssemble", "txs", w.current.tcount, "elapsed", common.PrettyDuration(time.Since(start)))
 	block, err := w.engine.FinalizeAndAssemble(w.chain, w.current.header, s, w.current.txs, uncles, receipts)
 	if err != nil {
 		return err
 	}
+	log.Info("track: Committing new mining work", "number", block.Number(), "txs", w.current.tcount, "elapsed", common.PrettyDuration(time.Since(start)))
 	if w.isRunning() {
 		if interval != nil {
 			interval()
@@ -1167,7 +1176,7 @@ func (w *worker) commit(uncles []*types.Header, interval func(), update bool, st
 		select {
 		case w.taskCh <- &task{receipts: receipts, privateReceipts: privateReceipts, state: s, privateStateRepo: psrCopy, block: block, createdAt: time.Now()}:
 			w.unconfirmed.Shift(block.NumberU64() - 1)
-			log.Info("Commit new mining work", "number", block.Number(), "sealhash", w.engine.SealHash(block.Header()),
+			log.Info("track: Commit new mining work", "number", block.Number(), "sealhash", w.engine.SealHash(block.Header()),
 				"uncles", len(uncles), "txs", w.current.tcount,
 				"gas", block.GasUsed(), "fees", totalFees(block, receipts),
 				"elapsed", common.PrettyDuration(time.Since(start)))
