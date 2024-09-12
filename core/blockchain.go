@@ -2094,6 +2094,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, error) {
 			atomic.StoreUint32(&followupInterrupt, 1)
 			return it.index, err
 		}
+		log.Info("track: process completed")
 		// Update the metrics touched during block processing
 		accountReadTimer.Update(statedb.AccountReads)                 // Account reads are complete, we can mark them
 		storageReadTimer.Update(statedb.StorageReads)                 // Storage reads are complete, we can mark them
@@ -2105,6 +2106,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, error) {
 		trieproc := statedb.SnapshotAccountReads + statedb.AccountReads + statedb.AccountUpdates
 		trieproc += statedb.SnapshotStorageReads + statedb.StorageReads + statedb.StorageUpdates
 
+		log.Info("track: blockExecutionTimer.Update")
 		blockExecutionTimer.Update(time.Since(substart) - trieproc - triehash)
 
 		// Validate the state using the default validator
@@ -2119,6 +2121,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, error) {
 		allReceipts := privateStateRepo.MergeReceipts(receipts, privateReceipts)
 		proctime := time.Since(start)
 
+		log.Info("track: HashTimer.Update")
 		// Update the metrics touched during block validation
 		accountHashTimer.Update(statedb.AccountHashes) // Account hashes are complete, we can mark them
 		storageHashTimer.Update(statedb.StorageHashes) // Storage hashes are complete, we can mark them
@@ -2126,6 +2129,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, error) {
 		blockValidationTimer.Update(time.Since(substart) - (statedb.AccountHashes + statedb.StorageHashes - triehash))
 
 		// Write the block to the chain and get the status.
+		log.Info("track: writeBlockWithState")
 		substart = time.Now()
 		status, err := bc.writeBlockWithState(block, allReceipts, logs, statedb, privateStateRepo, false)
 		atomic.StoreUint32(&followupInterrupt, 1)
@@ -2135,6 +2139,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, error) {
 		}
 
 		// Quorum
+		log.Info("track: rawdb.WritePrivateBlockBloom")
 		if err := rawdb.WritePrivateBlockBloom(bc.db, block.NumberU64(), privateReceipts); err != nil {
 			log.Info("track: write private block bloom")
 			return it.index, err
