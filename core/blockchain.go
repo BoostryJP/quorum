@@ -1727,12 +1727,16 @@ func (bc *BlockChain) writeBlockWithState(block *types.Block, receipts []*types.
 			}
 			// Garbage collect anything below our required write retention
 			for !bc.triegc.Empty() {
+				log.Info("track: triegc.Pop")
 				root, number := bc.triegc.Pop()
+				log.Info("track: triegc.Pop completed")
 				if uint64(-number) > chosen {
 					bc.triegc.Push(root, number)
 					break
 				}
+				log.Info("track: triedb.Dereference")
 				triedb.Dereference(root.(common.Hash))
+				log.Info("track: triedb.Dereference completed")
 			}
 		}
 		log.Info("track: fullnode process completed")
