@@ -24,7 +24,6 @@ import (
 	"net"
 	"net/http"
 	"net/http/pprof"
-	"runtime"
 	"sort"
 	"strings"
 	"sync"
@@ -89,7 +88,6 @@ type httpServer struct {
 func newHTTPServer(log log.Logger, timeouts rpc.HTTPTimeouts) *httpServer {
 	h := &httpServer{log: log, timeouts: timeouts, handlerNames: make(map[string]string)}
 
-	runtime.SetMutexProfileFraction(1)
 	h.httpHandler.Store((*rpcHandler)(nil))
 
 	h.mux.HandleFunc("/debug/pprof/", pprof.Index)
