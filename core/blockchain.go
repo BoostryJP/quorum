@@ -1718,7 +1718,9 @@ func (bc *BlockChain) writeBlockWithState(block *types.Block, receipts []*types.
 						log.Info("State in memory for too long, committing", "time", bc.gcproc, "allowance", bc.cacheConfig.TrieTimeLimit, "optimum", float64(chosen-lastWrite)/TriesInMemory)
 					}
 					// Flush an entire trie and restart the counters
+					log.Info("track: triedb.Commit")
 					triedb.Commit(header.Root, true, nil)
+					log.Info("track: triedb.Commit completed")
 					lastWrite = chosen
 					bc.gcproc = 0
 				}
