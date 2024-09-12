@@ -1770,6 +1770,7 @@ func (bc *BlockChain) writeBlockWithState(block *types.Block, receipts []*types.
 		// we will fire an accumulated ChainHeadEvent and disable fire
 		// event here.
 		if emitHeadEvent {
+			log.Info("track: 17730 chainHeadFeed")
 			bc.chainHeadFeed.Send(ChainHeadEvent{Block: block})
 		}
 	} else {
@@ -1877,6 +1878,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, error) {
 	// Fire a single chain head event if we've progressed the chain
 	defer func() {
 		if lastCanon != nil && bc.CurrentBlock().Hash() == lastCanon.Hash() {
+			log.Info("track: 1880 chainHeadFeed")
 			bc.chainHeadFeed.Send(ChainHeadEvent{lastCanon})
 		}
 	}()

@@ -422,6 +422,7 @@ func (w *worker) newWorkLoop(recommit time.Duration) {
 
 		case head := <-w.chainHeadCh:
 			if h, ok := w.engine.(consensus.Handler); ok {
+				log.Info("track: chainHeadEvent come")
 				h.NewChainHead()
 			}
 			clearPending(head.Block.NumberU64())
