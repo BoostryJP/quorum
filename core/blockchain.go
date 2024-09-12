@@ -1694,12 +1694,15 @@ func (bc *BlockChain) writeBlockWithState(block *types.Block, receipts []*types.
 
 		if current := block.NumberU64(); current > TriesInMemory {
 			// If we exceeded our memory allowance, flush matured singleton nodes to disk
+			log.Info("track: flush matured singleton nodes to disk")
 			var (
 				nodes, imgs = triedb.Size()
 				limit       = common.StorageSize(bc.cacheConfig.TrieDirtyLimit) * 1024 * 1024
 			)
 			if nodes > limit || imgs > 4*1024*1024 {
+				log.Info("track: triedb.Cap")
 				triedb.Cap(limit - ethdb.IdealBatchSize)
+				log.Info("track: triedb.Cap completed")
 			}
 			// Find the next state trie we need to commit
 			chosen := current - TriesInMemory
