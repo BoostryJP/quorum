@@ -1206,6 +1206,7 @@ func (bc *BlockChain) insertStopped() bool {
 }
 
 func (bc *BlockChain) procFutureBlocks() {
+	log.Info("track: procFutureBlocks")
 	blocks := make([]*types.Block, 0, bc.futureBlocks.Len())
 	for _, hash := range bc.futureBlocks.Keys() {
 		if block, exist := bc.futureBlocks.Peek(hash); exist {
@@ -1798,6 +1799,7 @@ func (bc *BlockChain) addFutureBlock(block *types.Block) error {
 //
 // After insertion is done, all accumulated events will be fired.
 func (bc *BlockChain) InsertChain(chain types.Blocks) (int, error) {
+	log.Info("track: InsertChain")
 	// Sanity check that we have something meaningful to import
 	if len(chain) == 0 {
 		return 0, nil
@@ -1836,6 +1838,7 @@ func (bc *BlockChain) InsertChain(chain types.Blocks) (int, error) {
 // InsertChainWithoutSealVerification works exactly the same
 // except for seal verification, seal verification is omitted
 func (bc *BlockChain) InsertChainWithoutSealVerification(block *types.Block) (int, error) {
+	log.Info("track: InsertChainWithoutSealVerification")
 	bc.blockProcFeed.Send(true)
 	defer bc.blockProcFeed.Send(false)
 
