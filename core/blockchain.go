@@ -2089,6 +2089,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, error) {
 
 		receipts, privateReceipts, logs, usedGas, err := bc.processor.Process(block, statedb, privateStateRepo, bc.vmConfig)
 		if err != nil {
+			log.Info("track: failed to process")
 			bc.reportBlock(block, receipts, err)
 			atomic.StoreUint32(&followupInterrupt, 1)
 			return it.index, err
@@ -2109,6 +2110,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, error) {
 		// Validate the state using the default validator
 		substart = time.Now()
 		if err := bc.validator.ValidateState(block, statedb, receipts, usedGas); err != nil {
+			log.Info("track: validate state error")
 			bc.reportBlock(block, receipts, err)
 			atomic.StoreUint32(&followupInterrupt, 1)
 			return it.index, err
@@ -2128,11 +2130,13 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, error) {
 		status, err := bc.writeBlockWithState(block, allReceipts, logs, statedb, privateStateRepo, false)
 		atomic.StoreUint32(&followupInterrupt, 1)
 		if err != nil {
+			log.Info("track: set followupInterrupt failed")
 			return it.index, err
 		}
 
 		// Quorum
 		if err := rawdb.WritePrivateBlockBloom(bc.db, block.NumberU64(), privateReceipts); err != nil {
+			log.Info("track: write private block bloom")
 			return it.index, err
 		}
 		// End Quorum
