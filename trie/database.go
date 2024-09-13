@@ -610,7 +610,9 @@ func (db *Database) Cap(limit common.StorageSize) error {
 		if db.preimages == nil {
 			log.Error("Attempted to write preimages whilst disabled")
 		} else {
+			log.Info("track: rawdb.WritePreimages")
 			rawdb.WritePreimages(batch, db.preimages)
+			log.Info("track: rawdb.WritePreimages complete")
 			if batch.ValueSize() > ethdb.IdealBatchSize {
 				if err := batch.Write(); err != nil {
 					return err
@@ -624,7 +626,9 @@ func (db *Database) Cap(limit common.StorageSize) error {
 	for size > limit && oldest != (common.Hash{}) {
 		// Fetch the oldest referenced node and push into the batch
 		node := db.dirties[oldest]
+		log.Info("track: rawdb.WriteTrieNode")
 		rawdb.WriteTrieNode(batch, oldest, node.rlp())
+		log.Info("track: rawdb.WriteTrieNode completed")
 
 		// If we exceeded the ideal batch size, commit and reset
 		if batch.ValueSize() >= ethdb.IdealBatchSize {
@@ -644,12 +648,16 @@ func (db *Database) Cap(limit common.StorageSize) error {
 		oldest = node.flushNext
 	}
 	// Flush out any remainder data from the last batch
+	log.Info("track: batch.Write()")
 	if err := batch.Write(); err != nil {
 		log.Error("Failed to write flush list to disk", "err", err)
 		return err
 	}
+	log.Info("track: batch.Write() completed")
 	// Write successful, clear out the flushed data
+	log.Info("track: db.lock")
 	db.lock.Lock()
+	log.Info("track: db.lock completed")
 	defer db.lock.Unlock()
 
 	if flushPreimages {
