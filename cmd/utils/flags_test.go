@@ -31,7 +31,7 @@ import (
 	"github.com/ethereum/go-ethereum/node"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"gopkg.in/urfave/cli.v1"
+	"github.com/urfave/cli/v2"
 )
 
 func TestAuthorizationList(t *testing.T) {
@@ -45,14 +45,14 @@ func TestAuthorizationList(t *testing.T) {
 	fs := &flag.FlagSet{}
 	fs.String(AuthorizationListFlag.Name, value, "")
 	arbitraryCLIContext := cli.NewContext(nil, fs, nil)
-	arbitraryCLIContext.GlobalSet(AuthorizationListFlag.Name, value)
+	arbitraryCLIContext.Set(AuthorizationListFlag.Name, value)
 	setAuthorizationList(arbitraryCLIContext, arbitraryNodeConfig)
 	assert.Equal(t, result, arbitraryNodeConfig.AuthorizationList)
 
 	fs = &flag.FlagSet{}
 	fs.String(AuthorizationListFlag.Name, value, "")
 	arbitraryCLIContext = cli.NewContext(nil, fs, nil)
-	arbitraryCLIContext.GlobalSet(DeprecatedAuthorizationListFlag.Name, value) // old wlist flag
+	arbitraryCLIContext.Set(DeprecatedAuthorizationListFlag.Name, value) // old wlist flag
 	setAuthorizationList(arbitraryCLIContext, arbitraryNodeConfig)
 	assert.Equal(t, result, arbitraryNodeConfig.AuthorizationList)
 }
@@ -74,13 +74,13 @@ func TestSetPlugins_whenInvalidFlagsCombination(t *testing.T) {
 	fs.Bool(PluginLocalVerifyFlag.Name, true, "")
 	fs.String(PluginPublicKeyFlag.Name, "", "")
 	arbitraryCLIContext := cli.NewContext(nil, fs, nil)
-	assert.NoError(t, arbitraryCLIContext.GlobalSet(PluginSettingsFlag.Name, "arbitrary value"))
+	assert.NoError(t, arbitraryCLIContext.Set(PluginSettingsFlag.Name, "arbitrary value"))
 
 	verifyErrorMessage(t, arbitraryCLIContext, arbitraryNodeConfig, "only --plugins.skipverify or --plugins.localverify must be set")
 
-	assert.NoError(t, arbitraryCLIContext.GlobalSet(PluginSkipVerifyFlag.Name, "false"))
-	assert.NoError(t, arbitraryCLIContext.GlobalSet(PluginLocalVerifyFlag.Name, "false"))
-	assert.NoError(t, arbitraryCLIContext.GlobalSet(PluginPublicKeyFlag.Name, "arbitrary value"))
+	assert.NoError(t, arbitraryCLIContext.Set(PluginSkipVerifyFlag.Name, "false"))
+	assert.NoError(t, arbitraryCLIContext.Set(PluginLocalVerifyFlag.Name, "false"))
+	assert.NoError(t, arbitraryCLIContext.Set(PluginPublicKeyFlag.Name, "arbitrary value"))
 
 	verifyErrorMessage(t, arbitraryCLIContext, arbitraryNodeConfig, "--plugins.localverify is required for setting --plugins.publickey")
 }
@@ -90,7 +90,7 @@ func TestSetPlugins_whenInvalidPluginSettingsURL(t *testing.T) {
 	fs := &flag.FlagSet{}
 	fs.String(PluginSettingsFlag.Name, "", "")
 	arbitraryCLIContext := cli.NewContext(nil, fs, nil)
-	assert.NoError(t, arbitraryCLIContext.GlobalSet(PluginSettingsFlag.Name, "arbitrary value"))
+	assert.NoError(t, arbitraryCLIContext.Set(PluginSettingsFlag.Name, "arbitrary value"))
 
 	verifyErrorMessage(t, arbitraryCLIContext, arbitraryNodeConfig, "plugins: unable to create reader due to unsupported scheme ")
 }
@@ -99,9 +99,9 @@ func TestSetImmutabilityThreshold(t *testing.T) {
 	fs := &flag.FlagSet{}
 	fs.Int(QuorumImmutabilityThreshold.Name, 0, "")
 	arbitraryCLIContext := cli.NewContext(nil, fs, nil)
-	assert.NoError(t, arbitraryCLIContext.GlobalSet(QuorumImmutabilityThreshold.Name, strconv.Itoa(100000)))
-	assert.True(t, arbitraryCLIContext.GlobalIsSet(QuorumImmutabilityThreshold.Name), "immutability threshold flag not set")
-	assert.Equal(t, 100000, arbitraryCLIContext.GlobalInt(QuorumImmutabilityThreshold.Name), "immutability threshold value not set")
+	assert.NoError(t, arbitraryCLIContext.Set(QuorumImmutabilityThreshold.Name, strconv.Itoa(100000)))
+	assert.True(t, arbitraryCLIContext.IsSet(QuorumImmutabilityThreshold.Name), "immutability threshold flag not set")
+	assert.Equal(t, 100000, arbitraryCLIContext.Int(QuorumImmutabilityThreshold.Name), "immutability threshold value not set")
 }
 
 func TestSetPlugins_whenTypical(t *testing.T) {
@@ -120,7 +120,7 @@ func TestSetPlugins_whenTypical(t *testing.T) {
 	fs := &flag.FlagSet{}
 	fs.String(PluginSettingsFlag.Name, "", "")
 	arbitraryCLIContext := cli.NewContext(nil, fs, nil)
-	assert.NoError(t, arbitraryCLIContext.GlobalSet(PluginSettingsFlag.Name, "file://"+arbitraryJSONFile))
+	assert.NoError(t, arbitraryCLIContext.Set(PluginSettingsFlag.Name, "file://"+arbitraryJSONFile))
 
 	assert.NoError(t, SetPlugins(arbitraryCLIContext, arbitraryNodeConfig))
 
@@ -179,23 +179,23 @@ func TestQuorumConfigFlags(t *testing.T) {
 	arbitraryEthConfig := &eth.Config{}
 
 	fs.Int(EVMCallTimeOutFlag.Name, 0, "")
-	assert.NoError(t, arbitraryCLIContext.GlobalSet(EVMCallTimeOutFlag.Name, strconv.Itoa(12)))
+	assert.NoError(t, arbitraryCLIContext.Set(EVMCallTimeOutFlag.Name, strconv.Itoa(12)))
 	fs.Bool(MultitenancyFlag.Name, false, "")
-	assert.NoError(t, arbitraryCLIContext.GlobalSet(MultitenancyFlag.Name, "true"))
+	assert.NoError(t, arbitraryCLIContext.Set(MultitenancyFlag.Name, "true"))
 	fs.Bool(QuorumEnablePrivacyMarker.Name, true, "")
-	assert.NoError(t, arbitraryCLIContext.GlobalSet(QuorumEnablePrivacyMarker.Name, "true"))
+	assert.NoError(t, arbitraryCLIContext.Set(QuorumEnablePrivacyMarker.Name, "true"))
 	fs.Uint64(IstanbulRequestTimeoutFlag.Name, 0, "")
-	assert.NoError(t, arbitraryCLIContext.GlobalSet(IstanbulRequestTimeoutFlag.Name, "23"))
+	assert.NoError(t, arbitraryCLIContext.Set(IstanbulRequestTimeoutFlag.Name, "23"))
 	fs.Uint64(IstanbulBlockPeriodFlag.Name, 0, "")
-	assert.NoError(t, arbitraryCLIContext.GlobalSet(IstanbulBlockPeriodFlag.Name, "34"))
+	assert.NoError(t, arbitraryCLIContext.Set(IstanbulBlockPeriodFlag.Name, "34"))
 	fs.Bool(RaftModeFlag.Name, false, "")
-	assert.NoError(t, arbitraryCLIContext.GlobalSet(RaftModeFlag.Name, "true"))
+	assert.NoError(t, arbitraryCLIContext.Set(RaftModeFlag.Name, "true"))
 
 	require.NoError(t, setQuorumConfig(arbitraryCLIContext, arbitraryEthConfig))
 
-	assert.True(t, arbitraryCLIContext.GlobalIsSet(EVMCallTimeOutFlag.Name), "EVMCallTimeOutFlag not set")
-	assert.True(t, arbitraryCLIContext.GlobalIsSet(MultitenancyFlag.Name), "MultitenancyFlag not set")
-	assert.True(t, arbitraryCLIContext.GlobalIsSet(RaftModeFlag.Name), "RaftModeFlag not set")
+	assert.True(t, arbitraryCLIContext.IsSet(EVMCallTimeOutFlag.Name), "EVMCallTimeOutFlag not set")
+	assert.True(t, arbitraryCLIContext.IsSet(MultitenancyFlag.Name), "MultitenancyFlag not set")
+	assert.True(t, arbitraryCLIContext.IsSet(RaftModeFlag.Name), "RaftModeFlag not set")
 
 	assert.Equal(t, 12*time.Second, arbitraryEthConfig.EVMCallTimeOut, "EVMCallTimeOut value is incorrect")
 	assert.Equal(t, true, arbitraryEthConfig.QuorumChainConfig.MultiTenantEnabled(), "MultitenancyFlag value is incorrect")

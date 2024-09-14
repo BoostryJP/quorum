@@ -21,15 +21,14 @@ import (
 	"strings"
 
 	"github.com/ethereum/go-ethereum/node"
-	"gopkg.in/urfave/cli.v1"
+	"github.com/urfave/cli/v2"
 )
 
-var ShowDeprecated = cli.Command{
+var ShowDeprecated = &cli.Command{
 	Action:      showDeprecated,
 	Name:        "show-deprecated-flags",
 	Usage:       "Show flags that have been deprecated",
 	ArgsUsage:   " ",
-	Category:    "MISCELLANEOUS COMMANDS",
 	Description: "Show flags that have been deprecated and will soon be removed",
 }
 
@@ -37,31 +36,31 @@ var DeprecatedFlags = []cli.Flag{}
 
 var (
 	// (Deprecated May 2020, shown in aliased flags section)
-	LegacyRPCEnabledFlag = cli.BoolFlag{
+	LegacyRPCEnabledFlag = &cli.BoolFlag{
 		Name:  "rpc",
 		Usage: "Enable the HTTP-RPC server (deprecated and will be removed in the future, use --http)",
 	}
-	LegacyRPCListenAddrFlag = cli.StringFlag{
+	LegacyRPCListenAddrFlag = &cli.StringFlag{
 		Name:  "rpcaddr",
 		Usage: "HTTP-RPC server listening interface (deprecated and will be removed in the future, use --http.addr)",
 		Value: node.DefaultHTTPHost,
 	}
-	LegacyRPCPortFlag = cli.IntFlag{
+	LegacyRPCPortFlag = &cli.IntFlag{
 		Name:  "rpcport",
 		Usage: "HTTP-RPC server listening port (deprecated and will be removed in the future, use --http.port)",
 		Value: node.DefaultHTTPPort,
 	}
-	LegacyRPCCORSDomainFlag = cli.StringFlag{
+	LegacyRPCCORSDomainFlag = &cli.StringFlag{
 		Name:  "rpccorsdomain",
 		Usage: "Comma separated list of domains from which to accept cross origin requests (browser enforced) (deprecated and will be removed in the future, use --http.corsdomain)",
 		Value: "",
 	}
-	LegacyRPCVirtualHostsFlag = cli.StringFlag{
+	LegacyRPCVirtualHostsFlag = &cli.StringFlag{
 		Name:  "rpcvhosts",
 		Usage: "Comma separated list of virtual hostnames from which to accept requests (server enforced). Accepts '*' wildcard. (deprecated and will be removed in the future, use --http.vhosts)",
 		Value: strings.Join(node.DefaultConfig.HTTPVirtualHosts, ","),
 	}
-	LegacyRPCApiFlag = cli.StringFlag{
+	LegacyRPCApiFlag = &cli.StringFlag{
 		Name:  "rpcapi",
 		Usage: "API's offered over the HTTP-RPC interface (deprecated and will be removed in the future, use --http.api)",
 		Value: "",
@@ -69,7 +68,7 @@ var (
 )
 
 // showDeprecated displays deprecated flags that will be soon removed from the codebase.
-func showDeprecated(*cli.Context) {
+func showDeprecated(*cli.Context) error {
 	fmt.Println("--------------------------------------------------------------------")
 	fmt.Println("The following flags are deprecated and will be removed in the future!")
 	fmt.Println("--------------------------------------------------------------------")
@@ -77,4 +76,5 @@ func showDeprecated(*cli.Context) {
 	// TODO remove when there are newly deprecated flags
 	fmt.Println("no deprecated flags to show at this time")
 	fmt.Println()
+	return nil
 }

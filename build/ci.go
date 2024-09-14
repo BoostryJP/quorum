@@ -205,6 +205,9 @@ func doInstall(cmdline []string) {
 		gobuild.Args = append(gobuild.Args, "-p", "1")
 	}
 
+	// Disable CLI markdown doc generation in release builds.
+	gobuild.Args = append(gobuild.Args, "-tags", "urfave_cli_no_docs")
+
 	// We use -trimpath to avoid leaking local paths into the built executables.
 	gobuild.Args = append(gobuild.Args, "-trimpath")
 

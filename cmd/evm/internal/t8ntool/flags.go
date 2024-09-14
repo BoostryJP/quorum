@@ -22,37 +22,37 @@ import (
 
 	"github.com/ethereum/go-ethereum/core/vm"
 	"github.com/ethereum/go-ethereum/tests"
-	"gopkg.in/urfave/cli.v1"
+	"github.com/urfave/cli/v2"
 )
 
 var (
-	TraceFlag = cli.BoolFlag{
+	TraceFlag = &cli.BoolFlag{
 		Name:  "trace",
 		Usage: "Output full trace logs to files <txhash>.jsonl",
 	}
-	TraceDisableMemoryFlag = cli.BoolFlag{
+	TraceDisableMemoryFlag = &cli.BoolFlag{
 		Name:  "trace.nomemory",
 		Usage: "Disable full memory dump in traces",
 	}
-	TraceDisableStackFlag = cli.BoolFlag{
+	TraceDisableStackFlag = &cli.BoolFlag{
 		Name:  "trace.nostack",
 		Usage: "Disable stack output in traces",
 	}
-	TraceDisableReturnDataFlag = cli.BoolFlag{
+	TraceDisableReturnDataFlag = &cli.BoolFlag{
 		Name:  "trace.noreturndata",
 		Usage: "Disable return data output in traces",
 	}
-	OutputBasedir = cli.StringFlag{
+	OutputBasedir = &cli.StringFlag{
 		Name:  "output.basedir",
 		Usage: "Specifies where output files are placed. Will be created if it does not exist.",
 		Value: "",
 	}
-	OutputBodyFlag = cli.StringFlag{
+	OutputBodyFlag = &cli.StringFlag{
 		Name:  "output.body",
 		Usage: "If set, the RLP of the transactions (block body) will be written to this file.",
 		Value: "",
 	}
-	OutputAllocFlag = cli.StringFlag{
+	OutputAllocFlag = &cli.StringFlag{
 		Name: "output.alloc",
 		Usage: "Determines where to put the `alloc` of the post-state.\n" +
 			"\t`stdout` - into the stdout output\n" +
@@ -60,7 +60,7 @@ var (
 			"\t<file> - into the file <file> ",
 		Value: "alloc.json",
 	}
-	OutputResultFlag = cli.StringFlag{
+	OutputResultFlag = &cli.StringFlag{
 		Name: "output.result",
 		Usage: "Determines where to put the `result` (stateroot, txroot etc) of the post-state.\n" +
 			"\t`stdout` - into the stdout output\n" +
@@ -68,32 +68,32 @@ var (
 			"\t<file> - into the file <file> ",
 		Value: "result.json",
 	}
-	InputAllocFlag = cli.StringFlag{
+	InputAllocFlag = &cli.StringFlag{
 		Name:  "input.alloc",
 		Usage: "`stdin` or file name of where to find the prestate alloc to use.",
 		Value: "alloc.json",
 	}
-	InputEnvFlag = cli.StringFlag{
+	InputEnvFlag = &cli.StringFlag{
 		Name:  "input.env",
 		Usage: "`stdin` or file name of where to find the prestate env to use.",
 		Value: "env.json",
 	}
-	InputTxsFlag = cli.StringFlag{
+	InputTxsFlag = &cli.StringFlag{
 		Name:  "input.txs",
 		Usage: "`stdin` or file name of where to find the transactions to apply.",
 		Value: "txs.json",
 	}
-	RewardFlag = cli.Int64Flag{
+	RewardFlag = &cli.Int64Flag{
 		Name:  "state.reward",
 		Usage: "Mining reward. Set to -1 to disable",
 		Value: 0,
 	}
-	ChainIDFlag = cli.Int64Flag{
+	ChainIDFlag = &cli.Int64Flag{
 		Name:  "state.chainid",
 		Usage: "ChainID to use",
 		Value: 1,
 	}
-	ForknameFlag = cli.StringFlag{
+	ForknameFlag = &cli.StringFlag{
 		Name: "state.fork",
 		Usage: fmt.Sprintf("Name of ruleset to use."+
 			"\n\tAvailable forknames:"+
@@ -105,7 +105,7 @@ var (
 			strings.Join(vm.ActivateableEips(), ", ")),
 		Value: "Istanbul",
 	}
-	VerbosityFlag = cli.IntFlag{
+	VerbosityFlag = &cli.IntFlag{
 		Name:  "verbosity",
 		Usage: "sets the verbosity level",
 		Value: 3,
