@@ -529,24 +529,29 @@ var (
 	// Quorum
 	// RPC Client Settings
 	RPCClientToken = &cli.StringFlag{
-		Name:  "rpcclitoken",
-		Usage: "RPC Client access token",
+		Name:     "rpcclitoken",
+		Usage:    "RPC Client access token",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	RPCClientTLSCert = &cli.StringFlag{
-		Name:  "rpcclitls.cert",
-		Usage: "Server's TLS certificate PEM file on connection by client",
+		Name:     "rpcclitls.cert",
+		Usage:    "Server's TLS certificate PEM file on connection by client",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	RPCClientTLSCaCert = &cli.StringFlag{
-		Name:  "rpcclitls.cacert",
-		Usage: "CA certificate PEM file for provided server's TLS certificate on connection by client",
+		Name:     "rpcclitls.cacert",
+		Usage:    "CA certificate PEM file for provided server's TLS certificate on connection by client",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	RPCClientTLSCipherSuites = &cli.StringFlag{
-		Name:  "rpcclitls.ciphersuites",
-		Usage: "Customize supported cipher suites when using TLS connection. Value is a comma-separated cipher suite string",
+		Name:     "rpcclitls.ciphersuites",
+		Usage:    "Customize supported cipher suites when using TLS connection. Value is a comma-separated cipher suite string",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	RPCClientTLSInsecureSkipVerify = &cli.BoolFlag{
-		Name:  "rpcclitls.insecureskipverify",
-		Usage: "Disable verification of server's TLS certificate on connection by client",
+		Name:     "rpcclitls.insecureskipverify",
+		Usage:    "Disable verification of server's TLS certificate on connection by client",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	// End Quorum
 
@@ -827,6 +832,7 @@ var (
 		Value:    metrics.DefaultConfig.InfluxDBTags,
 		Category: flags.MetricsCategory,
 	}
+
 	EWASMInterpreterFlag = &cli.StringFlag{
 		Name:  "vm.ewasm",
 		Usage: "External ewasm configuration (default = built-in interpreter)",
@@ -844,79 +850,95 @@ var (
 
 	// Quorum - added configurable call timeout for execution of calls
 	EVMCallTimeOutFlag = &cli.IntFlag{
-		Name:  "vm.calltimeout",
-		Usage: "Timeout duration in seconds for message call execution without creating a transaction. Value 0 means no timeout.",
-		Value: 5,
+		Name:     "vm.calltimeout",
+		Usage:    "Timeout duration in seconds for message call execution without creating a transaction. Value 0 means no timeout.",
+		Value:    5,
+		Category: flags.GoQuorumOptionCategory,
 	}
 
 	// Quorum
 	// immutability threshold which can be passed as a parameter at geth start
 	QuorumImmutabilityThreshold = &cli.IntFlag{
-		Name:  "immutabilitythreshold",
-		Usage: "overrides the default immutability threshold for Quorum nodes. Its the threshold beyond which block data will be moved to ancient db",
-		Value: 3162240,
+		Name:     "immutabilitythreshold",
+		Usage:    "overrides the default immutability threshold for Quorum nodes. Its the threshold beyond which block data will be moved to ancient db",
+		Value:    3162240,
+		Category: flags.GoQuorumOptionCategory,
 	}
+
 	// Raft flags
 	RaftModeFlag = &cli.BoolFlag{
-		Name:  "raft",
-		Usage: "If enabled, uses Raft instead of Quorum Chain for consensus",
+		Name:     "raft",
+		Usage:    "If enabled, uses Raft instead of Quorum Chain for consensus",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	RaftBlockTimeFlag = &cli.IntFlag{
-		Name:  "raftblocktime",
-		Usage: "Amount of time between raft block creations in milliseconds",
-		Value: 50,
+		Name:     "raftblocktime",
+		Usage:    "Amount of time between raft block creations in milliseconds",
+		Value:    50,
+		Category: flags.GoQuorumOptionCategory,
 	}
 	RaftJoinExistingFlag = &cli.IntFlag{
-		Name:  "raftjoinexisting",
-		Usage: "The raft ID to assume when joining an pre-existing cluster",
-		Value: 0,
+		Name:     "raftjoinexisting",
+		Usage:    "The raft ID to assume when joining an pre-existing cluster",
+		Value:    0,
+		Category: flags.GoQuorumOptionCategory,
 	}
 
 	EmitCheckpointsFlag = &cli.BoolFlag{
-		Name:  "emitcheckpoints",
-		Usage: "If enabled, emit specially formatted logging checkpoints",
+		Name:     "emitcheckpoints",
+		Usage:    "If enabled, emit specially formatted logging checkpoints",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	RaftPortFlag = &cli.IntFlag{
-		Name:  "raftport",
-		Usage: "The port to bind for the raft transport",
-		Value: 50400,
+		Name:     "raftport",
+		Usage:    "The port to bind for the raft transport",
+		Value:    50400,
+		Category: flags.GoQuorumOptionCategory,
 	}
 	RaftDNSEnabledFlag = &cli.BoolFlag{
-		Name:  "raftdnsenable",
-		Usage: "Enable DNS resolution of peers",
+		Name:     "raftdnsenable",
+		Usage:    "Enable DNS resolution of peers",
+		Category: flags.GoQuorumOptionCategory,
 	}
 
 	// Permission
 	EnableNodePermissionFlag = &cli.BoolFlag{
-		Name:  "permissioned",
-		Usage: "If enabled, the node will allow only a defined list of nodes to connect",
+		Name:     "permissioned",
+		Usage:    "If enabled, the node will allow only a defined list of nodes to connect",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	AllowedFutureBlockTimeFlag = &cli.Uint64Flag{
-		Name:  "allowedfutureblocktime",
-		Usage: "Max time (in seconds) from current time allowed for blocks, before they're considered future blocks",
-		Value: 0,
+		Name:     "allowedfutureblocktime",
+		Usage:    "Max time (in seconds) from current time allowed for blocks, before they're considered future blocks",
+		Value:    0,
+		Category: flags.GoQuorumOptionCategory,
 	}
 	// Plugins settings
 	PluginSettingsFlag = &cli.StringFlag{
-		Name:  "plugins",
-		Usage: "The URI of configuration which describes plugins being used. E.g.: file:///opt/geth/plugins.json",
+		Name:     "plugins",
+		Usage:    "The URI of configuration which describes plugins being used. E.g.: file:///opt/geth/plugins.json",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	PluginLocalVerifyFlag = &cli.BoolFlag{
-		Name:  "plugins.localverify",
-		Usage: "If enabled, verify plugin integrity from local file system. This requires plugin signature file and PGP public key file to be available",
+		Name:     "plugins.localverify",
+		Usage:    "If enabled, verify plugin integrity from local file system. This requires plugin signature file and PGP public key file to be available",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	PluginPublicKeyFlag = &cli.StringFlag{
-		Name:  "plugins.publickey",
-		Usage: fmt.Sprintf("The URI of PGP public key for local plugin verification. E.g.: file:///opt/geth/pubkey.pgp.asc. This flag is only valid if --%s is set (default = file:///<pluginBaseDir>/%s)", PluginLocalVerifyFlag.Name, plugin.DefaultPublicKeyFile),
+		Name:     "plugins.publickey",
+		Usage:    fmt.Sprintf("The URI of PGP public key for local plugin verification. E.g.: file:///opt/geth/pubkey.pgp.asc. This flag is only valid if --%s is set (default = file:///<pluginBaseDir>/%s)", PluginLocalVerifyFlag.Name, plugin.DefaultPublicKeyFile),
+		Category: flags.GoQuorumOptionCategory,
 	}
 	PluginSkipVerifyFlag = &cli.BoolFlag{
-		Name:  "plugins.skipverify",
-		Usage: "If enabled, plugin integrity is NOT verified",
+		Name:     "plugins.skipverify",
+		Usage:    "If enabled, plugin integrity is NOT verified",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	// account plugin flags
 	AccountPluginNewAccountConfigFlag = &cli.StringFlag{
-		Name:  "plugins.account.config",
-		Usage: "Value will be passed to an account plugin if being used.  See the account plugin implementation's documentation for further details",
+		Name:     "plugins.account.config",
+		Usage:    "Value will be passed to an account plugin if being used.  See the account plugin implementation's documentation for further details",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	// Istanbul settings
 	IstanbulRequestTimeoutFlag = &cli.Uint64Flag{
@@ -931,178 +953,217 @@ var (
 	}
 	// Multitenancy setting
 	MultitenancyFlag = &cli.BoolFlag{
-		Name:  "multitenancy",
-		Usage: "Enable multitenancy support for this node. This requires RPC Security Plugin to also be configured.",
+		Name:     "multitenancy",
+		Usage:    "Enable multitenancy support for this node. This requires RPC Security Plugin to also be configured.",
+		Category: flags.GoQuorumOptionCategory,
 	}
 
 	// Revert Reason
 	RevertReasonFlag = &cli.BoolFlag{
-		Name:  "revertreason",
-		Usage: "Enable saving revert reason in the transaction receipts for this node.",
+		Name:     "revertreason",
+		Usage:    "Enable saving revert reason in the transaction receipts for this node.",
+		Category: flags.GoQuorumOptionCategory,
 	}
 
 	QuorumEnablePrivateTrieCache = &cli.BoolFlag{
-		Name:  "privatetriecache.enable",
-		Usage: "Enable use of private trie cache for this node.",
+		Name:     "privatetriecache.enable",
+		Usage:    "Enable use of private trie cache for this node.",
+		Category: flags.GoQuorumOptionCategory,
 	}
 
 	QuorumEnablePrivacyMarker = &cli.BoolFlag{
-		Name:  "privacymarker.enable",
-		Usage: "Enable use of privacy marker transactions (PMT) for this node.",
+		Name:     "privacymarker.enable",
+		Usage:    "Enable use of privacy marker transactions (PMT) for this node.",
+		Category: flags.GoQuorumOptionCategory,
 	}
 
 	// Quorum Private Transaction Manager connection options
 	QuorumPTMUnixSocketFlag = &flags.DirectoryFlag{
-		Name:  "ptm.socket",
-		Usage: "Path to the ipc file when using unix domain socket for the private transaction manager connection",
+		Name:     "ptm.socket",
+		Usage:    "Path to the ipc file when using unix domain socket for the private transaction manager connection",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumPTMUrlFlag = &cli.StringFlag{
-		Name:  "ptm.url",
-		Usage: "URL when using http connection to private transaction manager",
+		Name:     "ptm.url",
+		Usage:    "URL when using http connection to private transaction manager",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumPTMTimeoutFlag = &cli.UintFlag{
-		Name:  "ptm.timeout",
-		Usage: "Timeout (seconds) for the private transaction manager connection. Zero value means timeout disabled.",
-		Value: http2.DefaultConfig.Timeout,
+		Name:     "ptm.timeout",
+		Usage:    "Timeout (seconds) for the private transaction manager connection. Zero value means timeout disabled.",
+		Value:    http2.DefaultConfig.Timeout,
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumPTMDialTimeoutFlag = &cli.UintFlag{
-		Name:  "ptm.dialtimeout",
-		Usage: "Dial timeout (seconds) for the private transaction manager connection. Zero value means timeout disabled.",
-		Value: http2.DefaultConfig.DialTimeout,
+		Name:     "ptm.dialtimeout",
+		Usage:    "Dial timeout (seconds) for the private transaction manager connection. Zero value means timeout disabled.",
+		Value:    http2.DefaultConfig.DialTimeout,
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumPTMHttpIdleTimeoutFlag = &cli.UintFlag{
-		Name:  "ptm.http.idletimeout",
-		Usage: "Idle timeout (seconds) for the private transaction manager connection. Zero value means timeout disabled.",
-		Value: http2.DefaultConfig.HttpIdleConnTimeout,
+		Name:     "ptm.http.idletimeout",
+		Usage:    "Idle timeout (seconds) for the private transaction manager connection. Zero value means timeout disabled.",
+		Value:    http2.DefaultConfig.HttpIdleConnTimeout,
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumPTMHttpWriteBufferSizeFlag = &cli.IntFlag{
-		Name:  "ptm.http.writebuffersize",
-		Usage: "Size of the write buffer (bytes) for the private transaction manager connection. Zero value uses http.Transport default.",
-		Value: 0,
+		Name:     "ptm.http.writebuffersize",
+		Usage:    "Size of the write buffer (bytes) for the private transaction manager connection. Zero value uses http.Transport default.",
+		Value:    0,
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumPTMHttpReadBufferSizeFlag = &cli.IntFlag{
-		Name:  "ptm.http.readbuffersize",
-		Usage: "Size of the read buffer (bytes) for the private transaction manager connection. Zero value uses http.Transport default.",
-		Value: 0,
+		Name:     "ptm.http.readbuffersize",
+		Usage:    "Size of the read buffer (bytes) for the private transaction manager connection. Zero value uses http.Transport default.",
+		Value:    0,
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumPTMTlsModeFlag = &cli.StringFlag{
-		Name:  "ptm.tls.mode",
-		Usage: `If "off" then TLS disabled (default). If "strict" then will use TLS for http connection to private transaction manager`,
+		Name:     "ptm.tls.mode",
+		Usage:    `If "off" then TLS disabled (default). If "strict" then will use TLS for http connection to private transaction manager`,
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumPTMTlsRootCaFlag = &flags.DirectoryFlag{
-		Name:  "ptm.tls.rootca",
-		Usage: "Path to file containing root CA certificate for TLS connection to private transaction manager (defaults to host's certificates)",
+		Name:     "ptm.tls.rootca",
+		Usage:    "Path to file containing root CA certificate for TLS connection to private transaction manager (defaults to host's certificates)",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumPTMTlsClientCertFlag = &flags.DirectoryFlag{
-		Name:  "ptm.tls.clientcert",
-		Usage: "Path to file containing client certificate (or chain of certs) for TLS connection to private transaction manager",
+		Name:     "ptm.tls.clientcert",
+		Usage:    "Path to file containing client certificate (or chain of certs) for TLS connection to private transaction manager",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumPTMTlsClientKeyFlag = &flags.DirectoryFlag{
-		Name:  "ptm.tls.clientkey",
-		Usage: "Path to file containing client's private key for TLS connection to private transaction manager",
+		Name:     "ptm.tls.clientkey",
+		Usage:    "Path to file containing client's private key for TLS connection to private transaction manager",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumPTMTlsInsecureSkipVerify = &cli.BoolFlag{
-		Name:  "ptm.tls.insecureskipverify",
-		Usage: "Disable verification of server's TLS certificate on connection to private transaction manager",
+		Name:     "ptm.tls.insecureskipverify",
+		Usage:    "Disable verification of server's TLS certificate on connection to private transaction manager",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightServerFlag = &cli.BoolFlag{
-		Name:  "qlight.server",
-		Usage: "If enabled, the quorum light P2P protocol is started in addition to the other P2P protocols",
+		Name:     "qlight.server",
+		Usage:    "If enabled, the quorum light P2P protocol is started in addition to the other P2P protocols",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightServerP2PListenPortFlag = &cli.IntFlag{
-		Name:  "qlight.server.p2p.port",
-		Usage: "QLight Network listening port",
-		Value: 30305,
+		Name:     "qlight.server.p2p.port",
+		Usage:    "QLight Network listening port",
+		Value:    30305,
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightServerP2PMaxPeersFlag = &cli.IntFlag{
-		Name:  "qlight.server.p2p.maxpeers",
-		Usage: "Maximum number of qlight peers",
-		Value: 10,
+		Name:     "qlight.server.p2p.maxpeers",
+		Usage:    "Maximum number of qlight peers",
+		Value:    10,
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightServerP2PNetrestrictFlag = &cli.StringFlag{
-		Name:  "qlight.server.p2p.netrestrict",
-		Usage: "Restricts network communication to the given IP networks (CIDR masks)",
+		Name:     "qlight.server.p2p.netrestrict",
+		Usage:    "Restricts network communication to the given IP networks (CIDR masks)",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightServerP2PPermissioningFlag = &cli.BoolFlag{
-		Name:  "qlight.server.p2p.permissioning",
-		Usage: "If enabled, the qlight peers are checked against a permissioned list and a disallowed list.",
+		Name:     "qlight.server.p2p.permissioning",
+		Usage:    "If enabled, the qlight peers are checked against a permissioned list and a disallowed list.",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightServerP2PPermissioningPrefixFlag = &cli.StringFlag{
-		Name:  "qlight.server.p2p.permissioning.prefix",
-		Usage: "The prefix for the permissioned-nodes.json and disallowed-nodes.json files.",
+		Name:     "qlight.server.p2p.permissioning.prefix",
+		Usage:    "The prefix for the permissioned-nodes.json and disallowed-nodes.json files.",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightClientFlag = &cli.BoolFlag{
-		Name:  "qlight.client",
-		Usage: "If enabled, the quorum light client P2P protocol is started (only)",
+		Name:     "qlight.client",
+		Usage:    "If enabled, the quorum light client P2P protocol is started (only)",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightClientPSIFlag = &cli.StringFlag{
-		Name:  "qlight.client.psi",
-		Usage: "The PSI this client will use to connect to a server node.",
+		Name:     "qlight.client.psi",
+		Usage:    "The PSI this client will use to connect to a server node.",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightClientTokenEnabledFlag = &cli.BoolFlag{
-		Name:  "qlight.client.token.enabled",
-		Usage: "Whether the client uses a token when connecting to the qlight server.",
+		Name:     "qlight.client.token.enabled",
+		Usage:    "Whether the client uses a token when connecting to the qlight server.",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightClientTokenValueFlag = &cli.StringFlag{
 		Name:  "qlight.client.token.value",
 		Usage: "The token this client will use to connect to a server node.",
 	}
 	QuorumLightClientTokenManagementFlag = &cli.StringFlag{
-		Name:  "qlight.client.token.management",
-		Usage: "The mechanism used to refresh the token. Possible values: none (developer mode)/external (new token must be injected via the qlight RPC API)/client-security-plugin (the client security plugin must be deployed/configured).",
+		Name:     "qlight.client.token.management",
+		Usage:    "The mechanism used to refresh the token. Possible values: none (developer mode)/external (new token must be injected via the qlight RPC API)/client-security-plugin (the client security plugin must be deployed/configured).",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightClientRPCTLSFlag = &cli.BoolFlag{
-		Name:  "qlight.client.rpc.tls",
-		Usage: "If enabled, the quorum light client RPC connection will be configured to use TLS",
+		Name:     "qlight.client.rpc.tls",
+		Usage:    "If enabled, the quorum light client RPC connection will be configured to use TLS",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightClientRPCTLSInsecureSkipVerifyFlag = &cli.BoolFlag{
-		Name:  "qlight.client.rpc.tls.insecureskipverify",
-		Usage: "If enabled, the quorum light client RPC connection skips TLS verification",
+		Name:     "qlight.client.rpc.tls.insecureskipverify",
+		Usage:    "If enabled, the quorum light client RPC connection skips TLS verification",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightClientRPCTLSCACertFlag = &cli.StringFlag{
-		Name:  "qlight.client.rpc.tls.cacert",
-		Usage: "The quorum light client RPC client certificate authority.",
+		Name:     "qlight.client.rpc.tls.cacert",
+		Usage:    "The quorum light client RPC client certificate authority.",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightClientRPCTLSCertFlag = &cli.StringFlag{
-		Name:  "qlight.client.rpc.tls.cert",
-		Usage: "The quorum light client RPC client certificate.",
+		Name:     "qlight.client.rpc.tls.cert",
+		Usage:    "The quorum light client RPC client certificate.",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightClientRPCTLSKeyFlag = &cli.StringFlag{
-		Name:  "qlight.client.rpc.tls.key",
-		Usage: "The quorum light client RPC client certificate private key.",
+		Name:     "qlight.client.rpc.tls.key",
+		Usage:    "The quorum light client RPC client certificate private key.",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightClientServerNodeFlag = &cli.StringFlag{
-		Name:  "qlight.client.serverNode",
-		Usage: "The node ID of the target server node",
+		Name:     "qlight.client.serverNode",
+		Usage:    "The node ID of the target server node",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightClientServerNodeRPCFlag = &cli.StringFlag{
-		Name:  "qlight.client.serverNodeRPC",
-		Usage: "The RPC URL of the target server node",
+		Name:     "qlight.client.serverNodeRPC",
+		Usage:    "The RPC URL of the target server node",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightTLSFlag = &cli.BoolFlag{
-		Name:  "qlight.tls",
-		Usage: "If enabled, the quorum light client P2P protocol will use tls",
+		Name:     "qlight.tls",
+		Usage:    "If enabled, the quorum light client P2P protocol will use tls",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightTLSCertFlag = &cli.StringFlag{
-		Name:  "qlight.tls.cert",
-		Usage: "The certificate file to use for the qlight P2P connection",
+		Name:     "qlight.tls.cert",
+		Usage:    "The certificate file to use for the qlight P2P connection",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightTLSKeyFlag = &cli.StringFlag{
-		Name:  "qlight.tls.key",
-		Usage: "The key file to use for the qlight P2P connection",
+		Name:     "qlight.tls.key",
+		Usage:    "The key file to use for the qlight P2P connection",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightTLSCACertsFlag = &cli.StringFlag{
-		Name:  "qlight.tls.cacerts",
-		Usage: "The certificate authorities file to use for validating P2P connection",
+		Name:     "qlight.tls.cacerts",
+		Usage:    "The certificate authorities file to use for validating P2P connection",
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightTLSClientAuthFlag = &cli.IntFlag{
-		Name:  "qlight.tls.clientauth",
-		Usage: "The way the client is authenticated. Possible values: 0=NoClientCert(default) 1=RequestClientCert 2=RequireAnyClientCert 3=VerifyClientCertIfGiven 4=RequireAndVerifyClientCert",
-		Value: 0,
+		Name:     "qlight.tls.clientauth",
+		Usage:    "The way the client is authenticated. Possible values: 0=NoClientCert(default) 1=RequestClientCert 2=RequireAnyClientCert 3=VerifyClientCertIfGiven 4=RequireAndVerifyClientCert",
+		Value:    0,
+		Category: flags.GoQuorumOptionCategory,
 	}
 	QuorumLightTLSCipherSuitesFlag = &cli.StringFlag{
-		Name:  "qlight.tls.ciphersuites",
-		Usage: "The cipher suites to use for the qlight P2P connection",
+		Name:     "qlight.tls.ciphersuites",
+		Usage:    "The cipher suites to use for the qlight P2P connection",
+		Category: flags.GoQuorumOptionCategory,
 	}
 )
 
