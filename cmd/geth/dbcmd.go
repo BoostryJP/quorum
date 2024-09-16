@@ -32,12 +32,12 @@ import (
 	"github.com/ethereum/go-ethereum/ethdb"
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/trie"
-	"gopkg.in/urfave/cli.v1"
+	"github.com/urfave/cli/v2"
 )
 
 var (
-	removedbCommand = cli.Command{
-		Action:    utils.MigrateFlags(removeDB),
+	removedbCommand = &cli.Command{
+		Action:    removeDB,
 		Name:      "removedb",
 		Usage:     "Remove blockchain and state databases",
 		ArgsUsage: "",
@@ -48,12 +48,12 @@ var (
 		Description: `
 Remove blockchain and state databases`,
 	}
-	dbCommand = cli.Command{
+	dbCommand = &cli.Command{
 		Name:      "db",
 		Usage:     "Low level database operations",
 		ArgsUsage: "",
 		Category:  "DATABASE COMMANDS",
-		Subcommands: []cli.Command{
+		Subcommands: []*cli.Command{
 			dbInspectCmd,
 			dbStatCmd,
 			dbCompactCmd,
@@ -64,8 +64,8 @@ Remove blockchain and state databases`,
 			dbDumpFreezerIndex,
 		},
 	}
-	dbInspectCmd = cli.Command{
-		Action:    utils.MigrateFlags(inspect),
+	dbInspectCmd = &cli.Command{
+		Action:    inspect,
 		Name:      "inspect",
 		ArgsUsage: "<prefix> <start>",
 		Flags: []cli.Flag{
@@ -80,8 +80,8 @@ Remove blockchain and state databases`,
 		Usage:       "Inspect the storage size for each type of data in the database",
 		Description: `This commands iterates the entire database. If the optional 'prefix' and 'start' arguments are provided, then the iteration is limited to the given subset of data.`,
 	}
-	dbStatCmd = cli.Command{
-		Action: utils.MigrateFlags(dbStats),
+	dbStatCmd = &cli.Command{
+		Action: dbStats,
 		Name:   "stats",
 		Usage:  "Print leveldb statistics",
 		Flags: []cli.Flag{
@@ -94,8 +94,8 @@ Remove blockchain and state databases`,
 			utils.YoloV3Flag,
 		},
 	}
-	dbCompactCmd = cli.Command{
-		Action: utils.MigrateFlags(dbCompact),
+	dbCompactCmd = &cli.Command{
+		Action: dbCompact,
 		Name:   "compact",
 		Usage:  "Compact leveldb database. WARNING: May take a very long time",
 		Flags: []cli.Flag{
@@ -113,8 +113,8 @@ Remove blockchain and state databases`,
 WARNING: This operation may take a very long time to finish, and may cause database
 corruption if it is aborted during execution'!`,
 	}
-	dbGetCmd = cli.Command{
-		Action:    utils.MigrateFlags(dbGet),
+	dbGetCmd = &cli.Command{
+		Action:    dbGet,
 		Name:      "get",
 		Usage:     "Show the value of a database key",
 		ArgsUsage: "<hex-encoded key>",
@@ -129,8 +129,8 @@ corruption if it is aborted during execution'!`,
 		},
 		Description: "This command looks up the specified database key from the database.",
 	}
-	dbDeleteCmd = cli.Command{
-		Action:    utils.MigrateFlags(dbDelete),
+	dbDeleteCmd = &cli.Command{
+		Action:    dbDelete,
 		Name:      "delete",
 		Usage:     "Delete a database key (WARNING: may corrupt your database)",
 		ArgsUsage: "<hex-encoded key>",
@@ -146,8 +146,8 @@ corruption if it is aborted during execution'!`,
 		Description: `This command deletes the specified database key from the database. 
 WARNING: This is a low-level operation which may cause database corruption!`,
 	}
-	dbPutCmd = cli.Command{
-		Action:    utils.MigrateFlags(dbPut),
+	dbPutCmd = &cli.Command{
+		Action:    dbPut,
 		Name:      "put",
 		Usage:     "Set the value of a database key (WARNING: may corrupt your database)",
 		ArgsUsage: "<hex-encoded key> <hex-encoded value>",
@@ -163,8 +163,8 @@ WARNING: This is a low-level operation which may cause database corruption!`,
 		Description: `This command sets a given database key to the given value.
 WARNING: This is a low-level operation which may cause database corruption!`,
 	}
-	dbGetSlotsCmd = cli.Command{
-		Action:    utils.MigrateFlags(dbDumpTrie),
+	dbGetSlotsCmd = &cli.Command{
+		Action:    dbDumpTrie,
 		Name:      "dumptrie",
 		Usage:     "Show the storage key/values of a given storage trie",
 		ArgsUsage: "<hex-encoded storage trie root> <hex-encoded start (optional)> <int max elements (optional)>",
@@ -179,8 +179,8 @@ WARNING: This is a low-level operation which may cause database corruption!`,
 		},
 		Description: "This command looks up the specified database key from the database.",
 	}
-	dbDumpFreezerIndex = cli.Command{
-		Action:    utils.MigrateFlags(freezerInspect),
+	dbDumpFreezerIndex = &cli.Command{
+		Action:    freezerInspect,
 		Name:      "freezer-index",
 		Usage:     "Dump out the index of a given freezer type",
 		ArgsUsage: "<type> <start (int)> <end (int)>",

@@ -9,7 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/node"
 	"github.com/ethereum/go-ethereum/plugin"
 	"github.com/stretchr/testify/require"
-	"gopkg.in/urfave/cli.v1"
+	"github.com/urfave/cli/v2"
 )
 
 // newAccountPluginCLIContext creates a cli.Context setup with the core account plugin CLI flags.

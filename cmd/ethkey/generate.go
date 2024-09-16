@@ -26,7 +26,7 @@ import (
 	"github.com/ethereum/go-ethereum/cmd/utils"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/google/uuid"
-	"gopkg.in/urfave/cli.v1"
+	"github.com/urfave/cli/v2"
 )
 
 type outputGenerate struct {
@@ -34,7 +34,7 @@ type outputGenerate struct {
 	AddressEIP55 string
 }
 
-var commandGenerate = cli.Command{
+var commandGenerate = &cli.Command{
 	Name:      "generate",
 	Usage:     "generate new keyfile",
 	ArgsUsage: "[ <keyfile> ]",
@@ -47,11 +47,11 @@ If you want to encrypt an existing private key, it can be specified by setting
 	Flags: []cli.Flag{
 		passphraseFlag,
 		jsonFlag,
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "privatekey",
 			Usage: "file containing a raw private key to encrypt",
 		},
-		cli.BoolFlag{
+		&cli.BoolFlag{
 			Name:  "lightkdf",
 			Usage: "use less secure scrypt parameters",
 		},

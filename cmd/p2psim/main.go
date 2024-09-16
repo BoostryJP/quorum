@@ -45,32 +45,38 @@ import (
 	"text/tabwriter"
 
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/internal/flags"
 	"github.com/ethereum/go-ethereum/p2p"
 	"github.com/ethereum/go-ethereum/p2p/enode"
 	"github.com/ethereum/go-ethereum/p2p/simulations"
 	"github.com/ethereum/go-ethereum/p2p/simulations/adapters"
 	"github.com/ethereum/go-ethereum/rpc"
-	"gopkg.in/urfave/cli.v1"
+	"github.com/urfave/cli/v2"
 )
 
 var client *simulations.Client
 
+var (
+	// Git information set by linker when building with ci.go.
+	gitCommit string
+	gitDate   string
+)
+
 func main() {
-	app := cli.NewApp()
-	app.Usage = "devp2p simulation command-line client"
+	app := flags.NewApp(gitCommit, gitDate, "devp2p simulation command-line client")
 	app.Flags = []cli.Flag{
-		cli.StringFlag{
-			Name:   "api",
-			Value:  "http://localhost:8888",
-			Usage:  "simulation API URL",
-			EnvVar: "P2PSIM_API_URL",
+		&cli.StringFlag{
+			Name:    "api",
+			Value:   "http://localhost:8888",
+			Usage:   "simulation API URL",
+			EnvVars: []string{"P2PSIM_API_URL"},
 		},
 	}
 	app.Before = func(ctx *cli.Context) error {
-		client = simulations.NewClient(ctx.GlobalString("api"))
+		client = simulations.NewClient(ctx.String("api"))
 		return nil
 	}
-	app.Commands = []cli.Command{
+	app.Commands = []*cli.Command{
 		{
 			Name:   "show",
 			Usage:  "show network information",
@@ -81,11 +87,11 @@ func main() {
 			Usage:  "stream network events",
 			Action: streamNetwork,
 			Flags: []cli.Flag{
-				cli.BoolFlag{
+				&cli.BoolFlag{
 					Name:  "current",
 					Usage: "get existing nodes and conns first",
 				},
-				cli.StringFlag{
+				&cli.StringFlag{
 					Name:  "filter",
 					Value: "",
 					Usage: "message filter",
@@ -106,7 +112,7 @@ func main() {
 			Name:   "node",
 			Usage:  "manage simulation nodes",
 			Action: listNodes,
-			Subcommands: []cli.Command{
+			Subcommands: []*cli.Command{
 				{
 					Name:   "list",
 					Usage:  "list nodes",
@@ -117,17 +123,17 @@ func main() {
 					Usage:  "create a node",
 					Action: createNode,
 					Flags: []cli.Flag{
-						cli.StringFlag{
+						&cli.StringFlag{
 							Name:  "name",
 							Value: "",
 							Usage: "node name",
 						},
-						cli.StringFlag{
+						&cli.StringFlag{
 							Name:  "services",
 							Value: "",
 							Usage: "node services (comma separated)",
 						},
-						cli.StringFlag{
+						&cli.StringFlag{
 							Name:  "key",
 							Value: "",
 							Usage: "node private key (hex encoded)",
@@ -170,7 +176,7 @@ func main() {
 					Usage:     "call a node RPC method",
 					Action:    rpcNode,
 					Flags: []cli.Flag{
-						cli.BoolFlag{
+						&cli.BoolFlag{
 							Name:  "subscribe",
 							Usage: "method is a subscription",
 						},
@@ -186,7 +192,7 @@ func main() {
 }
 
 func showNetwork(ctx *cli.Context) error {
-	if len(ctx.Args()) != 0 {
+	if ctx.NArg() != 0 {
 		return cli.ShowCommandHelp(ctx, ctx.Command.Name)
 	}
 	network, err := client.GetNetwork()
@@ -201,7 +207,7 @@ func showNetwork(ctx *cli.Context) error {
 }
 
 func streamNetwork(ctx *cli.Context) error {
-	if len(ctx.Args()) != 0 {
+	if ctx.NArg() != 0 {
 		return cli.ShowCommandHelp(ctx, ctx.Command.Name)
 	}
 	events := make(chan *simulations.Event)
@@ -227,7 +233,7 @@ func streamNetwork(ctx *cli.Context) error {
 }
 
 func createSnapshot(ctx *cli.Context) error {
-	if len(ctx.Args()) != 0 {
+	if ctx.NArg() != 0 {
 		return cli.ShowCommandHelp(ctx, ctx.Command.Name)
 	}
 	snap, err := client.CreateSnapshot()
@@ -238,7 +244,7 @@ func createSnapshot(ctx *cli.Context) error {
 }
 
 func loadSnapshot(ctx *cli.Context) error {
-	if len(ctx.Args()) != 0 {
+	if ctx.NArg() != 0 {
 		return cli.ShowCommandHelp(ctx, ctx.Command.Name)
 	}
 	snap := &simulations.Snapshot{}
@@ -249,7 +255,7 @@ func loadSnapshot(ctx *cli.Context) error {
 }
 
 func listNodes(ctx *cli.Context) error {
-	if len(ctx.Args()) != 0 {
+	if ctx.NArg() != 0 {
 		return cli.ShowCommandHelp(ctx, ctx.Command.Name)
 	}
 	nodes, err := client.GetNodes()
@@ -274,7 +280,7 @@ func protocolList(node *p2p.NodeInfo) []string {
 }
 
 func createNode(ctx *cli.Context) error {
-	if len(ctx.Args()) != 0 {
+	if ctx.NArg() != 0 {
 		return cli.ShowCommandHelp(ctx, ctx.Command.Name)
 	}
 	config := adapters.RandomNodeConfig()
@@ -299,11 +305,10 @@ func createNode(ctx *cli.Context) error {
 }
 
 func showNode(ctx *cli.Context) error {
-	args := ctx.Args()
-	if len(args) != 1 {
+	if ctx.NArg() != 1 {
 		return cli.ShowCommandHelp(ctx, ctx.Command.Name)
 	}
-	nodeName := args[0]
+	nodeName := ctx.Args().First()
 	node, err := client.GetNode(nodeName)
 	if err != nil {
 		return err
@@ -324,11 +329,10 @@ func showNode(ctx *cli.Context) error {
 }
 
 func startNode(ctx *cli.Context) error {
-	args := ctx.Args()
-	if len(args) != 1 {
+	if ctx.NArg() != 1 {
 		return cli.ShowCommandHelp(ctx, ctx.Command.Name)
 	}
-	nodeName := args[0]
+	nodeName := ctx.Args().First()
 	if err := client.StartNode(nodeName); err != nil {
 		return err
 	}
@@ -337,11 +341,10 @@ func startNode(ctx *cli.Context) error {
 }
 
 func stopNode(ctx *cli.Context) error {
-	args := ctx.Args()
-	if len(args) != 1 {
+	if ctx.NArg() != 1 {
 		return cli.ShowCommandHelp(ctx, ctx.Command.Name)
 	}
-	nodeName := args[0]
+	nodeName := ctx.Args().First()
 	if err := client.StopNode(nodeName); err != nil {
 		return err
 	}
@@ -350,12 +353,12 @@ func stopNode(ctx *cli.Context) error {
 }
 
 func connectNode(ctx *cli.Context) error {
-	args := ctx.Args()
-	if len(args) != 2 {
+	if ctx.NArg() != 2 {
 		return cli.ShowCommandHelp(ctx, ctx.Command.Name)
 	}
-	nodeName := args[0]
-	peerName := args[1]
+	args := ctx.Args()
+	nodeName := args.Get(0)
+	peerName := args.Get(1)
 	if err := client.ConnectNode(nodeName, peerName); err != nil {
 		return err
 	}
@@ -364,12 +367,12 @@ func connectNode(ctx *cli.Context) error {
 }
 
 func disconnectNode(ctx *cli.Context) error {
-	args := ctx.Args()
-	if len(args) != 2 {
+	if ctx.NArg() != 2 {
 		return cli.ShowCommandHelp(ctx, ctx.Command.Name)
 	}
-	nodeName := args[0]
-	peerName := args[1]
+	args := ctx.Args()
+	nodeName := args.Get(0)
+	peerName := args.Get(1)
 	if err := client.DisconnectNode(nodeName, peerName); err != nil {
 		return err
 	}
@@ -378,22 +381,22 @@ func disconnectNode(ctx *cli.Context) error {
 }
 
 func rpcNode(ctx *cli.Context) error {
-	args := ctx.Args()
-	if len(args) < 2 {
+	if ctx.NArg() < 2 {
 		return cli.ShowCommandHelp(ctx, ctx.Command.Name)
 	}
-	nodeName := args[0]
-	method := args[1]
+	args := ctx.Args()
+	nodeName := args.Get(0)
+	method := args.Get(1)
 	rpcClient, err := client.RPCClient(context.Background(), nodeName)
 	if err != nil {
 		return err
 	}
 	if ctx.Bool("subscribe") {
-		return rpcSubscribe(rpcClient, ctx.App.Writer, method, args[3:]...)
+		return rpcSubscribe(rpcClient, ctx.App.Writer, method, args.Slice()[3:]...)
 	}
 	var result interface{}
-	params := make([]interface{}, len(args[3:]))
-	for i, v := range args[3:] {
+	params := make([]interface{}, len(args.Slice()[3:]))
+	for i, v := range args.Slice()[3:] {
 		params[i] = v
 	}
 	if err := rpcClient.Call(&result, method, params...); err != nil {
