@@ -3,7 +3,7 @@ package qlight
 import (
 	"math/big"
 
-	mapset "github.com/deckarep/golang-set"
+	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/eth/protocols/eth"
@@ -35,8 +35,8 @@ type Peer struct {
 
 	EthPeer *eth.Peer
 
-	knownBlocks  mapset.Set             // Set of block hashes known to be known by this peer
-	queuedBlocks chan *blockPropagation // Queue of blocks to broadcast to the peer
+	knownBlocks  mapset.Set[common.Hash] // Set of block hashes known to be known by this peer
+	queuedBlocks chan *blockPropagation  // Queue of blocks to broadcast to the peer
 
 	term chan struct{} // Termination channel to stop the broadcasters
 
@@ -59,7 +59,7 @@ func NewPeer(version uint, p *p2p.Peer, rw p2p.MsgReadWriter, ethPeer *eth.Peer)
 		logger:       log.New("peer", id[:8]),
 		EthPeer:      ethPeer,
 		term:         make(chan struct{}),
-		knownBlocks:  mapset.NewSet(),
+		knownBlocks:  mapset.NewSet[common.Hash](),
 		queuedBlocks: make(chan *blockPropagation, maxQueuedBlocks),
 	}
 }

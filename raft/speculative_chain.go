@@ -1,7 +1,7 @@
 package raft
 
 import (
-	mapset "github.com/deckarep/golang-set"
+	mapset "github.com/deckarep/golang-set/v2"
 	"gopkg.in/oleiade/lane.v1"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -21,16 +21,16 @@ import (
 type speculativeChain struct {
 	head                       *types.Block
 	unappliedBlocks            *lane.Deque
-	expectedInvalidBlockHashes mapset.Set // This is thread-safe. This set is referred to as our "guard" below.
-	proposedTxes               mapset.Set // This is thread-safe.
+	expectedInvalidBlockHashes mapset.Set[common.Hash] // This is thread-safe. This set is referred to as our "guard" below.
+	proposedTxes               mapset.Set[common.Hash] // This is thread-safe.
 }
 
 func newSpeculativeChain() *speculativeChain {
 	return &speculativeChain{
 		head:                       nil,
 		unappliedBlocks:            lane.NewDeque(),
-		expectedInvalidBlockHashes: mapset.NewSet(),
-		proposedTxes:               mapset.NewSet(),
+		expectedInvalidBlockHashes: mapset.NewSet[common.Hash](),
+		proposedTxes:               mapset.NewSet[common.Hash](),
 	}
 }
 
@@ -135,7 +135,7 @@ func (chain *speculativeChain) unwindFrom(invalidHash common.Hash, headBlock *ty
 // supplying us these transactions until they are in the chain (after having
 // flown through raft).
 func (chain *speculativeChain) recordProposedTransactions(txes types.Transactions) {
-	txHashIs := make([]interface{}, len(txes))
+	txHashIs := make([]common.Hash, len(txes))
 	for i, tx := range txes {
 		txHashIs[i] = tx.Hash()
 	}
@@ -153,7 +153,7 @@ func (chain *speculativeChain) recordProposedTransactions(txes types.Transaction
 // need them in there anymore) so that it doesn't grow endlessly.
 func (chain *speculativeChain) removeProposedTxes(block *types.Block) {
 	minedTxes := block.Transactions()
-	minedTxInterfaces := make([]interface{}, len(minedTxes))
+	minedTxInterfaces := make([]common.Hash, len(minedTxes))
 	for i, tx := range minedTxes {
 		minedTxInterfaces[i] = tx.Hash()
 	}

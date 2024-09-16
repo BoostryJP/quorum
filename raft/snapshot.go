@@ -12,7 +12,7 @@ import (
 	"github.com/coreos/etcd/raft/raftpb"
 	"github.com/coreos/etcd/snap"
 	"github.com/coreos/etcd/wal/walpb"
-	mapset "github.com/deckarep/golang-set"
+	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/eth/downloader"
@@ -78,7 +78,7 @@ func (pm *ProtocolManager) buildSnapshot() *SnapshotWithHostnames {
 	// Populate removed IDs
 	i := 0
 	for removedIface := range pm.removedPeers.Iterator().C {
-		snapshot.RemovedRaftIds[i] = removedIface.(uint16)
+		snapshot.RemovedRaftIds[i] = removedIface
 		i++
 	}
 	return snapshot
@@ -116,8 +116,8 @@ func (pm *ProtocolManager) triggerSnapshot(index uint64) {
 	pm.mu.Unlock()
 }
 
-func confStateIdSet(confState raftpb.ConfState) mapset.Set {
-	set := mapset.NewSet()
+func confStateIdSet(confState raftpb.ConfState) mapset.Set[uint16] {
+	set := mapset.NewSet[uint16]()
 	for _, rawRaftId := range append(confState.Nodes, confState.Learners...) {
 		set.Add(uint16(rawRaftId))
 	}
@@ -132,7 +132,7 @@ func (pm *ProtocolManager) updateClusterMembership(newConfState raftpb.ConfState
 	// Update tombstones for permanently removed peers. For simplicity we do not
 	// allow the re-use of peer IDs once a peer is removed.
 
-	removedPeers := mapset.NewSet()
+	removedPeers := mapset.NewSet[uint16]()
 	for _, removedRaftId := range removedRaftIds {
 		removedPeers.Add(removedRaftId)
 	}
@@ -145,8 +145,8 @@ func (pm *ProtocolManager) updateClusterMembership(newConfState raftpb.ConfState
 	prevIds := confStateIdSet(prevConfState)
 	newIds := confStateIdSet(newConfState)
 	idsToRemove := prevIds.Difference(newIds)
-	for idIfaceToRemove := range idsToRemove.Iterator().C {
-		raftId := idIfaceToRemove.(uint16)
+	for idToRemove := range idsToRemove.Iterator().C {
+		raftId := idToRemove
 		log.Info("removing old raft peer", "peer id", raftId)
 
 		pm.removePeer(raftId)

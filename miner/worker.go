@@ -24,7 +24,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	mapset "github.com/deckarep/golang-set"
+	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/consensus"
 	"github.com/ethereum/go-ethereum/consensus/misc"
@@ -83,12 +83,12 @@ const (
 type environment struct {
 	signer types.Signer
 
-	state     *state.StateDB // apply state changes here
-	ancestors mapset.Set     // ancestor set (used for checking uncle parent validity)
-	family    mapset.Set     // family set (used for checking uncle invalidity)
-	uncles    mapset.Set     // uncle set
-	tcount    int            // tx count in cycle
-	gasPool   *core.GasPool  // available gas used to pack transactions
+	state     *state.StateDB          // apply state changes here
+	ancestors mapset.Set[common.Hash] // ancestor set (used for checking uncle parent validity)
+	family    mapset.Set[common.Hash] // family set (used for checking uncle invalidity)
+	uncles    mapset.Set[common.Hash] // uncle set
+	tcount    int                     // tx count in cycle
+	gasPool   *core.GasPool           // available gas used to pack transactions
 
 	header   *types.Header
 	txs      []*types.Transaction
@@ -507,14 +507,10 @@ func (w *worker) mainLoop() {
 				start := time.Now()
 				if err := w.commitUncle(w.current, ev.Block.Header()); err == nil {
 					var uncles []*types.Header
-					w.current.uncles.Each(func(item interface{}) bool {
-						hash, ok := item.(common.Hash)
-						if !ok {
-							return false
-						}
-						uncle, exist := w.localUncles[hash]
+					w.current.uncles.Each(func(item common.Hash) bool {
+						uncle, exist := w.localUncles[item]
 						if !exist {
-							uncle, exist = w.remoteUncles[hash]
+							uncle, exist = w.remoteUncles[item]
 						}
 						if !exist {
 							return false
@@ -766,9 +762,9 @@ func (w *worker) makeCurrent(parent *types.Block, header *types.Header) error {
 	env := &environment{
 		signer:    types.MakeSigner(w.chainConfig, header.Number),
 		state:     publicState,
-		ancestors: mapset.NewSet(),
-		family:    mapset.NewSet(),
-		uncles:    mapset.NewSet(),
+		ancestors: mapset.NewSet[common.Hash](),
+		family:    mapset.NewSet[common.Hash](),
+		uncles:    mapset.NewSet[common.Hash](),
 		header:    header,
 		// Quorum
 		privateStateRepo: privateStateRepo,
@@ -819,14 +815,10 @@ func (w *worker) updateSnapshot() {
 	defer w.snapshotMu.Unlock()
 
 	var uncles []*types.Header
-	w.current.uncles.Each(func(item interface{}) bool {
-		hash, ok := item.(common.Hash)
-		if !ok {
-			return false
-		}
-		uncle, exist := w.localUncles[hash]
+	w.current.uncles.Each(func(item common.Hash) bool {
+		uncle, exist := w.localUncles[item]
 		if !exist {
-			uncle, exist = w.remoteUncles[hash]
+			uncle, exist = w.remoteUncles[item]
 		}
 		if !exist {
 			return false
