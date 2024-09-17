@@ -1,6 +1,6 @@
 module github.com/ethereum/go-ethereum
 
-go 1.22
+go 1.23.1
 
 // Quorum - Replace Go modules that use modifications done by us
 replace github.com/coreos/etcd => github.com/Consensys/etcd v3.3.13-quorum197+incompatible
@@ -27,7 +27,6 @@ require (
 	github.com/dop251/goja v0.0.0-20200721192441-a695b0cdd498
 	github.com/eapache/channels v1.1.0
 	github.com/fatih/color v1.17.0
-	github.com/fjl/memsize v0.0.2
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/gballet/go-libpcsclite v0.0.0-20191108122812-4678299bea08
 	github.com/go-stack/stack v1.8.1

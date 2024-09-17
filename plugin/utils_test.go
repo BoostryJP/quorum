@@ -13,11 +13,11 @@ func TestIsValidTargetURL(t *testing.T) {
 	assert.Error(t, isValidTargetURL("https://localhost", "http://localhost.com"))
 
 	if err := isValidTargetURL("http://localhost.com", "http://localhost.com"); err != nil {
-		t.Errorf(err.Error())
+		t.Errorf("%s", err.Error())
 	}
 
 	if err := isValidTargetURL("https://localhost.com/../../", "https://localhost.com"); err != nil {
-		t.Errorf(err.Error())
+		t.Errorf("%s", err.Error())
 	}
 }
 
