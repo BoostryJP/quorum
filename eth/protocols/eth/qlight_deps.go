@@ -1,7 +1,7 @@
 package eth
 
 import (
-	mapset "github.com/deckarep/golang-set"
+	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -47,8 +47,8 @@ func NewPeerNoBroadcast(version uint, p *p2p.Peer, rw p2p.MsgReadWriter, txpool 
 		Peer:            p,
 		rw:              rw,
 		version:         version,
-		knownTxs:        mapset.NewSet(),
-		knownBlocks:     mapset.NewSet(),
+		knownTxs:        mapset.NewSet[common.Hash](),
+		knownBlocks:     mapset.NewSet[common.Hash](),
 		queuedBlocks:    make(chan *blockPropagation, maxQueuedBlocks),
 		queuedBlockAnns: make(chan *types.Block, maxQueuedBlockAnns),
 		txBroadcast:     make(chan []common.Hash),

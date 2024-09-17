@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/coreos/etcd/raft/raftpb"
-	mapset "github.com/deckarep/golang-set"
+	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -194,7 +194,7 @@ func newTestRaftService(t *testing.T, raftId uint16, nodes []uint64, learners []
 		raftId:              raftId,
 		bootstrapNodes:      peers,
 		confChangeProposalC: make(chan raftpb.ConfChange),
-		removedPeers:        mapset.NewSet(),
+		removedPeers:        mapset.NewSet[uint16](),
 		confState:           raftpb.ConfState{Nodes: nodes, Learners: learners},
 		p2pServer:           mockp2p,
 	}
