@@ -598,7 +598,7 @@ func (db *Database) Cap(limit common.StorageSize) error {
 		if db.preimages == nil {
 			log.Error("Attempted to write preimages whilst disabled")
 		} else {
-			log.Info("track: rawdb.WritePreimages, len_db_preimages=%d", len(db.preimages))
+			log.Info(fmt.Sprintf("track: rawdb.WritePreimages, len_db_preimages=%d, limit=%f", len(db.preimages), limit))
 			rawdb.WritePreimages(batch, db.preimages)
 			log.Info("track: rawdb.WritePreimages complete")
 			if batch.ValueSize() > ethdb.IdealBatchSize {
