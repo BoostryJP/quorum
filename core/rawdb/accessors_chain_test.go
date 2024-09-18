@@ -393,7 +393,7 @@ func TestBlockReceiptStorage(t *testing.T) {
 		t.Fatalf("no receipts returned")
 	} else {
 		if err := checkReceiptsRLP(rs, receipts); err != nil {
-			t.Fatalf(err.Error())
+			t.Fatalf("%s", err.Error())
 		}
 		// check that the raw data does not contain the quorumExtraData array (since the prepared receipts do not have any quorumExtraData)
 		receiptData := ReadReceiptsRLP(db, hash, 0)
@@ -408,7 +408,7 @@ func TestBlockReceiptStorage(t *testing.T) {
 	}
 	// Ensure that receipts without metadata can be returned without the block body too
 	if err := checkReceiptsRLP(ReadRawReceipts(db, hash, 0), receipts); err != nil {
-		t.Fatalf(err.Error())
+		t.Fatalf("%s", err.Error())
 	}
 	// Sanity check that body alone without the receipt is a full purge
 	WriteBody(db, hash, 0, body)
@@ -486,7 +486,7 @@ func TestBlockReceiptStorageWithLegacyMPSV1EncodingWithMPSData(t *testing.T) {
 		t.Fatalf("no receipts returned")
 	} else {
 		if err := checkReceiptsRLP(rs, receipts); err != nil {
-			t.Fatalf(err.Error())
+			t.Fatalf("%s", err.Error())
 		}
 		rec2 := rs[1]
 		assert.Len(t, rec2.PSReceipts, 1)
@@ -500,7 +500,7 @@ func TestBlockReceiptStorageWithLegacyMPSV1EncodingWithMPSData(t *testing.T) {
 	}
 	// Ensure that receipts without metadata can be returned without the block body too
 	if err := checkReceiptsRLP(ReadRawReceipts(db, hash, 0), receipts); err != nil {
-		t.Fatalf(err.Error())
+		t.Fatalf("%s", err.Error())
 	}
 }
 
@@ -556,7 +556,7 @@ func TestBlockReceiptStorageWithLegacyMPSV1EncodingWithoutMPSData(t *testing.T) 
 		t.Fatalf("no receipts returned")
 	} else {
 		if err := checkReceiptsRLP(rs, receipts); err != nil {
-			t.Fatalf(err.Error())
+			t.Fatalf("%s", err.Error())
 		}
 		rec2 := rs[1]
 		assert.Len(t, rec2.PSReceipts, 0)
@@ -568,7 +568,7 @@ func TestBlockReceiptStorageWithLegacyMPSV1EncodingWithoutMPSData(t *testing.T) 
 	}
 	// Ensure that receipts without metadata can be returned without the block body too
 	if err := checkReceiptsRLP(ReadRawReceipts(db, hash, 0), receipts); err != nil {
-		t.Fatalf(err.Error())
+		t.Fatalf("%s", err.Error())
 	}
 }
 
@@ -644,7 +644,7 @@ func TestBlockReceiptStorageWithQuorumExtraData(t *testing.T) {
 		t.Fatalf("no receipts returned")
 	} else {
 		if err := checkReceiptsRLP(rs, receipts); err != nil {
-			t.Fatalf(err.Error())
+			t.Fatalf("%s", err.Error())
 		}
 		rec2 := rs[1]
 		assert.Len(t, rec2.PSReceipts, 1)
@@ -659,7 +659,7 @@ func TestBlockReceiptStorageWithQuorumExtraData(t *testing.T) {
 	}
 	// Ensure that receipts without metadata can be returned without the block body too
 	if err := checkReceiptsRLP(ReadRawReceipts(db, hash, 0), receipts); err != nil {
-		t.Fatalf(err.Error())
+		t.Fatalf("%s", err.Error())
 	}
 	// Sanity check that body alone without the receipt is a full purge
 	WriteBody(db, hash, 0, body)
