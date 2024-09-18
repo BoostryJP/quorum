@@ -19,7 +19,6 @@ package backend
 import (
 	"bytes"
 	"errors"
-	"github.com/ethereum/go-ethereum/log"
 	"io"
 	"math/big"
 	"reflect"
@@ -139,7 +138,6 @@ func (sb *Backend) SetBroadcaster(broadcaster consensus.Broadcaster) {
 }
 
 func (sb *Backend) NewChainHead() error {
-	log.Info("track: NewChainHead")
 	sb.coreMu.RLock()
 	defer sb.coreMu.RUnlock()
 	if !sb.coreStarted {

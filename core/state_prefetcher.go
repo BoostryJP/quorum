@@ -17,7 +17,6 @@
 package core
 
 import (
-	"github.com/ethereum/go-ethereum/log"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -104,7 +103,6 @@ func (p *statePrefetcher) Prefetch(block *types.Block, statedb *state.StateDB, p
 // the transaction successfully, rather to warm up touched data slots.
 // Quorum: Add privateStateDb and isMPS arguments
 func precacheTransaction(config *params.ChainConfig, bc ChainContext, author *common.Address, gaspool *GasPool, statedb *state.StateDB, privateStateDb *state.StateDB, header *types.Header, tx *types.Transaction, cfg vm.Config, innerApply func(*types.Transaction) error) error {
-	log.Info("track: precacheTransaction")
 	// Convert the transaction into an executable message and pre-cache its sender
 	msg, err := tx.AsMessage(types.MakeSigner(config, header.Number))
 	if err != nil {
