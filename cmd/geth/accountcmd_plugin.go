@@ -13,11 +13,11 @@ import (
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/node"
 	"github.com/ethereum/go-ethereum/plugin"
-	"gopkg.in/urfave/cli.v1"
+	"github.com/urfave/cli/v2"
 )
 
 var (
-	quorumAccountPluginCommands = cli.Command{
+	quorumAccountPluginCommands = &cli.Command{
 		Name:  "plugin",
 		Usage: "Manage 'account' plugin accounts",
 		Description: `
@@ -27,11 +27,11 @@ var (
 	
 	See docs.goquorum.com for more info. 
 	`,
-		Subcommands: []cli.Command{
+		Subcommands: []*cli.Command{
 			{
 				Name:   "list",
 				Usage:  "Print summary of existing 'account' plugin accounts",
-				Action: utils.MigrateFlags(listPluginAccountsCLIAction),
+				Action: listPluginAccountsCLIAction,
 				Flags: []cli.Flag{
 					utils.PluginSettingsFlag, // flag is used implicitly by makeConfigNode()
 					utils.PluginLocalVerifyFlag,
@@ -45,7 +45,7 @@ Print a short summary of all accounts for the given plugin settings`,
 			{
 				Name:   "new",
 				Usage:  "Create a new account using an 'account' plugin",
-				Action: utils.MigrateFlags(createPluginAccountCLIAction),
+				Action: createPluginAccountCLIAction,
 				Flags: []cli.Flag{
 					utils.PluginSettingsFlag,
 					utils.PluginLocalVerifyFlag,
@@ -67,7 +67,7 @@ For more info see the documentation for the particular 'account' plugin being us
 			{
 				Name:   "import",
 				Usage:  "Import a private key into a new account using an 'account' plugin",
-				Action: utils.MigrateFlags(importPluginAccountCLIAction),
+				Action: importPluginAccountCLIAction,
 				Flags: []cli.Flag{
 					utils.PluginSettingsFlag,
 					utils.PluginLocalVerifyFlag,

@@ -24,7 +24,6 @@ import (
 	"io"
 	"math/big"
 	"os"
-	"runtime"
 	"strings"
 	"time"
 
@@ -98,11 +97,8 @@ func NewPrivateMinerAPI(e *Ethereum) *PrivateMinerAPI {
 // usable by this process. If mining is already running, this method adjust the
 // number of threads allowed to use and updates the minimum price required by the
 // transaction pool.
-func (api *PrivateMinerAPI) Start(threads *int) error {
-	if threads == nil {
-		return api.e.StartMining(runtime.NumCPU())
-	}
-	return api.e.StartMining(*threads)
+func (api *PrivateMinerAPI) Start() error {
+	return api.e.StartMining()
 }
 
 // Stop terminates the miner, both at the consensus engine level as well as at
@@ -563,7 +559,7 @@ func (api *PrivateDebugAPI) getModifiedAccounts(startBlock, endBlock *types.Bloc
 
 // Quorum
 
-// StorageRoot returns the storage root of an account on the the given (optional) block height.
+// StorageRoot returns the storage root of an account on the given (optional) block height.
 // If block number is not given the latest block is used.
 func (s *PublicEthereumAPI) StorageRoot(ctx context.Context, addr common.Address, blockNr *rpc.BlockNumber) (common.Hash, error) {
 	var (

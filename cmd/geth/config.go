@@ -45,12 +45,12 @@ import (
 	"github.com/ethereum/go-ethereum/private/engine"
 	"github.com/ethereum/go-ethereum/qlight"
 	"github.com/naoina/toml"
-	"gopkg.in/urfave/cli.v1"
+	"github.com/urfave/cli/v2"
 )
 
 var (
-	dumpConfigCommand = cli.Command{
-		Action:      utils.MigrateFlags(dumpConfig),
+	dumpConfigCommand = &cli.Command{
+		Action:      dumpConfig,
 		Name:        "dumpconfig",
 		Usage:       "Show configuration values",
 		ArgsUsage:   "",
@@ -59,7 +59,7 @@ var (
 		Description: `The dumpconfig command shows configuration values.`,
 	}
 
-	configFileFlag = cli.StringFlag{
+	configFileFlag = &cli.StringFlag{
 		Name:  "config",
 		Usage: "TOML configuration file",
 	}
@@ -134,7 +134,7 @@ func makeConfigNode(ctx *cli.Context) (*node.Node, gethConfig) {
 	}
 
 	// Load config file.
-	if file := ctx.GlobalString(configFileFlag.Name); file != "" {
+	if file := ctx.String(configFileFlag.Name); file != "" {
 		if err := loadConfig(file, &cfg); err != nil {
 			utils.Fatalf("%v", err)
 		}
@@ -149,8 +149,8 @@ func makeConfigNode(ctx *cli.Context) (*node.Node, gethConfig) {
 		utils.Fatalf("Failed to create the protocol stack: %v", err)
 	}
 	utils.SetEthConfig(ctx, stack, &cfg.Eth)
-	if ctx.GlobalIsSet(utils.EthStatsURLFlag.Name) {
-		cfg.Ethstats.URL = ctx.GlobalString(utils.EthStatsURLFlag.Name)
+	if ctx.IsSet(utils.EthStatsURLFlag.Name) {
+		cfg.Ethstats.URL = ctx.String(utils.EthStatsURLFlag.Name)
 	}
 	applyMetricConfig(ctx, &cfg)
 
@@ -159,10 +159,10 @@ func makeConfigNode(ctx *cli.Context) (*node.Node, gethConfig) {
 		p2p.SetQLightTLSConfig(readQLightServerTLSConfig(ctx))
 		// permissioning for the qlight P2P server
 		stack.QServer().SetNewTransportFunc(p2p.NewQlightServerTransport)
-		if ctx.GlobalIsSet(utils.QuorumLightServerP2PPermissioningFlag.Name) {
+		if ctx.IsSet(utils.QuorumLightServerP2PPermissioningFlag.Name) {
 			prefix := "qlight"
-			if ctx.GlobalIsSet(utils.QuorumLightServerP2PPermissioningPrefixFlag.Name) {
-				prefix = ctx.GlobalString(utils.QuorumLightServerP2PPermissioningPrefixFlag.Name)
+			if ctx.IsSet(utils.QuorumLightServerP2PPermissioningPrefixFlag.Name) {
+				prefix = ctx.String(utils.QuorumLightServerP2PPermissioningPrefixFlag.Name)
 			}
 			fbp := core.NewFileBasedPermissoningWithPrefix(prefix)
 			stack.QServer().SetIsNodePermissioned(fbp.IsNodePermissionedEnode)
@@ -180,8 +180,8 @@ func makeConfigNode(ctx *cli.Context) (*node.Node, gethConfig) {
 // makeFullNode loads geth configuration and creates the Ethereum backend.
 func makeFullNode(ctx *cli.Context) (*node.Node, ethapi.Backend) {
 	stack, cfg := makeConfigNode(ctx)
-	if ctx.GlobalIsSet(utils.OverrideBerlinFlag.Name) {
-		cfg.Eth.OverrideBerlin = new(big.Int).SetUint64(ctx.GlobalUint64(utils.OverrideBerlinFlag.Name))
+	if ctx.IsSet(utils.OverrideBerlinFlag.Name) {
+		cfg.Eth.OverrideBerlin = new(big.Int).SetUint64(ctx.Uint64(utils.OverrideBerlinFlag.Name))
 	}
 
 	// Quorum: Must occur before registering the extension service, as it needs an initialised PTM to be enabled
@@ -192,7 +192,7 @@ func makeFullNode(ctx *cli.Context) (*node.Node, ethapi.Backend) {
 	backend, eth := utils.RegisterEthService(stack, &cfg.Eth)
 
 	// Configure catalyst.
-	if ctx.GlobalBool(utils.CatalystFlag.Name) {
+	if ctx.Bool(utils.CatalystFlag.Name) {
 		if eth == nil {
 			utils.Fatalf("Catalyst does not work in light client mode.")
 		}
@@ -217,7 +217,7 @@ func makeFullNode(ctx *cli.Context) (*node.Node, ethapi.Backend) {
 		utils.RegisterPermissionService(stack, ctx.Bool(utils.RaftDNSEnabledFlag.Name), backend.ChainConfig().ChainID)
 	}
 
-	if ctx.GlobalBool(utils.RaftModeFlag.Name) && !cfg.Eth.QuorumLightClient.Enabled() {
+	if ctx.Bool(utils.RaftModeFlag.Name) && !cfg.Eth.QuorumLightClient.Enabled() {
 		utils.RegisterRaftService(stack, ctx, &cfg.Node, eth)
 	}
 
@@ -227,7 +227,7 @@ func makeFullNode(ctx *cli.Context) (*node.Node, ethapi.Backend) {
 	// End Quorum
 
 	// Configure GraphQL if requested
-	if ctx.GlobalIsSet(utils.GraphQLEnabledFlag.Name) {
+	if ctx.IsSet(utils.GraphQLEnabledFlag.Name) {
 		utils.RegisterGraphQLService(stack, backend, cfg.Node)
 	}
 	// Add the Ethereum Stats daemon if requested.
@@ -267,53 +267,53 @@ func dumpConfig(ctx *cli.Context) error {
 }
 
 func applyMetricConfig(ctx *cli.Context, cfg *gethConfig) {
-	if ctx.GlobalIsSet(utils.MetricsEnabledFlag.Name) {
-		cfg.Metrics.Enabled = ctx.GlobalBool(utils.MetricsEnabledFlag.Name)
+	if ctx.IsSet(utils.MetricsEnabledFlag.Name) {
+		cfg.Metrics.Enabled = ctx.Bool(utils.MetricsEnabledFlag.Name)
 	}
-	if ctx.GlobalIsSet(utils.MetricsEnabledExpensiveFlag.Name) {
-		cfg.Metrics.EnabledExpensive = ctx.GlobalBool(utils.MetricsEnabledExpensiveFlag.Name)
+	if ctx.IsSet(utils.MetricsEnabledExpensiveFlag.Name) {
+		cfg.Metrics.EnabledExpensive = ctx.Bool(utils.MetricsEnabledExpensiveFlag.Name)
 	}
-	if ctx.GlobalIsSet(utils.MetricsHTTPFlag.Name) {
-		cfg.Metrics.HTTP = ctx.GlobalString(utils.MetricsHTTPFlag.Name)
+	if ctx.IsSet(utils.MetricsHTTPFlag.Name) {
+		cfg.Metrics.HTTP = ctx.String(utils.MetricsHTTPFlag.Name)
 	}
-	if ctx.GlobalIsSet(utils.MetricsPortFlag.Name) {
-		cfg.Metrics.Port = ctx.GlobalInt(utils.MetricsPortFlag.Name)
+	if ctx.IsSet(utils.MetricsPortFlag.Name) {
+		cfg.Metrics.Port = ctx.Int(utils.MetricsPortFlag.Name)
 	}
-	if ctx.GlobalIsSet(utils.MetricsEnableInfluxDBFlag.Name) {
-		cfg.Metrics.EnableInfluxDB = ctx.GlobalBool(utils.MetricsEnableInfluxDBFlag.Name)
+	if ctx.IsSet(utils.MetricsEnableInfluxDBFlag.Name) {
+		cfg.Metrics.EnableInfluxDB = ctx.Bool(utils.MetricsEnableInfluxDBFlag.Name)
 	}
-	if ctx.GlobalIsSet(utils.MetricsInfluxDBEndpointFlag.Name) {
-		cfg.Metrics.InfluxDBEndpoint = ctx.GlobalString(utils.MetricsInfluxDBEndpointFlag.Name)
+	if ctx.IsSet(utils.MetricsInfluxDBEndpointFlag.Name) {
+		cfg.Metrics.InfluxDBEndpoint = ctx.String(utils.MetricsInfluxDBEndpointFlag.Name)
 	}
-	if ctx.GlobalIsSet(utils.MetricsInfluxDBDatabaseFlag.Name) {
-		cfg.Metrics.InfluxDBDatabase = ctx.GlobalString(utils.MetricsInfluxDBDatabaseFlag.Name)
+	if ctx.IsSet(utils.MetricsInfluxDBDatabaseFlag.Name) {
+		cfg.Metrics.InfluxDBDatabase = ctx.String(utils.MetricsInfluxDBDatabaseFlag.Name)
 	}
-	if ctx.GlobalIsSet(utils.MetricsInfluxDBUsernameFlag.Name) {
-		cfg.Metrics.InfluxDBUsername = ctx.GlobalString(utils.MetricsInfluxDBUsernameFlag.Name)
+	if ctx.IsSet(utils.MetricsInfluxDBUsernameFlag.Name) {
+		cfg.Metrics.InfluxDBUsername = ctx.String(utils.MetricsInfluxDBUsernameFlag.Name)
 	}
-	if ctx.GlobalIsSet(utils.MetricsInfluxDBPasswordFlag.Name) {
-		cfg.Metrics.InfluxDBPassword = ctx.GlobalString(utils.MetricsInfluxDBPasswordFlag.Name)
+	if ctx.IsSet(utils.MetricsInfluxDBPasswordFlag.Name) {
+		cfg.Metrics.InfluxDBPassword = ctx.String(utils.MetricsInfluxDBPasswordFlag.Name)
 	}
-	if ctx.GlobalIsSet(utils.MetricsInfluxDBTagsFlag.Name) {
-		cfg.Metrics.InfluxDBTags = ctx.GlobalString(utils.MetricsInfluxDBTagsFlag.Name)
+	if ctx.IsSet(utils.MetricsInfluxDBTagsFlag.Name) {
+		cfg.Metrics.InfluxDBTags = ctx.String(utils.MetricsInfluxDBTagsFlag.Name)
 	}
 }
 
 // Quorum
 
 func readQLightClientTLSConfig(ctx *cli.Context) *tls.Config {
-	if !ctx.GlobalIsSet(utils.QuorumLightTLSFlag.Name) {
+	if !ctx.IsSet(utils.QuorumLightTLSFlag.Name) {
 		return nil
 	}
-	if !ctx.GlobalIsSet(utils.QuorumLightTLSCACertsFlag.Name) {
+	if !ctx.IsSet(utils.QuorumLightTLSCACertsFlag.Name) {
 		utils.Fatalf("QLight tls flag is set but no client certificate authorities has been provided")
 	}
 	tlsConfig, err := qlight.NewTLSConfig(&qlight.TLSConfig{
-		CACertFileName: ctx.GlobalString(utils.QuorumLightTLSCACertsFlag.Name),
-		CertFileName:   ctx.GlobalString(utils.QuorumLightTLSCertFlag.Name),
-		KeyFileName:    ctx.GlobalString(utils.QuorumLightTLSKeyFlag.Name),
-		ServerName:     enode.MustParse(ctx.GlobalString(utils.QuorumLightClientServerNodeFlag.Name)).IP().String(),
-		CipherSuites:   ctx.GlobalString(utils.QuorumLightTLSCipherSuitesFlag.Name),
+		CACertFileName: ctx.String(utils.QuorumLightTLSCACertsFlag.Name),
+		CertFileName:   ctx.String(utils.QuorumLightTLSCertFlag.Name),
+		KeyFileName:    ctx.String(utils.QuorumLightTLSKeyFlag.Name),
+		ServerName:     enode.MustParse(ctx.String(utils.QuorumLightClientServerNodeFlag.Name)).IP().String(),
+		CipherSuites:   ctx.String(utils.QuorumLightTLSCipherSuitesFlag.Name),
 	})
 
 	if err != nil {
@@ -323,22 +323,22 @@ func readQLightClientTLSConfig(ctx *cli.Context) *tls.Config {
 }
 
 func readQLightServerTLSConfig(ctx *cli.Context) *tls.Config {
-	if !ctx.GlobalIsSet(utils.QuorumLightTLSFlag.Name) {
+	if !ctx.IsSet(utils.QuorumLightTLSFlag.Name) {
 		return nil
 	}
-	if !ctx.GlobalIsSet(utils.QuorumLightTLSCertFlag.Name) {
+	if !ctx.IsSet(utils.QuorumLightTLSCertFlag.Name) {
 		utils.Fatalf("QLight TLS is enabled but no server certificate has been provided")
 	}
-	if !ctx.GlobalIsSet(utils.QuorumLightTLSKeyFlag.Name) {
+	if !ctx.IsSet(utils.QuorumLightTLSKeyFlag.Name) {
 		utils.Fatalf("QLight TLS is enabled but no server key has been provided")
 	}
 
 	tlsConfig, err := qlight.NewTLSConfig(&qlight.TLSConfig{
-		CertFileName:         ctx.GlobalString(utils.QuorumLightTLSCertFlag.Name),
-		KeyFileName:          ctx.GlobalString(utils.QuorumLightTLSKeyFlag.Name),
-		ClientCACertFileName: ctx.GlobalString(utils.QuorumLightTLSCACertsFlag.Name),
-		ClientAuth:           ctx.GlobalInt(utils.QuorumLightTLSClientAuthFlag.Name),
-		CipherSuites:         ctx.GlobalString(utils.QuorumLightTLSCipherSuitesFlag.Name),
+		CertFileName:         ctx.String(utils.QuorumLightTLSCertFlag.Name),
+		KeyFileName:          ctx.String(utils.QuorumLightTLSKeyFlag.Name),
+		ClientCACertFileName: ctx.String(utils.QuorumLightTLSCACertsFlag.Name),
+		ClientAuth:           ctx.Int(utils.QuorumLightTLSClientAuthFlag.Name),
+		CipherSuites:         ctx.String(utils.QuorumLightTLSCipherSuitesFlag.Name),
 	})
 
 	if err != nil {
@@ -400,7 +400,7 @@ func quorumInitialisePrivacy(ctx *cli.Context) error {
 		return err
 	}
 
-	err = private.InitialiseConnection(cfg, ctx.GlobalIsSet(utils.QuorumLightClientFlag.Name))
+	err = private.InitialiseConnection(cfg, ctx.IsSet(utils.QuorumLightClientFlag.Name))
 	if err != nil {
 		return err
 	}
@@ -418,40 +418,40 @@ func QuorumSetupPrivacyConfiguration(ctx *cli.Context) (http.Config, error) {
 	}
 
 	// override the config with command line parameters
-	if ctx.GlobalIsSet(utils.QuorumPTMUnixSocketFlag.Name) {
-		cfg.SetSocket(ctx.GlobalString(utils.QuorumPTMUnixSocketFlag.Name))
+	if ctx.IsSet(utils.QuorumPTMUnixSocketFlag.Name) {
+		cfg.SetSocket(ctx.String(utils.QuorumPTMUnixSocketFlag.Name))
 	}
-	if ctx.GlobalIsSet(utils.QuorumPTMUrlFlag.Name) {
-		cfg.SetHttpUrl(ctx.GlobalString(utils.QuorumPTMUrlFlag.Name))
+	if ctx.IsSet(utils.QuorumPTMUrlFlag.Name) {
+		cfg.SetHttpUrl(ctx.String(utils.QuorumPTMUrlFlag.Name))
 	}
-	if ctx.GlobalIsSet(utils.QuorumPTMTimeoutFlag.Name) {
-		cfg.SetTimeout(ctx.GlobalUint(utils.QuorumPTMTimeoutFlag.Name))
+	if ctx.IsSet(utils.QuorumPTMTimeoutFlag.Name) {
+		cfg.SetTimeout(ctx.Uint(utils.QuorumPTMTimeoutFlag.Name))
 	}
-	if ctx.GlobalIsSet(utils.QuorumPTMDialTimeoutFlag.Name) {
-		cfg.SetDialTimeout(ctx.GlobalUint(utils.QuorumPTMDialTimeoutFlag.Name))
+	if ctx.IsSet(utils.QuorumPTMDialTimeoutFlag.Name) {
+		cfg.SetDialTimeout(ctx.Uint(utils.QuorumPTMDialTimeoutFlag.Name))
 	}
-	if ctx.GlobalIsSet(utils.QuorumPTMHttpIdleTimeoutFlag.Name) {
-		cfg.SetHttpIdleConnTimeout(ctx.GlobalUint(utils.QuorumPTMHttpIdleTimeoutFlag.Name))
+	if ctx.IsSet(utils.QuorumPTMHttpIdleTimeoutFlag.Name) {
+		cfg.SetHttpIdleConnTimeout(ctx.Uint(utils.QuorumPTMHttpIdleTimeoutFlag.Name))
 	}
-	if ctx.GlobalIsSet(utils.QuorumPTMHttpWriteBufferSizeFlag.Name) {
-		cfg.SetHttpWriteBufferSize(ctx.GlobalInt(utils.QuorumPTMHttpWriteBufferSizeFlag.Name))
+	if ctx.IsSet(utils.QuorumPTMHttpWriteBufferSizeFlag.Name) {
+		cfg.SetHttpWriteBufferSize(ctx.Int(utils.QuorumPTMHttpWriteBufferSizeFlag.Name))
 	}
-	if ctx.GlobalIsSet(utils.QuorumPTMHttpReadBufferSizeFlag.Name) {
-		cfg.SetHttpReadBufferSize(ctx.GlobalInt(utils.QuorumPTMHttpReadBufferSizeFlag.Name))
+	if ctx.IsSet(utils.QuorumPTMHttpReadBufferSizeFlag.Name) {
+		cfg.SetHttpReadBufferSize(ctx.Int(utils.QuorumPTMHttpReadBufferSizeFlag.Name))
 	}
-	if ctx.GlobalIsSet(utils.QuorumPTMTlsModeFlag.Name) {
-		cfg.SetTlsMode(ctx.GlobalString(utils.QuorumPTMTlsModeFlag.Name))
+	if ctx.IsSet(utils.QuorumPTMTlsModeFlag.Name) {
+		cfg.SetTlsMode(ctx.String(utils.QuorumPTMTlsModeFlag.Name))
 	}
-	if ctx.GlobalIsSet(utils.QuorumPTMTlsRootCaFlag.Name) {
-		cfg.SetTlsRootCA(ctx.GlobalString(utils.QuorumPTMTlsRootCaFlag.Name))
+	if ctx.IsSet(utils.QuorumPTMTlsRootCaFlag.Name) {
+		cfg.SetTlsRootCA(ctx.String(utils.QuorumPTMTlsRootCaFlag.Name))
 	}
-	if ctx.GlobalIsSet(utils.QuorumPTMTlsClientCertFlag.Name) {
-		cfg.SetTlsClientCert(ctx.GlobalString(utils.QuorumPTMTlsClientCertFlag.Name))
+	if ctx.IsSet(utils.QuorumPTMTlsClientCertFlag.Name) {
+		cfg.SetTlsClientCert(ctx.String(utils.QuorumPTMTlsClientCertFlag.Name))
 	}
-	if ctx.GlobalIsSet(utils.QuorumPTMTlsClientKeyFlag.Name) {
-		cfg.SetTlsClientKey(ctx.GlobalString(utils.QuorumPTMTlsClientKeyFlag.Name))
+	if ctx.IsSet(utils.QuorumPTMTlsClientKeyFlag.Name) {
+		cfg.SetTlsClientKey(ctx.String(utils.QuorumPTMTlsClientKeyFlag.Name))
 	}
-	if ctx.GlobalIsSet(utils.QuorumPTMTlsInsecureSkipVerify.Name) {
+	if ctx.IsSet(utils.QuorumPTMTlsInsecureSkipVerify.Name) {
 		cfg.SetTlsInsecureSkipVerify(ctx.Bool(utils.QuorumPTMTlsInsecureSkipVerify.Name))
 	}
 

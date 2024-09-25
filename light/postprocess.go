@@ -25,7 +25,7 @@ import (
 	"math/big"
 	"time"
 
-	mapset "github.com/deckarep/golang-set"
+	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/bitutil"
 	"github.com/ethereum/go-ethereum/core"
@@ -134,7 +134,7 @@ type ChtIndexerBackend struct {
 	diskdb, trieTable    ethdb.Database
 	odr                  OdrBackend
 	triedb               *trie.Database
-	trieset              mapset.Set
+	trieset              mapset.Set[common.Hash]
 	section, sectionSize uint64
 	lastHash             common.Hash
 	trie                 *trie.Trie
@@ -148,7 +148,7 @@ func NewChtIndexer(db ethdb.Database, odr OdrBackend, size, confirms uint64, dis
 		odr:            odr,
 		trieTable:      trieTable,
 		triedb:         trie.NewDatabaseWithConfig(trieTable, &trie.Config{Cache: 1}), // Use a tiny cache only to keep memory down
-		trieset:        mapset.NewSet(),
+		trieset:        mapset.NewSet[common.Hash](),
 		sectionSize:    size,
 		disablePruning: disablePruning,
 	}
@@ -323,7 +323,7 @@ type BloomTrieIndexerBackend struct {
 	disablePruning    bool
 	diskdb, trieTable ethdb.Database
 	triedb            *trie.Database
-	trieset           mapset.Set
+	trieset           mapset.Set[common.Hash]
 	odr               OdrBackend
 	section           uint64
 	parentSize        uint64
@@ -341,7 +341,7 @@ func NewBloomTrieIndexer(db ethdb.Database, odr OdrBackend, parentSize, size uin
 		odr:            odr,
 		trieTable:      trieTable,
 		triedb:         trie.NewDatabaseWithConfig(trieTable, &trie.Config{Cache: 1}), // Use a tiny cache only to keep memory down
-		trieset:        mapset.NewSet(),
+		trieset:        mapset.NewSet[common.Hash](),
 		parentSize:     parentSize,
 		size:           size,
 		disablePruning: disablePruning,

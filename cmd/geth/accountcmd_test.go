@@ -60,7 +60,7 @@ func TestAccountListEmpty(t *testing.T) {
 
 func TestAccountList(t *testing.T) {
 	datadir := tmpDatadirWithKeystore(t)
-	geth := runGeth(t, "account", "list", "--datadir", datadir)
+	geth := runGeth(t, "--datadir", datadir, "account", "list")
 	defer geth.ExpectExit()
 	if runtime.GOOS == "windows" {
 		geth.Expect(`
@@ -78,7 +78,8 @@ Account #2: {289d485d9771714cce91d3393d764e1311907acc} keystore://{{.Datadir}}/k
 }
 
 func TestAccountNew(t *testing.T) {
-	geth := runGeth(t, "account", "new", "--lightkdf")
+	datadir := tmpDatadirWithKeystore(t)
+	geth := runGeth(t, "account", "new", "--lightkdf", "--datadir", datadir)
 	defer geth.ExpectExit()
 	geth.Expect(`
 Your new account is locked with a password. Please give a password. Do not forget this password.
@@ -131,7 +132,7 @@ func importAccountWithExpect(t *testing.T, key string, expected string) {
 	if err := os.WriteFile(passwordFile, []byte("foobar"), 0600); err != nil {
 		t.Error(err)
 	}
-	geth := runGeth(t, "account", "import", keyfile, "-password", passwordFile)
+	geth := runGeth(t, "--lightkdf", "--datadir", dir, "account", "import", "-password", passwordFile, keyfile)
 	defer geth.ExpectExit()
 	geth.Expect(expected)
 }
@@ -165,7 +166,7 @@ Repeat password: {{.InputLine "foobar2"}}
 }
 
 func TestWalletImport(t *testing.T) {
-	geth := runGeth(t, "wallet", "import", "--lightkdf", "testdata/guswallet.json")
+	geth := runGeth(t, "--lightkdf", "wallet", "import", "testdata/guswallet.json")
 	defer geth.ExpectExit()
 	geth.Expect(`
 !! Unsupported terminal, password will be echoed.

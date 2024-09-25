@@ -703,7 +703,7 @@ func (r *QuorumReceiptExtraData) EncodeRLP(w io.Writer) error {
 }
 
 func (r *QuorumReceiptExtraData) IsEmpty() bool {
-	return (r.PSReceipts == nil || len(r.PSReceipts) == 0) && r.RevertReason == nil
+	return len(r.PSReceipts) == 0 && r.RevertReason == nil
 }
 
 // LEGACY STRUCTURES TO COPE WITH MPS RECEIPT RLP ENCODING

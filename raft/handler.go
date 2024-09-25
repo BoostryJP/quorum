@@ -21,7 +21,7 @@ import (
 	"github.com/coreos/etcd/rafthttp"
 	"github.com/coreos/etcd/snap"
 	"github.com/coreos/etcd/wal"
-	mapset "github.com/deckarep/golang-set"
+	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/syndtr/goleveldb/leveldb"
 
 	"github.com/ethereum/go-ethereum/core"
@@ -55,7 +55,7 @@ type ProtocolManager struct {
 	// Remote peer state (protected by mu vs concurrent access via JS)
 	leader       uint16
 	peers        map[uint16]*Peer
-	removedPeers mapset.Set // *Permanently removed* peers
+	removedPeers mapset.Set[uint16] // *Permanently removed* peers
 
 	// P2P transport
 	p2pServer *p2p.Server
@@ -109,7 +109,7 @@ func NewProtocolManager(raftId uint16, raftPort uint16, blockchain *core.BlockCh
 		bootstrapNodes:      bootstrapNodes,
 		peers:               make(map[uint16]*Peer),
 		leader:              uint16(etcdRaft.None),
-		removedPeers:        mapset.NewSet(),
+		removedPeers:        mapset.NewSet[uint16](),
 		joinExisting:        joinExisting,
 		blockchain:          blockchain,
 		eventMux:            mux,
@@ -208,11 +208,11 @@ func (pm *ProtocolManager) NodeInfo() *RaftNodeInfo {
 		peerIdx += 1
 	}
 
-	removedPeerIfaces := pm.removedPeers
-	removedPeerIds := make([]uint16, removedPeerIfaces.Cardinality())
+	removedPeerMapset := pm.removedPeers
+	removedPeerIds := make([]uint16, removedPeerMapset.Cardinality())
 	i := 0
-	for removedIface := range removedPeerIfaces.Iterator().C {
-		removedPeerIds[i] = removedIface.(uint16)
+	for removedId := range removedPeerMapset.Iterator().C {
+		removedPeerIds[i] = removedId
 		i++
 	}
 
@@ -256,10 +256,8 @@ func (pm *ProtocolManager) nextRaftId() uint16 {
 		}
 	}
 
-	removedPeerIfaces := pm.removedPeers
-	for removedIface := range removedPeerIfaces.Iterator().C {
-		removedId := removedIface.(uint16)
-
+	removedPeerMapset := pm.removedPeers
+	for removedId := range removedPeerMapset.Iterator().C {
 		if maxId < removedId {
 			maxId = removedId
 		}

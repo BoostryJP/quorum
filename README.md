@@ -1,12 +1,14 @@
+<p align="center">
+  <img width="33%" src="https://user-images.githubusercontent.com/963333/212965270-bba794c6-be66-4850-9475-19895530f32c.png"/>
+</p>
+
 # GoQuorum for ibet Network
 
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-2.3-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-2.4-blue.svg?cacheSeconds=2592000" />
 </p>
 
 This project is [GoQuorum](https://github.com/ConsenSys/quorum) fork for [ibet Network](https://github.com/BoostryJP/ibet-Network)
-
-<img width="33%" align="right" src="https://user-images.githubusercontent.com/963333/212965270-bba794c6-be66-4850-9475-19895530f32c.png"/>
 
 ## Version control policy
 
@@ -17,14 +19,14 @@ The version control policy of this project follows that of ibet-Network.
 
 ## Reference GoQuorum version
 
-Currently, the ibet Network is built using a node client based on v23.4.0 of GoQuorum. 
+Currently, the ibet Network is built using a node client based on v24.4.0 of GoQuorum. 
 However, it has been variously patched to be optimized for ibet Network. For example:
 - The default block generation interval is set to 1 second.
-- Fully supports Go 1.22 and applies new 3rd party packages from a security perspective.
+- Fully supports Go 1.23 and applies new 3rd party packages from a security perspective.
 - Made temporary fixes for bugs before they were fixed in the original GoQuorum.
 
 ## Building the source
-Building quorum requires both a Go (version 1.22) and a C compiler. 
+Building quorum requires both a Go (version 1.23) and a C compiler. 
 You can install them using your favourite package manager. 
 Once the dependencies are installed, run
 ```
