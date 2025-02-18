@@ -18,14 +18,12 @@
 package tracers
 
 import (
+	"io/fs"
 	"strings"
 	"unicode"
 
 	"github.com/ethereum/go-ethereum/eth/tracers/internal/tracers"
 )
-
-// all contains all the built in JavaScript tracers by name.
-var all = make(map[string]string)
 
 // camel converts a snake cased input string into a camel cased output.
 func camel(str string) string {
@@ -36,17 +34,33 @@ func camel(str string) string {
 	return strings.Join(pieces, "")
 }
 
+var assetTracers = make(map[string]string)
+
 // init retrieves the JavaScript transaction tracers included in go-ethereum.
 func init() {
-	for _, file := range tracers.AssetNames() {
-		name := camel(strings.TrimSuffix(file, ".js"))
-		all[name] = string(tracers.MustAsset(file))
+	err := fs.WalkDir(tracers.FS, ".", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if d.IsDir() {
+			return nil
+		}
+		b, err := fs.ReadFile(tracers.FS, path)
+		if err != nil {
+			return err
+		}
+		name := camel(strings.TrimSuffix(path, ".js"))
+		assetTracers[name] = string(b)
+		return nil
+	})
+	if err != nil {
+		panic(err)
 	}
 }
 
 // tracer retrieves a specific JavaScript tracer by name.
 func tracer(name string) (string, bool) {
-	if tracer, ok := all[name]; ok {
+	if tracer, ok := assetTracers[name]; ok {
 		return tracer, true
 	}
 	return "", false
