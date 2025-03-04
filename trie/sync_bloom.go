@@ -45,11 +45,11 @@ var (
 // provided disk database on creation in a background thread and will only start
 // returning live results once that's finished.
 type SyncBloom struct {
-	bloom  *bloomfilter.Filter
-	inited uint32
-	closer sync.Once
-	closed uint32
-	pend   sync.WaitGroup
+	bloom   *bloomfilter.Filter
+	inited  uint32
+	closer  sync.Once
+	closed  uint32
+	pend    sync.WaitGroup
 	closeCh chan struct{}
 }
 
@@ -65,7 +65,7 @@ func NewSyncBloom(memory uint64, database ethdb.Iteratee) *SyncBloom {
 
 	// Assemble the fast sync bloom and init it from previous sessions
 	b := &SyncBloom{
-		bloom: bloom,
+		bloom:   bloom,
 		closeCh: make(chan struct{}),
 	}
 	b.pend.Add(2)
