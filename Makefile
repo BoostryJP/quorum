@@ -28,6 +28,9 @@ all:
 test: all
 	$(GORUN) build/ci.go test
 
+format:
+	env GO111MODULE=on go fmt ./...
+
 lint: ## Run linters.
 	$(GORUN) build/ci.go lint
 
