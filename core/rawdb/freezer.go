@@ -91,7 +91,7 @@ type freezer struct {
 	trigger chan chan struct{} // Manual blocking freeze trigger, test determinism
 
 	quit      chan struct{}
-	wg sync.WaitGroup
+	wg        sync.WaitGroup
 	closeOnce sync.Once
 }
 
