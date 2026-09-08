@@ -5,7 +5,7 @@
 # ibet-Core
 
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-2.8-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-26.9-blue.svg?cacheSeconds=2592000" />
 </p>
 
 ibet-Core is the node client for [ibet Network](https://github.com/BoostryJP/ibet-Network), developed from a [GoQuorum](https://github.com/ConsenSys/quorum) fork and maintained independently by BOOSTRY.
@@ -21,7 +21,7 @@ The version control policy of this project follows that of ibet-Network.
 
 ibet-Core is developed on the GoQuorum baseline adopted by this project and includes the following enhancements:
 - The default block generation interval is set to 1 second.
-- Go 1.25 is supported, with third-party packages updated from a security perspective.
+- Go 1.26 is supported, with third-party packages updated from a security perspective.
 - Selected go-ethereum execution-layer improvements are incorporated where they benefit ibet Network.
 - Project-specific fixes and operational improvements are maintained independently after the GoQuorum fork.
 - Added precompile for secp256r1 signature verification ([EIP-7951](https://eips.ethereum.org/EIPS/eip-7951)).
